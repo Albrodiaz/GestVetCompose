@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.views.features.addscreen
+package com.albrodiaz.gestvet.ui.theme.views.features.searchscreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,12 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun AddScreen() {
+fun SearchScreen() {
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Pantalla Añadir")
+        Text(text = "Pantalla Buscar")
     }
 }
