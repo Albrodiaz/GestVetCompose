@@ -17,14 +17,12 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.R
 
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview(showBackground = true)
 @Composable
 fun AddScreen() {
     val keyboardController = LocalSoftwareKeyboardController.current

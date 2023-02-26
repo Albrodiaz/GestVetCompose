@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.SwipeableState
@@ -19,32 +20,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.albrodiaz.gestvet.data.AppointmentProvider.Companion.appointments
 import com.albrodiaz.gestvet.ui.theme.md_theme_light_error
+import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
 import kotlin.math.roundToInt
 
 @Composable
-fun AppointmentScreen(paddingValue: Dp) {
+fun AppointmentScreen() {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = paddingValue)
     ) {
-        items(10) {
-            ItemAppointment()
+        items(appointments) { appointment ->
+            ItemAppointment(appointment)
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Preview
 @Composable
-fun ItemAppointment() {
+fun ItemAppointment(appointment: AppointmentModel) {
     val swipeableState = rememberSwipeableState(initialValue = 0) //0 colapsado, 1 expandido
     val width = 75.dp
     val sizePx = with(LocalDensity.current) { width.toPx() }
@@ -68,9 +69,12 @@ fun ItemAppointment() {
 
                 .padding(6.dp),
             elevation = CardDefaults.cardElevation(3.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White, contentColor = Color.Black)
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            )
         ) {
-            AppointmentContainer()
+            AppointmentContainer(appointment)
         }
         DeleteButton(
             modifier = Modifier
@@ -85,27 +89,33 @@ fun ItemAppointment() {
 }
 
 @Composable
-fun AppointmentContainer() {
+fun AppointmentContainer(appointment: AppointmentModel) {
     ConstraintLayout(
         Modifier
             .fillMaxSize()
     ) {
         val (date, hour, divider, owner, pet, subject) = createRefs()
 
-        Text(text = "Fecha", modifier = Modifier
-            .padding(horizontal = 20.dp, vertical = 16.dp)
-            .constrainAs(date) {
-                top.linkTo(parent.top)
-                end.linkTo(divider.start)
-                start.linkTo(parent.start)
-            })
-        Text(text = "Hora", modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .constrainAs(hour) {
-                top.linkTo(date.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(divider.start)
-            })
+        Text(text = appointment.date,
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp,
+            modifier = Modifier
+                .padding(horizontal = 10.dp, vertical = 24.dp)
+                .constrainAs(date) {
+                    top.linkTo(parent.top)
+                    end.linkTo(divider.start)
+                    start.linkTo(parent.start)
+                })
+        Text(text = appointment.hour,
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp,
+            modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .constrainAs(hour) {
+                    top.linkTo(date.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(divider.start)
+                })
         Divider(
             Modifier
                 .width(1.dp)
@@ -116,25 +126,34 @@ fun AppointmentContainer() {
                     end.linkTo(owner.start)
                 })
         Text(
-            text = "Propietario",
+            fontSize = 15.sp,
+            text = appointment.owner,
             modifier = Modifier
-                .padding(horizontal = 12.dp, vertical = 6.dp)
-                .constrainAs(owner) { start.linkTo(divider.end) })
+                .padding(horizontal = 12.dp)
+                .constrainAs(owner) {
+                    start.linkTo(divider.end)
+                    bottom.linkTo(pet.top)
+                    top.linkTo(parent.top)
+                })
         Text(
-            text = "Mascota",
+            text = appointment.pet,
+            fontSize = 14.sp,
             modifier = Modifier
-                .padding(horizontal = 12.dp, vertical = 6.dp)
+                .padding(horizontal = 12.dp)
                 .constrainAs(pet) {
                     top.linkTo(owner.bottom)
                     start.linkTo(owner.start)
+                    bottom.linkTo(subject.top)
                 })
         Text(
-            text = "Asunto",
+            text = appointment.subject,
+            fontSize = 14.sp,
             modifier = Modifier
-                .padding(horizontal = 12.dp, vertical = 6.dp)
+                .padding(horizontal = 12.dp)
                 .constrainAs(subject) {
                     top.linkTo(pet.bottom)
                     start.linkTo(pet.start)
+                    bottom.linkTo(parent.bottom)
                 })
     }
 }
