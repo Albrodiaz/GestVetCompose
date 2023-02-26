@@ -1,6 +1,5 @@
-package com.albrodiaz.gestvet.ui.theme.views.features.mainscreen
+package com.albrodiaz.gestvet.ui.views.features.mainscreen
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -8,21 +7,18 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.albrodiaz.gestvet.ui.theme.views.models.Routes
-import com.albrodiaz.gestvet.ui.views.features.mainscreen.NavController
+import com.albrodiaz.gestvet.ui.views.models.Routes
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavController) {
     Scaffold(
         bottomBar = { MainBottomNav(navController) }
     ) {
-        NavController(navController)
+        NavController(navController, it.calculateBottomPadding())
     }
 }
 

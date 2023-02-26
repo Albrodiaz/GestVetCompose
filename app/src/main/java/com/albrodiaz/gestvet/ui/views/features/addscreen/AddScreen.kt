@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.theme.views.features.addscreen
+package com.albrodiaz.gestvet.ui.views.features.addscreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
