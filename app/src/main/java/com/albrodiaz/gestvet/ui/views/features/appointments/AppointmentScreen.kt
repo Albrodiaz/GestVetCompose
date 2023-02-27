@@ -31,6 +31,7 @@ import com.albrodiaz.gestvet.ui.theme.md_theme_light_error
 import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
 import kotlin.math.roundToInt
 
+//TODO optimizar animación del botón de borrar
 @Composable
 fun AppointmentScreen() {
     LazyColumn(
@@ -46,7 +47,7 @@ fun AppointmentScreen() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ItemAppointment(appointment: AppointmentModel) {
-    val swipeableState = rememberSwipeableState(initialValue = 0) //0 colapsado, 1 expandido
+    val swipeableState = rememberSwipeableState(initialValue = 0)
     val width = 75.dp
     val sizePx = with(LocalDensity.current) { width.toPx() }
     val anchors = mapOf(0f to 0, -sizePx to 1)
