@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.R
 
+//TODO: Cambiar el AddScreen por FullScreenDialog y abrir desde AppointmentScreen
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddScreen() {
