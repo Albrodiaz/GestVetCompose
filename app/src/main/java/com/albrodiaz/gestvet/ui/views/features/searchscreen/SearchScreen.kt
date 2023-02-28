@@ -34,13 +34,12 @@ import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SearchScreen() {
+    var userText: String by remember { mutableStateOf("") }
     /*
     TODO:
        crear switch para alternar entre citas y clientes o crear enum con tipo de item
     */
-
     ConstraintLayout(Modifier.fillMaxSize()) {
-        var userText: String by remember { mutableStateOf("") }
         val filteredList = appointments.searchBy(userText)
         val (searchBar, content) = createRefs()
 
@@ -63,7 +62,7 @@ fun SearchScreen() {
                     end.linkTo(parent.end)
                     start.linkTo(parent.start)
                 }) {
-            items(filteredList) {
+            items(filteredList, key = { it.id }) {
                 ItemSearchScreen(appointment = it)
             }
         }
@@ -141,12 +140,3 @@ fun ItemSearchScreen(appointment: AppointmentModel) {
         shadowElevation = 4.dp
     )
 }
-
-/*
-private fun searchFilter(filterText: String): List<AppointmentModel> {
-    val filteredList = appointments.filter {
-        it.owner.lowercase().contains(filterText.lowercase()) ||
-                it.pet.lowercase().contains(filterText.lowercase())
-    }
-    return filteredList
-}*/

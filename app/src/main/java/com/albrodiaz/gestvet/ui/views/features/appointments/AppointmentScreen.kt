@@ -55,11 +55,9 @@ fun ItemAppointment(appointment: AppointmentModel) {
 
     ConstraintLayout(Modifier.fillMaxWidth()) {
         val (container, button) = createRefs()
-        ElevatedCard(
+        AppointmentCard(
             modifier = Modifier
                 .constrainAs(container) {}
-                .fillMaxWidth()
-                .height(135.dp)
                 .zIndex(1f)
                 .swipeable(
                     swipeableState,
@@ -68,16 +66,11 @@ fun ItemAppointment(appointment: AppointmentModel) {
                     orientation = Orientation.Horizontal,
                 )
                 .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
-                .padding(6.dp),
-            elevation = CardDefaults.cardElevation(3.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            )
         ) {
-            AppointmentContainer(appointment)
+            AppointmentContainer(appointment = appointment)
         }
         DeleteButton(
+            swipeableState = swipeableState,
             modifier = Modifier
                 .height(40.dp)
                 .padding(end = 16.dp)
@@ -86,8 +79,7 @@ fun ItemAppointment(appointment: AppointmentModel) {
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
-                },
-            swipeableState = swipeableState
+                }
         )
     }
 }
@@ -95,8 +87,7 @@ fun ItemAppointment(appointment: AppointmentModel) {
 @Composable
 fun AppointmentContainer(appointment: AppointmentModel) {
     ConstraintLayout(
-        Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         val (date, hour, divider, owner, pet, subject) = createRefs()
 
@@ -167,19 +158,33 @@ fun AppointmentContainer(appointment: AppointmentModel) {
 fun DeleteButton(modifier: Modifier, swipeableState: SwipeableState<Int>? = null) {
     Box(modifier = modifier.fillMaxHeight()) {
         AnimatedVisibility(
-            visible = when {
-                swipeableState?.targetValue == 1 && swipeableState.progress.fraction > 0.5 -> true
-                else -> false
-            },
+            visible = swipeableState?.targetValue == 1 && swipeableState.progress.fraction > 0.5,
             enter = fadeIn(animationSpec = tween(1000)),
             exit = fadeOut(animationSpec = tween(1000))
         ) {
             FloatingActionButton(
-                onClick = { /*Borrar item*/ },
+                onClick = { /*TODO: Borrar item*/ },
                 containerColor = md_theme_light_error
             ) {
                 Icon(Icons.Filled.Delete, contentDescription = "", tint = Color.White)
             }
         }
+    }
+}
+
+@Composable
+fun AppointmentCard(modifier: Modifier, content: @Composable () -> Unit) {
+    ElevatedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(135.dp)
+            .padding(6.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+            contentColor = Color.Black
+        )
+    ) {
+        content()
     }
 }
