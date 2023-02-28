@@ -7,5 +7,5 @@ data class AppointmentModel(
     val hour: String,
     val subject: String,
     val details: String,
-    val id: Int
+    val id: Long
 )

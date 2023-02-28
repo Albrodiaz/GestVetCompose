@@ -9,7 +9,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
@@ -26,7 +26,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.albrodiaz.gestvet.core.searchBy
+import com.albrodiaz.gestvet.core.extensions.searchBy
 import com.albrodiaz.gestvet.data.AppointmentProvider.Companion.appointments
 import com.albrodiaz.gestvet.ui.theme.*
 import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
@@ -36,7 +36,6 @@ import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
 fun SearchScreen() {
     /*
     TODO:
-       alinear leadingcontent con el texto y buscar mejor forma de filtrar
        crear switch para alternar entre citas y clientes o crear enum con tipo de item
     */
 
@@ -137,8 +136,8 @@ fun ItemSearchScreen(appointment: AppointmentModel) {
     ListItem(
         headlineText = { Text(text = appointment.owner) },
         supportingText = { Text(text = appointment.pet) },
-        overlineText = { Text(text = appointment.date) },
-        leadingContent = { Icon(Icons.Filled.Person, contentDescription = "") },
+        trailingContent = { Text(text = appointment.date) },
+        leadingContent = { Icon(Icons.Filled.DateRange, contentDescription = "") },
         shadowElevation = 4.dp
     )
 }

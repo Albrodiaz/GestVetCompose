@@ -1,6 +1,7 @@
 package com.albrodiaz.gestvet.ui.views.features.appointments
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -31,7 +32,6 @@ import com.albrodiaz.gestvet.ui.theme.md_theme_light_error
 import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
 import kotlin.math.roundToInt
 
-//TODO optimizar animación del botón de borrar
 @Composable
 fun AppointmentScreen() {
     LazyColumn(
@@ -48,6 +48,7 @@ fun AppointmentScreen() {
 @Composable
 fun ItemAppointment(appointment: AppointmentModel) {
     val swipeableState = rememberSwipeableState(initialValue = 0)
+    val buttonZIndex = animateFloatAsState(targetValue = swipeableState.progress.fraction)
     val width = 75.dp
     val sizePx = with(LocalDensity.current) { width.toPx() }
     val anchors = mapOf(0f to 0, -sizePx to 1)
@@ -59,7 +60,7 @@ fun ItemAppointment(appointment: AppointmentModel) {
                 .constrainAs(container) {}
                 .fillMaxWidth()
                 .height(135.dp)
-                .zIndex(if (swipeableState.targetValue == 0) 1f else 0f)
+                .zIndex(1f)
                 .swipeable(
                     swipeableState,
                     anchors = anchors,
@@ -67,7 +68,6 @@ fun ItemAppointment(appointment: AppointmentModel) {
                     orientation = Orientation.Horizontal,
                 )
                 .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
-
                 .padding(6.dp),
             elevation = CardDefaults.cardElevation(3.dp),
             colors = CardDefaults.cardColors(
@@ -79,6 +79,9 @@ fun ItemAppointment(appointment: AppointmentModel) {
         }
         DeleteButton(
             modifier = Modifier
+                .height(40.dp)
+                .padding(end = 16.dp)
+                .zIndex(buttonZIndex.value)
                 .constrainAs(button) {
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
@@ -161,16 +164,15 @@ fun AppointmentContainer(appointment: AppointmentModel) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DeleteButton(modifier: Modifier, swipeableState: SwipeableState<Int>) {
-    Box(
-        modifier = modifier
-            .height(40.dp)
-            .padding(end = 16.dp)
-    ) {
+fun DeleteButton(modifier: Modifier, swipeableState: SwipeableState<Int>? = null) {
+    Box(modifier = modifier.fillMaxHeight()) {
         AnimatedVisibility(
-            visible = swipeableState.targetValue == 1 && swipeableState.progress.fraction > 0.6,
-            enter = fadeIn(animationSpec = tween(800)),
-            exit = fadeOut(animationSpec = tween(300))
+            visible = when {
+                swipeableState?.targetValue == 1 && swipeableState.progress.fraction > 0.5 -> true
+                else -> false
+            },
+            enter = fadeIn(animationSpec = tween(1000)),
+            exit = fadeOut(animationSpec = tween(1000))
         ) {
             FloatingActionButton(
                 onClick = { /*Borrar item*/ },
@@ -180,5 +182,4 @@ fun DeleteButton(modifier: Modifier, swipeableState: SwipeableState<Int>) {
             }
         }
     }
-
 }

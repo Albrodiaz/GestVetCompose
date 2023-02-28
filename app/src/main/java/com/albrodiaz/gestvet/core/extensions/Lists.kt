@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.core
+package com.albrodiaz.gestvet.core.extensions
 
 import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
 
