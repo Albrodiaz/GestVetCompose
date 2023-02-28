@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "795100250854",
+    "project_id": "gestvet-2b39f",
+    "storage_bucket": "gestvet-2b39f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795100250854:android:ae203f148313cdb5b8b127",
+        "android_client_info": {
+          "package_name": "com.albrodiaz.gestvet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "795100250854-05rscv0r6njcph5jk6v566h77pvd8qa6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNpy0mzpcjPC3d2buYlq4gcowQtiRhL-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "795100250854-05rscv0r6njcph5jk6v566h77pvd8qa6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
