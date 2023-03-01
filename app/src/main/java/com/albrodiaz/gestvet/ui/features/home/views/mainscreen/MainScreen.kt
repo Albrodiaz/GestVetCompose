@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -43,15 +42,6 @@ fun MainBottomNav(navController: NavController) {
                 navController.navigate(Routes.Appointment.route)
                 selectedItem = 0
 
-            }
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Filled.Add, contentDescription = "") },
-            label = { Text("Añadir") },
-            selected = selectedItem == 1,
-            onClick = {
-                navController.navigate(Routes.Add.route)
-                selectedItem = 1
             }
         )
         NavigationBarItem(
