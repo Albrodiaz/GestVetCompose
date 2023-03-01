@@ -1,6 +1,6 @@
 package com.albrodiaz.gestvet.data.network
 
-import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
+import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

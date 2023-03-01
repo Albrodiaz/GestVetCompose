@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.views.features.mainscreen
+package com.albrodiaz.gestvet.ui.features.home.views.mainscreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.albrodiaz.gestvet.ui.views.models.Routes
+import com.albrodiaz.gestvet.ui.features.home.models.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

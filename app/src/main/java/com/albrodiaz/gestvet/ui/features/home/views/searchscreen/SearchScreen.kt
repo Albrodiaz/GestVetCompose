@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.views.features.searchscreen
+package com.albrodiaz.gestvet.ui.features.home.views.searchscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -29,7 +29,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.core.extensions.searchBy
 import com.albrodiaz.gestvet.data.AppointmentProvider.Companion.appointments
 import com.albrodiaz.gestvet.ui.theme.*
-import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
+import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

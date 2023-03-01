@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.views.features.clients
+package com.albrodiaz.gestvet.ui.features.home.views.clients
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.views.features.addscreen
+package com.albrodiaz.gestvet.ui.features.home.views.addscreen
 
 import android.content.Context
 import android.widget.Toast

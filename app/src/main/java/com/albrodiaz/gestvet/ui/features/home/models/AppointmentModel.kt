@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.views.models
+package com.albrodiaz.gestvet.ui.features.home.models
 
 data class AppointmentModel(
     val owner: String,

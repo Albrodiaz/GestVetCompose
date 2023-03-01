@@ -1,6 +1,6 @@
 package com.albrodiaz.gestvet.core.extensions
 
-import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
+import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 
 fun List<AppointmentModel>.searchBy(text: String): List<AppointmentModel> {
     val filteredList = this.filter {

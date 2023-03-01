@@ -1,6 +1,6 @@
 package com.albrodiaz.gestvet.data
 
-import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
+import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 
 class AppointmentProvider {
 

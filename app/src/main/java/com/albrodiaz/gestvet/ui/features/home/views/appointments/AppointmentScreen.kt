@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.views.features.appointments
+package com.albrodiaz.gestvet.ui.features.home.views.appointments
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -29,7 +29,7 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.data.AppointmentProvider.Companion.appointments
 import com.albrodiaz.gestvet.ui.theme.md_theme_light_error
-import com.albrodiaz.gestvet.ui.views.models.AppointmentModel
+import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import kotlin.math.roundToInt
 
 @Composable

@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.views.models
+package com.albrodiaz.gestvet.ui.features.home.models
 
 sealed class Routes(val route: String) {
     object Appointment: Routes("appointmentscreen")

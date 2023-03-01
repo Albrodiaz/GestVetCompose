@@ -1,15 +1,15 @@
-package com.albrodiaz.gestvet.ui.views.features.mainscreen
+package com.albrodiaz.gestvet.ui.features.home.views.mainscreen
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.albrodiaz.gestvet.ui.views.features.addscreen.AddScreen
-import com.albrodiaz.gestvet.ui.views.features.appointments.AppointmentScreen
-import com.albrodiaz.gestvet.ui.views.features.clients.ClientScreen
-import com.albrodiaz.gestvet.ui.views.features.searchscreen.SearchScreen
-import com.albrodiaz.gestvet.ui.views.models.Routes
+import com.albrodiaz.gestvet.ui.features.home.views.addscreen.AddScreen
+import com.albrodiaz.gestvet.ui.features.home.views.appointments.AppointmentScreen
+import com.albrodiaz.gestvet.ui.features.home.views.clients.ClientScreen
+import com.albrodiaz.gestvet.ui.features.home.views.searchscreen.SearchScreen
+import com.albrodiaz.gestvet.ui.features.home.models.Routes
 
 @Composable
 fun NavController(navigationController: NavController) {

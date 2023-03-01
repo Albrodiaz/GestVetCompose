@@ -8,7 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.albrodiaz.gestvet.ui.views.features.mainscreen.MainScreen
+import com.albrodiaz.gestvet.ui.features.home.views.mainscreen.MainScreen
 import com.albrodiaz.gestvet.ui.theme.GestVetTheme
 import dagger.hilt.android.AndroidEntryPoint
 
