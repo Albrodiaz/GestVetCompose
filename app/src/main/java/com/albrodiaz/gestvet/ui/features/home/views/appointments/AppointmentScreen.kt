@@ -2,7 +2,6 @@ package com.albrodiaz.gestvet.ui.features.home.views.appointments
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,17 +9,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.SwipeableState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
@@ -31,13 +24,23 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.data.AppointmentProvider.Companion.appointments
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_error
 import kotlin.math.roundToInt
 
 @Composable
 fun AppointmentScreen() {
-    val lazyListState = rememberLazyListState()
+    val appointments = appointments //Borrar al crear viewmodel
+    var showDialog: Boolean by remember { mutableStateOf(false) }
 
+    if (showDialog) {
+        AddAppointmentDialog(showDialog = { showDialog = !showDialog })
+    } else {
+        AppointmentScreenContent(appointments) { showDialog = true }
+    }
+}
+
+@Composable
+fun AppointmentScreenContent(appointments: List<AppointmentModel>, showDialog: () -> Unit) {
+    val lazyListState = rememberLazyListState()
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (listItem, addButton) = createRefs()
         LazyColumn(
@@ -53,10 +56,9 @@ fun AppointmentScreen() {
         AnimatedAddFab(modifier = Modifier.constrainAs(addButton) {
             start.linkTo(parent.start)
             bottom.linkTo(parent.bottom)
-        }, lazyListState.isScrolled)
+        }, lazyListState.isScrolled) { showDialog() }
     }
 }
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -81,7 +83,7 @@ fun ItemAppointment(appointment: AppointmentModel) {
                 )
                 .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
         ) {
-            AppointmentContainer(appointment = appointment)
+            AppointmentLayout(appointment = appointment)
         }
         DeleteButton(
             swipeableState = swipeableState,
@@ -99,7 +101,7 @@ fun ItemAppointment(appointment: AppointmentModel) {
 }
 
 @Composable
-fun AppointmentContainer(appointment: AppointmentModel) {
+fun AppointmentLayout(appointment: AppointmentModel) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -164,64 +166,5 @@ fun AppointmentContainer(appointment: AppointmentModel) {
                     start.linkTo(pet.start)
                     bottom.linkTo(parent.bottom)
                 })
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun DeleteButton(modifier: Modifier, swipeableState: SwipeableState<Int>? = null) {
-    Box(modifier = modifier.fillMaxHeight()) {
-        AnimatedVisibility(
-            visible = swipeableState?.targetValue == 1 && swipeableState.progress.fraction > 0.5,
-            enter = fadeIn(animationSpec = tween(1000)),
-            exit = fadeOut(animationSpec = tween(1000))
-        ) {
-            FloatingActionButton(
-                onClick = { /*TODO: Borrar item*/ },
-                containerColor = md_theme_light_error
-            ) {
-                Icon(Icons.Filled.Delete, contentDescription = "", tint = Color.White)
-            }
-        }
-    }
-}
-
-@Composable
-fun AppointmentCard(modifier: Modifier, content: @Composable () -> Unit) {
-    ElevatedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(135.dp)
-            .padding(6.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-            contentColor = Color.Black
-        )
-    ) {
-        content()
-    }
-}
-
-@Composable
-fun AnimatedAddFab(modifier: Modifier, visible: Boolean) {
-    val density = LocalDensity.current
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .padding(14.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.End
-    ) {
-        AnimatedVisibility(
-            visible = visible,
-            enter = slideInVertically { with(density) { 60.dp.roundToPx() } },
-            exit = slideOutVertically { with(density) { 60.dp.roundToPx() } }
-        ) {
-            FloatingActionButton(modifier = modifier.size(45.dp), onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "")
-            }
-        }
     }
 }
