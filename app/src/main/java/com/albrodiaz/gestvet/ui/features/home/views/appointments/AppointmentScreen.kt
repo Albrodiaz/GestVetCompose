@@ -28,7 +28,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun AppointmentScreen() {
-    val appointments = appointments //Borrar al crear viewmodel
+    val appointments = appointments //TODO: Borrar al crear viewmodel
     var showDialog: Boolean by remember { mutableStateOf(false) }
 
     if (showDialog) {
