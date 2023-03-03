@@ -2,6 +2,8 @@ package com.albrodiaz.gestvet.ui.features.home.views.appointments
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -40,6 +42,7 @@ fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppointmentScreenContent(appointments: List<AppointmentModel>, showDialog: () -> Unit) {
     val lazyListState = rememberLazyListState()
@@ -51,8 +54,10 @@ fun AppointmentScreenContent(appointments: List<AppointmentModel>, showDialog: (
                 .constrainAs(listItem, constrainBlock = {}),
             state = lazyListState
         ) {
-            items(appointments) { appointment ->
-                ItemAppointment(appointment)
+            items(items = appointments, key = { it.id ?: -1 }) { appointment ->
+                Box(Modifier.animateItemPlacement(animationSpec = tween(1500))) {
+                    ItemAppointment(appointment)
+                }
             }
         }
         AnimatedAddFab(modifier = Modifier.constrainAs(addButton) {
