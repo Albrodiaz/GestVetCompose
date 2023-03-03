@@ -1,11 +1,11 @@
 package com.albrodiaz.gestvet.ui.features.home.models
 
 data class AppointmentModel(
-    val owner: String,
-    val pet: String,
-    val date: String,
-    val hour: String,
-    val subject: String,
-    val details: String,
-    val id: Long
+    val owner: String? = null,
+    val pet: String? = null,
+    val date: String? = null,
+    val hour: String? = null,
+    val subject: String? = null,
+    val details: String? = null,
+    val id: Long? = null
 )

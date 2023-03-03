@@ -13,10 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.albrodiaz.gestvet.ui.features.home.models.Routes
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navController: NavController) {
+fun MainScreen(navController: NavController, appointmentViewModel: AppointmentViewModel) {
     Scaffold(
         bottomBar = { MainBottomNav(navController) }
     ) {
@@ -25,7 +26,7 @@ fun MainScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(bottom = it.calculateBottomPadding())
         ) {
-            NavController(navigationController = navController)
+            NavController(navigationController = navController, appointmentViewModel)
         }
     }
 }

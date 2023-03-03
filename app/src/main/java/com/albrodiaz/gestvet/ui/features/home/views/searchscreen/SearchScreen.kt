@@ -27,7 +27,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.core.extensions.searchBy
-import com.albrodiaz.gestvet.data.AppointmentProvider.Companion.appointments
 import com.albrodiaz.gestvet.ui.theme.*
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 
@@ -40,7 +39,7 @@ fun SearchScreen() {
        crear switch para alternar entre citas y clientes o crear enum con tipo de item
     */
     ConstraintLayout(Modifier.fillMaxSize()) {
-        val filteredList = appointments.searchBy(userText)
+        val filteredList = emptyList<AppointmentModel>().searchBy(userText)
         val (searchBar, content) = createRefs()
 
         CustomSearchTextField(
@@ -62,7 +61,7 @@ fun SearchScreen() {
                     end.linkTo(parent.end)
                     start.linkTo(parent.start)
                 }) {
-            items(filteredList, key = { it.id }) {
+            items(filteredList, key = { it.id ?: -1 }) {
                 ItemSearchScreen(appointment = it)
             }
         }
@@ -133,9 +132,9 @@ fun CustomSearchTextField(modifier: Modifier, valueChange: (String) -> Unit) {
 @Composable
 fun ItemSearchScreen(appointment: AppointmentModel) {
     ListItem(
-        headlineText = { Text(text = appointment.owner) },
-        supportingText = { Text(text = appointment.pet) },
-        trailingContent = { Text(text = appointment.date) },
+        headlineText = { Text(text = appointment.owner ?: "") },
+        supportingText = { Text(text = appointment.pet ?: "") },
+        trailingContent = { Text(text = appointment.date ?: "") },
         leadingContent = { Icon(Icons.Filled.DateRange, contentDescription = "") },
         shadowElevation = 4.dp
     )

@@ -22,13 +22,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.core.extensions.isScrolled
-import com.albrodiaz.gestvet.data.AppointmentProvider.Companion.appointments
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 import kotlin.math.roundToInt
 
 @Composable
-fun AppointmentScreen() {
-    val appointments = appointments //TODO: Borrar al crear viewmodel
+fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
+
+    val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
+
     var showDialog: Boolean by remember { mutableStateOf(false) }
 
     if (showDialog) {
@@ -107,7 +109,7 @@ fun AppointmentLayout(appointment: AppointmentModel) {
     ) {
         val (date, hour, divider, owner, pet, subject) = createRefs()
 
-        Text(text = appointment.date,
+        Text(text = appointment.date ?: "",
             fontWeight = FontWeight.Bold,
             fontSize = 12.sp,
             modifier = Modifier
@@ -117,7 +119,7 @@ fun AppointmentLayout(appointment: AppointmentModel) {
                     end.linkTo(divider.start)
                     start.linkTo(parent.start)
                 })
-        Text(text = appointment.hour,
+        Text(text = appointment.hour ?: "",
             fontWeight = FontWeight.Bold,
             fontSize = 12.sp,
             modifier = Modifier
@@ -138,7 +140,7 @@ fun AppointmentLayout(appointment: AppointmentModel) {
                 })
         Text(
             fontSize = 15.sp,
-            text = appointment.owner,
+            text = appointment.owner ?: "",
             modifier = Modifier
                 .padding(horizontal = 12.dp)
                 .constrainAs(owner) {
@@ -147,7 +149,7 @@ fun AppointmentLayout(appointment: AppointmentModel) {
                     top.linkTo(parent.top)
                 })
         Text(
-            text = appointment.pet,
+            text = appointment.pet ?: "",
             fontSize = 14.sp,
             modifier = Modifier
                 .padding(horizontal = 12.dp)
@@ -157,7 +159,7 @@ fun AppointmentLayout(appointment: AppointmentModel) {
                     bottom.linkTo(subject.top)
                 })
         Text(
-            text = appointment.subject,
+            text = appointment.subject ?: "",
             fontSize = 14.sp,
             modifier = Modifier
                 .padding(horizontal = 12.dp)
