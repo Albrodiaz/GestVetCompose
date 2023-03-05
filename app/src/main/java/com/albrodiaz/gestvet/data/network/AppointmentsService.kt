@@ -14,17 +14,19 @@ class AppointmentsService @Inject constructor(private val firebase: FirebaseClie
         const val APPOINTMENT_COLLECTION = "appointments"
     }
 
-    val appointments: Flow<List<AppointmentModel>> get() = callbackFlow {
-        firebase.dataBase.collection(APPOINTMENT_COLLECTION).addSnapshotListener { value, error ->
-            value?.let { values ->
-                trySend(values.map { it.toObject(AppointmentModel::class.java) })
-            }
-            error?.let {
-                Log.e("AppointmentService", "Error al cargar los datos: $error")
-            }
+    val appointments: Flow<List<AppointmentModel>>
+        get() = callbackFlow {
+            firebase.dataBase.collection(APPOINTMENT_COLLECTION)
+                .addSnapshotListener { value, error ->
+                    value?.let { values ->
+                        trySend(values.map { it.toObject(AppointmentModel::class.java) })
+                    }
+                    error?.let {
+                        Log.e("AppointmentService", "Error al cargar los datos: $error")
+                    }
+                }
+            awaitClose()
         }
-        awaitClose()
-    }
 
     suspend fun addAppointment(appointmentModel: AppointmentModel) {
         val appointment = hashMapOf(

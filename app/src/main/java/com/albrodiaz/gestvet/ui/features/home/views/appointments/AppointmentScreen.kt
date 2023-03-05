@@ -15,6 +15,7 @@ import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -32,13 +33,11 @@ import kotlin.math.roundToInt
 fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
 
     val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
+    val showDialog by appointmentViewModel.showDialog.observeAsState(initial = false)
 
-    var showDialog: Boolean by remember { mutableStateOf(false) }
-
-    if (showDialog) {
-        AddAppointmentDialog(showDialog = { showDialog = !showDialog })
-    } else {
-        AppointmentScreenContent(appointments) { showDialog = true }
+    when {
+        showDialog -> AddAppointmentDialog(appointmentViewModel)
+        else -> AppointmentScreenContent(appointments) { appointmentViewModel.enableDialog(true) }
     }
 }
 

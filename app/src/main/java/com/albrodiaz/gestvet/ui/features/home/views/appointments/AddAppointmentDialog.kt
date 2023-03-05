@@ -6,16 +6,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,11 +24,14 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
+import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
+
 //TODO: Mejorar composable
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AddAppointmentDialog(showDialog: () -> Unit) {
+fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var ownerText: String by remember { mutableStateOf("") }
     var petText: String by remember { mutableStateOf("") }
@@ -40,7 +41,7 @@ fun AddAppointmentDialog(showDialog: () -> Unit) {
     var detailText: String by remember { mutableStateOf("") }
 
     Dialog(
-        onDismissRequest = {  },
+        onDismissRequest = { },
         properties = DialogProperties(
             usePlatformDefaultWidth = false
         )
@@ -48,10 +49,13 @@ fun AddAppointmentDialog(showDialog: () -> Unit) {
         Surface(Modifier.fillMaxSize()) {
             ConstraintLayout(Modifier.fillMaxSize()) {
                 val (title, owner, pet, date, hour, subject, detail, saveButton, close) = createRefs()
-                IconButton(onClick = { showDialog() }, modifier = Modifier.constrainAs(close) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                }, ) {
+                IconButton(
+                    onClick = { appointmentViewModel.enableDialog(enabled = false) },
+                    modifier = Modifier.constrainAs(close) {
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                    },
+                ) {
                     Icon(imageVector = Icons.Filled.Close, contentDescription = "")
                 }
                 AddScreenTittle(modifier = Modifier
@@ -134,7 +138,10 @@ fun AddAppointmentDialog(showDialog: () -> Unit) {
                     keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
                 )
                 Button(
-                    onClick = { /*TODO: Borrado de item*/ },
+                    onClick = {
+                        /*TODO: guardar cita*/
+                        appointmentViewModel.enableDialog(enabled = false)
+                    },
                     modifier = Modifier
                         .padding(vertical = 12.dp)
                         .constrainAs(saveButton) {
@@ -149,6 +156,7 @@ fun AddAppointmentDialog(showDialog: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormTextField(
     text: String,
@@ -170,7 +178,13 @@ fun FormTextField(
         maxLines = maxLines,
         singleLine = singleLine,
         keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions
+        keyboardActions = keyboardActions,
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = md_theme_light_primary,
+            cursorColor = md_theme_light_primary,
+            focusedLabelColor = md_theme_light_primary,
+            containerColor = Color.Transparent
+        )
     )
 }
 
