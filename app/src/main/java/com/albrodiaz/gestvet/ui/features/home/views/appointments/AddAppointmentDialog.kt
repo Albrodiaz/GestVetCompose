@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,12 +34,13 @@ import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 @Composable
 fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var ownerText: String by remember { mutableStateOf("") }
-    var petText: String by remember { mutableStateOf("") }
-    var dateText: String by remember { mutableStateOf("") }
-    var hourText: String by remember { mutableStateOf("") }
-    var subjectText: String by remember { mutableStateOf("") }
-    var detailText: String by remember { mutableStateOf("") }
+    val isButtonEnabled by appointmentViewModel.isButtonEnabled.observeAsState(false)
+    val ownerText by appointmentViewModel.ownerText.observeAsState("")
+    val petText by appointmentViewModel.petText.observeAsState("")
+    val dateText by appointmentViewModel.dateText.observeAsState("")
+    val hourText by appointmentViewModel.hourText.observeAsState("")
+    val subjectText by appointmentViewModel.subjectText.observeAsState("")
+    val detailText by appointmentViewModel.detailsText.observeAsState("")
 
     Dialog(
         onDismissRequest = { },
@@ -72,7 +74,7 @@ fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                    textChange = { ownerText = it },
+                    textChange = { appointmentViewModel.setOwner(it) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
                 )
                 FormTextField(
@@ -83,7 +85,7 @@ fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                    textChange = { petText = it },
+                    textChange = { appointmentViewModel.setPet(it) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
                 )
                 FormTextField(
@@ -96,7 +98,7 @@ fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
                             start.linkTo(parent.start)
                             end.linkTo(hour.start)
                         },
-                    textChange = { dateText = it },
+                    textChange = { appointmentViewModel.setDate(it) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
                 )
                 FormTextField(
@@ -109,7 +111,7 @@ fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
                             start.linkTo(date.end)
                             end.linkTo(parent.end)
                         },
-                    textChange = { hourText = it },
+                    textChange = { appointmentViewModel.setHour(it) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
                 )
                 FormTextField(
@@ -120,7 +122,7 @@ fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                    textChange = { subjectText = it },
+                    textChange = { appointmentViewModel.setSubject(it) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
                 )
                 FormTextField(
@@ -131,7 +133,7 @@ fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                    textChange = { detailText = it },
+                    textChange = { appointmentViewModel.setDetails(it) },
                     maxLines = 15,
                     singleLine = false,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -139,9 +141,10 @@ fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
                 )
                 Button(
                     onClick = {
-                        /*TODO: guardar cita*/
+                        appointmentViewModel.addAppointment()
                         appointmentViewModel.enableDialog(enabled = false)
                     },
+                    enabled = isButtonEnabled,
                     modifier = Modifier
                         .padding(vertical = 12.dp)
                         .constrainAs(saveButton) {

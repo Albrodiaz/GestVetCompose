@@ -29,17 +29,18 @@ class AppointmentsService @Inject constructor(private val firebase: FirebaseClie
         }
 
     suspend fun addAppointment(appointmentModel: AppointmentModel) {
-        val appointment = hashMapOf(
-            "owner" to appointmentModel.owner,
-            "pet" to appointmentModel.pet,
-            "date" to appointmentModel.date,
-            "hour" to appointmentModel.hour,
-            "subject" to appointmentModel.subject,
-            "details" to appointmentModel.details,
-            "id" to appointmentModel.id
-        )
-
-        firebase.dataBase.collection(APPOINTMENT_COLLECTION).add(appointment).await()
+        //firebase.dataBase.collection(APPOINTMENT_COLLECTION).add(appointment)
+        firebase.dataBase.collection(APPOINTMENT_COLLECTION).document("${appointmentModel.id}").set(
+            hashMapOf(
+                "owner" to appointmentModel.owner,
+                "pet" to appointmentModel.pet,
+                "date" to appointmentModel.date,
+                "hour" to appointmentModel.hour,
+                "subject" to appointmentModel.subject,
+                "details" to appointmentModel.details,
+                "id" to appointmentModel.id
+            )
+        ).await()
     }
 
 }
