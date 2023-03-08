@@ -37,13 +37,20 @@ fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
 
     when {
         showDialog -> AddAppointmentDialog(appointmentViewModel)
-        else -> AppointmentScreenContent(appointments) { appointmentViewModel.showDialog(true) }
+        else -> AppointmentScreenContent(
+            appointments,
+            appointmentViewModel
+        ) { appointmentViewModel.showDialog(true) }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AppointmentScreenContent(appointments: List<AppointmentModel>, showDialog: () -> Unit) {
+fun AppointmentScreenContent(
+    appointments: List<AppointmentModel>,
+    appointmentViewModel: AppointmentViewModel,
+    showDialog: () -> Unit
+) {
     val lazyListState = rememberLazyListState()
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (listItem, addButton) = createRefs()
@@ -55,7 +62,7 @@ fun AppointmentScreenContent(appointments: List<AppointmentModel>, showDialog: (
         ) {
             items(items = appointments, key = { it.id ?: -1 }) { appointment ->
                 Box(Modifier.animateItemPlacement(animationSpec = tween(500))) {
-                    ItemAppointment(appointment)
+                    ItemAppointment(appointment) { appointmentViewModel.deleteAppointment(appointment) }
                 }
             }
         }
@@ -68,7 +75,7 @@ fun AppointmentScreenContent(appointments: List<AppointmentModel>, showDialog: (
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ItemAppointment(appointment: AppointmentModel) {
+fun ItemAppointment(appointment: AppointmentModel, onDeleteAppointment: () -> Unit) {
     val swipeableState = rememberSwipeableState(initialValue = 0)
     val buttonZIndex = animateFloatAsState(targetValue = swipeableState.progress.fraction)
     val width = 75.dp
@@ -101,7 +108,8 @@ fun ItemAppointment(appointment: AppointmentModel) {
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
-                }
+                },
+            onDeleteAppointment = { onDeleteAppointment() }
         )
     }
 }

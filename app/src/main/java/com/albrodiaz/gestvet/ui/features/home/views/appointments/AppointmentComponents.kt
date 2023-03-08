@@ -71,9 +71,14 @@ fun AddScreenTittle(modifier: Modifier) {
         fontSize = 32.sp
     )
 }
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DeleteButton(modifier: Modifier, swipeableState: SwipeableState<Int>? = null) {
+fun DeleteButton(
+    modifier: Modifier,
+    onDeleteAppointment: () -> Unit,
+    swipeableState: SwipeableState<Int>? = null
+) {
     Box(modifier = modifier.fillMaxHeight()) {
         AnimatedVisibility(
             visible = swipeableState?.targetValue == 1 && swipeableState.progress.fraction > 0.5,
@@ -81,7 +86,7 @@ fun DeleteButton(modifier: Modifier, swipeableState: SwipeableState<Int>? = null
             exit = fadeOut(animationSpec = tween(1000))
         ) {
             FloatingActionButton(
-                onClick = { /*TODO: Borrar item*/ },
+                onClick = { onDeleteAppointment() },
                 containerColor = md_theme_light_error
             ) {
                 Icon(Icons.Filled.Delete, contentDescription = "", tint = Color.White)
@@ -148,7 +153,8 @@ fun AddDialog(
             Surface(
                 Modifier
                     .fillMaxSize()
-                    .background(md_theme_light_surface)) {
+                    .background(md_theme_light_surface)
+            ) {
                 content()
             }
         }

@@ -43,4 +43,12 @@ class AppointmentsService @Inject constructor(private val firebase: FirebaseClie
         ).await()
     }
 
+    suspend fun deleteAppointment(appointmentModel: AppointmentModel) {
+        firebase.dataBase.collection(APPOINTMENT_COLLECTION).document("${appointmentModel.id}")
+            .delete()
+            .addOnSuccessListener { Log.i("alberto", "Item ${appointmentModel.id} borrado") }
+            .addOnCanceledListener { Log.i("alberto", "Fallo al borrar el item ${appointmentModel.id}") }
+            .await()
+    }
+
 }

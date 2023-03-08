@@ -8,6 +8,7 @@ import com.albrodiaz.gestvet.core.extensions.combine
 import com.albrodiaz.gestvet.core.extensions.dateToMillis
 import com.albrodiaz.gestvet.core.extensions.hourToMillis
 import com.albrodiaz.gestvet.domain.AddAppointmentUseCase
+import com.albrodiaz.gestvet.domain.DeleteAppointmentUseCase
 import com.albrodiaz.gestvet.domain.GetAppointmentsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AppointmentViewModel @Inject constructor(
     getAppointmentsUseCase: GetAppointmentsUseCase,
-    private val addAppointmentUseCase: AddAppointmentUseCase
+    private val addAppointmentUseCase: AddAppointmentUseCase,
+    private val deleteAppointmentUseCase: DeleteAppointmentUseCase
 ) :
     ViewModel() {
 
@@ -90,6 +92,12 @@ class AppointmentViewModel @Inject constructor(
                     _dateText.value!!.dateToMillis() + _hourText.value!!.hourToMillis() //TODO: Usar otro id y usar objetos Date para enviar a Firebase
                 )
             )
+        }
+    }
+
+    fun deleteAppointment(appointmentModel: AppointmentModel) {
+        viewModelScope.launch {
+            deleteAppointmentUseCase.invoke(appointmentModel)
         }
     }
 }
