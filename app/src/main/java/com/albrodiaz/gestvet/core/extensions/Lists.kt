@@ -12,4 +12,4 @@ fun List<AppointmentModel>.searchBy(text: String): List<AppointmentModel> {
 }
 
 val LazyListState.isScrolled: Boolean
-    get() = firstVisibleItemIndex < 1 || firstVisibleItemScrollOffset < 1
+    get() = firstVisibleItemScrollOffset == 0

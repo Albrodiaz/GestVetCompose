@@ -39,6 +39,12 @@ class AppointmentViewModel @Inject constructor(
         _visibleDeleteDialog.value = enabled
     }
 
+    private val _selectedAppointment: MutableLiveData<AppointmentModel> = MutableLiveData(null)
+    val selectedAppointment: LiveData<AppointmentModel> get() = _selectedAppointment
+    fun setSelectedAppointment(appointment: AppointmentModel) {
+        _selectedAppointment.value = appointment
+    }
+
     //Form control
     private var _ownerText = MutableLiveData("")
     val ownerText: LiveData<String> get() = _ownerText

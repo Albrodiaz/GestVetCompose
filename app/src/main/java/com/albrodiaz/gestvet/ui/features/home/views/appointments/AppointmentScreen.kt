@@ -38,12 +38,19 @@ fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
     val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
     val showDialog by appointmentViewModel.visibleDialog.observeAsState(initial = false)
     val showDeleteDialog by appointmentViewModel.visibleDeleteDialog.observeAsState(false)
+    val selectedAppointment by appointmentViewModel.selectedAppointment.observeAsState()
     val lazyListState = rememberLazyListState()
 
     AddAppointmentDialog(show = showDialog, appointmentViewModel = appointmentViewModel)
-    ConfirmDeleteDialog(show = showDeleteDialog, onDismiss = { appointmentViewModel.showDeleteDialog(false) }) {
-        //TODO: Borrar la cita al hacer click en OK
-        appointmentViewModel.showDeleteDialog(false)
+    ConfirmDeleteDialog(
+        show = showDeleteDialog,
+        onDismiss = { appointmentViewModel.showDeleteDialog(false) }) {
+        appointmentViewModel.apply {
+            selectedAppointment?.let {
+                deleteAppointment(it)
+            }
+            showDeleteDialog(false)
+        }
     }
 
 
@@ -53,14 +60,19 @@ fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
             state = lazyListState, modifier = Modifier
                 .fillMaxSize()
         ) {
-            items(items = appointments, key = { it.id ?: -1 }) {
-                Box(modifier = Modifier
-                    .animateItemPlacement(tween(1000))) {
+            items(items = appointments, key = { it.id ?: -1 }) { appointment ->
+                Box(
+                    modifier = Modifier
+                        .animateItemPlacement(tween(1000))
+                ) {
                     ItemAppointment(
-                        appointment = it,
+                        appointment = appointment,
                         modifier = Modifier
                     ) {
-                        appointmentViewModel.showDeleteDialog(true)
+                        appointmentViewModel.apply {
+                            setSelectedAppointment(appointment)
+                            showDeleteDialog(true)
+                        }
                     }
                 }
             }
@@ -145,9 +157,14 @@ fun ItemContent(appointment: AppointmentModel, modifier: Modifier) {
                     start.linkTo(date.start)
                     end.linkTo(date.end)
                 })
-        CardDivider(modifier = Modifier.constrainAs(divider) {
-            start.linkTo(date.end)
-        })
+        Divider(
+            modifier
+                .fillMaxHeight()
+                .padding(6.dp)
+                .width(1.dp)
+                .constrainAs(divider) { start.linkTo(date.end) }
+        )
+
         AppointmentTextField(text = "${appointment.owner}", modifier = Modifier
             .padding(top = 12.dp)
             .constrainAs(owner) {
@@ -185,15 +202,5 @@ fun AppointmentTextField(text: String, modifier: Modifier) {
         fontSize = 14.sp,
         fontWeight = FontWeight.Medium,
         modifier = modifier.padding(start = 6.dp)
-    )
-}
-
-@Composable
-fun CardDivider(modifier: Modifier) {
-    Divider(
-        modifier
-            .fillMaxHeight()
-            .padding(6.dp)
-            .width(1.dp)
     )
 }
