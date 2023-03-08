@@ -25,10 +25,10 @@ class AppointmentViewModel @Inject constructor(
     private val _appointments: Flow<List<AppointmentModel>> = getAppointmentsUseCase.invoke()
     val appointments: Flow<List<AppointmentModel>> get() = _appointments
 
-    private val _showDialog = MutableLiveData<Boolean>()
-    val showDialog: LiveData<Boolean> get() = _showDialog
-    fun enableDialog(enabled: Boolean) {
-        _showDialog.value = enabled
+    private val _visibleDialog = MutableLiveData<Boolean>()
+    val visibleDialog: LiveData<Boolean> get() = _visibleDialog
+    fun showDialog(enabled: Boolean) {
+        _visibleDialog.value = enabled
     }
 
     //Form control

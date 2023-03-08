@@ -33,11 +33,11 @@ import kotlin.math.roundToInt
 fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
 
     val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
-    val showDialog by appointmentViewModel.showDialog.observeAsState(initial = false)
+    val showDialog by appointmentViewModel.visibleDialog.observeAsState(initial = false)
 
     when {
         showDialog -> AddAppointmentDialog(appointmentViewModel)
-        else -> AppointmentScreenContent(appointments) { appointmentViewModel.enableDialog(true) }
+        else -> AppointmentScreenContent(appointments) { appointmentViewModel.showDialog(true) }
     }
 }
 
@@ -54,7 +54,7 @@ fun AppointmentScreenContent(appointments: List<AppointmentModel>, showDialog: (
             state = lazyListState
         ) {
             items(items = appointments, key = { it.id ?: -1 }) { appointment ->
-                Box(Modifier.animateItemPlacement(animationSpec = tween(1500))) {
+                Box(Modifier.animateItemPlacement(animationSpec = tween(500))) {
                     ItemAppointment(appointment)
                 }
             }
