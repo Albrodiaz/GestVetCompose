@@ -1,10 +1,8 @@
 package com.albrodiaz.gestvet.ui.features.home.views.appointments
 
-import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,6 +41,10 @@ fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
     val lazyListState = rememberLazyListState()
 
     AddAppointmentDialog(show = showDialog, appointmentViewModel = appointmentViewModel)
+    ConfirmDeleteDialog(show = showDeleteDialog, onDismiss = { appointmentViewModel.showDeleteDialog(false) }) {
+        //TODO: Borrar la cita al hacer click en OK
+        appointmentViewModel.showDeleteDialog(false)
+    }
 
 
     ConstraintLayout(Modifier.fillMaxSize()) {
@@ -53,20 +55,14 @@ fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
         ) {
             items(items = appointments, key = { it.id ?: -1 }) {
                 Box(modifier = Modifier
-                    .clickable { Log.i("alberto", "Item: ${it.id}") }
                     .animateItemPlacement(tween(1000))) {
                     ItemAppointment(
                         appointment = it,
                         modifier = Modifier
-                    ) { appointmentViewModel.showDeleteDialog(true) }
+                    ) {
+                        appointmentViewModel.showDeleteDialog(true)
+                    }
                 }
-                ConfirmDeleteDialog(
-                    show = showDeleteDialog,
-                    onDismiss = { appointmentViewModel.showDeleteDialog(false) },
-                    onConfirm = {
-                        Log.i("alberto", "${it.owner}")
-                        appointmentViewModel.showDeleteDialog(false)
-                    })
             }
         }
         AnimatedAddFab(

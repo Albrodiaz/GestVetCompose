@@ -132,7 +132,7 @@ fun AddDialog(
 }
 
 @Composable
-fun ConfirmDeleteDialog(show: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+fun ConfirmDeleteDialog(show: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit) {
     if (show) {
         AlertDialog(
             onDismissRequest = { onDismiss() },
