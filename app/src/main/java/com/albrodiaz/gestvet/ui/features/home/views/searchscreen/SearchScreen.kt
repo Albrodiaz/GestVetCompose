@@ -23,23 +23,23 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.core.extensions.searchBy
-import com.albrodiaz.gestvet.ui.theme.*
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
+import com.albrodiaz.gestvet.ui.theme.*
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SearchScreen() {
+fun SearchScreen(appointmentViewModel: AppointmentViewModel) {
     var userText: String by remember { mutableStateOf("") }
+    val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
     /*
     TODO:
        crear switch para alternar entre citas y clientes o crear enum con tipo de item
     */
     ConstraintLayout(Modifier.fillMaxSize()) {
-        val filteredList = emptyList<AppointmentModel>().searchBy(userText)
+        val filteredList = appointments.searchBy(userText)
         val (searchBar, content) = createRefs()
 
         CustomSearchTextField(
@@ -70,7 +70,7 @@ fun SearchScreen() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CustomSearchTextField(modifier: Modifier, valueChange: (String) -> Unit) {
+private fun CustomSearchTextField(modifier: Modifier, valueChange: (String) -> Unit) {
     val focus = LocalFocusManager.current
     var searchText: String by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -130,7 +130,7 @@ fun CustomSearchTextField(modifier: Modifier, valueChange: (String) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ItemSearchScreen(appointment: AppointmentModel) {
+private fun ItemSearchScreen(appointment: AppointmentModel) {
     ListItem(
         headlineText = { Text(text = appointment.owner ?: "") },
         supportingText = { Text(text = appointment.pet ?: "") },

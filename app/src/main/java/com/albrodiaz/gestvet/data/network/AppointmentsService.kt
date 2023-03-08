@@ -11,26 +11,26 @@ import javax.inject.Inject
 class AppointmentsService @Inject constructor(private val firebase: FirebaseClient) {
 
     companion object {
-        const val APPOINTMENT_COLLECTION = "appointments"
+        const val APPOINTMENT_TAG = "Appointments"
+        const val APPOINTMENTS_PATH = "users/alrodiaz15@gmail.com/appointments"
     }
 
     val appointments: Flow<List<AppointmentModel>>
         get() = callbackFlow {
-            firebase.dataBase.collection(APPOINTMENT_COLLECTION)
+            firebase.dataBase.collection(APPOINTMENTS_PATH)
                 .addSnapshotListener { value, error ->
                     value?.let { values ->
                         trySend(values.map { it.toObject(AppointmentModel::class.java) })
                     }
                     error?.let {
-                        Log.e("AppointmentService", "Error al cargar los datos: $error")
+                        Log.e(APPOINTMENT_TAG, "Error al cargar los datos: $error")
                     }
                 }
             awaitClose()
         }
 
     suspend fun addAppointment(appointmentModel: AppointmentModel) {
-        //firebase.dataBase.collection(APPOINTMENT_COLLECTION).add(appointment)
-        firebase.dataBase.collection(APPOINTMENT_COLLECTION).document("${appointmentModel.id}").set(
+        firebase.dataBase.collection(APPOINTMENTS_PATH).document("${appointmentModel.id}").set(
             hashMapOf(
                 "owner" to appointmentModel.owner,
                 "pet" to appointmentModel.pet,
@@ -44,10 +44,10 @@ class AppointmentsService @Inject constructor(private val firebase: FirebaseClie
     }
 
     suspend fun deleteAppointment(appointmentModel: AppointmentModel) {
-        firebase.dataBase.collection(APPOINTMENT_COLLECTION).document("${appointmentModel.id}")
+        firebase.dataBase.collection(APPOINTMENTS_PATH).document("${appointmentModel.id}")
             .delete()
-            .addOnSuccessListener { Log.i("alberto", "Item ${appointmentModel.id} borrado") }
-            .addOnCanceledListener { Log.i("alberto", "Fallo al borrar el item ${appointmentModel.id}") }
+            .addOnSuccessListener { Log.i(APPOINTMENT_TAG, "Item ${appointmentModel.id} borrado") }
+            .addOnCanceledListener { Log.i(APPOINTMENT_TAG, "Fallo al borrar el item ${appointmentModel.id}") }
             .await()
     }
 

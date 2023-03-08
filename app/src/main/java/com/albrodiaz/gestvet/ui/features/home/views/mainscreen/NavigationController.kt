@@ -16,6 +16,6 @@ fun NavController(navigationController: NavController, appointmentViewModel: App
     NavHost(navController = navigationController as NavHostController, startDestination = Routes.Appointment.route) {
         composable(Routes.Appointment.route) { AppointmentScreen(appointmentViewModel) }
         composable(Routes.Client.route) { ClientScreen() }
-        composable(Routes.Search.route) { SearchScreen() }
+        composable(Routes.Search.route) { SearchScreen(appointmentViewModel) }
     }
 }

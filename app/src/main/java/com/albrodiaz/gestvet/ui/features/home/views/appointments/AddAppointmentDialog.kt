@@ -12,15 +12,19 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
+import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -34,7 +38,7 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
     val subjectText by appointmentViewModel.subjectText.observeAsState("")
     val detailText by appointmentViewModel.detailsText.observeAsState("")
 
-    AddDialog(
+    AddAppointmentDialog(
         show = show,
         onDismiss = { appointmentViewModel.showDialog(false) }
     ) {
@@ -42,10 +46,12 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
             val (title, owner, pet, date, hour, subject, detail, saveButton, close) = createRefs()
             IconButton(
                 onClick = { appointmentViewModel.showDialog(false) },
-                modifier = Modifier.padding(12.dp).constrainAs(close) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                },
+                modifier = Modifier
+                    .padding(12.dp)
+                    .constrainAs(close) {
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                    },
             ) {
                 Icon(imageVector = Icons.Filled.Close, contentDescription = "")
             }
@@ -67,7 +73,7 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, capitalization = KeyboardCapitalization.Words),
                 textChange = { appointmentViewModel.setOwner(it) }
             )
             FormTextField(
@@ -78,7 +84,7 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, capitalization = KeyboardCapitalization.Words),
                 textChange = { appointmentViewModel.setPet(it) }
 
             )
@@ -92,7 +98,7 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
                         start.linkTo(parent.start)
                         end.linkTo(hour.start)
                     },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
                 textChange = { appointmentViewModel.setDate(it) },
             )
             FormTextField(
@@ -106,7 +112,7 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
                         end.linkTo(parent.end)
                     },
                 textChange = { appointmentViewModel.setHour(it) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number)
             )
             FormTextField(
                 text = subjectText,
@@ -117,7 +123,7 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
                     end.linkTo(parent.end)
                 },
                 textChange = { appointmentViewModel.setSubject(it) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, capitalization = KeyboardCapitalization.Sentences)
             )
             FormTextField(
                 text = detailText,
@@ -130,7 +136,7 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
                 textChange = { appointmentViewModel.setDetails(it) },
                 maxLines = 15,
                 singleLine = false,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, capitalization = KeyboardCapitalization.Sentences),
                 keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
             )
             Button(
@@ -152,4 +158,36 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FormTextField(
+    text: String,
+    label: String = "",
+    modifier: Modifier,
+    maxLines: Int = 1,
+    singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    textChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        modifier = modifier
+            .fillMaxWidth(.8f)
+            .padding(vertical = 6.dp),
+        value = text,
+        label = { Text(text = label) },
+        onValueChange = { textChange(it) },
+        maxLines = maxLines,
+        singleLine = singleLine,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = md_theme_light_primary,
+            cursorColor = md_theme_light_primary,
+            focusedLabelColor = md_theme_light_primary,
+            containerColor = Color.Transparent
+        )
+    )
 }

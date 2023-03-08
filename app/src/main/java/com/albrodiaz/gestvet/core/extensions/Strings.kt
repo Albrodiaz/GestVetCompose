@@ -1,5 +1,6 @@
 package com.albrodiaz.gestvet.core.extensions
 
+import android.util.Patterns
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -14,3 +15,5 @@ fun String.hourToMillis(): Long {
     val date = formatter.parse(this)
     return date!!.time
 }
+
+fun String.isValidEmail() = Patterns.EMAIL_ADDRESS.matcher(this).matches()
