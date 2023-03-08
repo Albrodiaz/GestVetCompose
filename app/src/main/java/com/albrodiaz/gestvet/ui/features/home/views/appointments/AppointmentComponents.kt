@@ -19,13 +19,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.theme.md_theme_light_error
 import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 import com.albrodiaz.gestvet.ui.theme.md_theme_light_surface
@@ -62,28 +58,19 @@ fun FormTextField(
     )
 }
 
-@Composable
-fun AddScreenTittle(modifier: Modifier) {
-    Text(
-        text = stringResource(id = R.string.addTitle),
-        modifier = modifier.padding(vertical = 16.dp, horizontal = 12.dp),
-        fontWeight = FontWeight.Bold,
-        fontSize = 32.sp
-    )
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DeleteButton(
     modifier: Modifier,
-    onDeleteAppointment: () -> Unit,
-    swipeableState: SwipeableState<Int>? = null
+    swipeableState: SwipeableState<Int>? = null,
+    onDeleteAppointment: () -> Unit
 ) {
+    val density = LocalDensity.current
     Box(modifier = modifier.fillMaxHeight()) {
         AnimatedVisibility(
             visible = swipeableState?.targetValue == 1 && swipeableState.progress.fraction > 0.5,
-            enter = fadeIn(animationSpec = tween(1000)),
-            exit = fadeOut(animationSpec = tween(1000))
+            enter = fadeIn(animationSpec = tween(1500)) + slideInHorizontally { with(density) { 100.dp.roundToPx() } },
+            exit = fadeOut(animationSpec = tween(1500)) + slideOutHorizontally { with(density) { 50.dp.roundToPx() } }
         ) {
             FloatingActionButton(
                 onClick = { onDeleteAppointment() },
@@ -92,23 +79,6 @@ fun DeleteButton(
                 Icon(Icons.Filled.Delete, contentDescription = "", tint = Color.White)
             }
         }
-    }
-}
-
-@Composable
-fun AppointmentCard(modifier: Modifier, content: @Composable () -> Unit) {
-    ElevatedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(135.dp)
-            .padding(6.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-            contentColor = Color.Black
-        )
-    ) {
-        content()
     }
 }
 
@@ -126,7 +96,7 @@ fun AnimatedAddFab(modifier: Modifier, visible: Boolean, showDialog: () -> Unit)
         AnimatedVisibility(
             visible = visible,
             enter = slideInVertically { with(density) { 60.dp.roundToPx() } },
-            exit = slideOutVertically { with(density) { 60.dp.roundToPx() } }
+            exit = slideOutVertically { with(density) { 100.dp.roundToPx() } }
         ) {
             FloatingActionButton(modifier = modifier.size(45.dp), onClick = { showDialog() }) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "")

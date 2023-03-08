@@ -14,8 +14,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
@@ -38,21 +40,25 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
     ) {
         ConstraintLayout(Modifier.fillMaxSize()) {
             val (title, owner, pet, date, hour, subject, detail, saveButton, close) = createRefs()
-            androidx.compose.material.IconButton(
+            IconButton(
                 onClick = { appointmentViewModel.showDialog(false) },
-                modifier = Modifier.constrainAs(close) {
+                modifier = Modifier.padding(12.dp).constrainAs(close) {
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
                 },
             ) {
                 Icon(imageVector = Icons.Filled.Close, contentDescription = "")
             }
-            AddScreenTittle(modifier = Modifier
-                .padding(start = 24.dp)
-                .constrainAs(title) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                })
+            Text(
+                text = stringResource(id = R.string.addTitle) ,
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
+                modifier = Modifier
+                    .padding(vertical = 16.dp, horizontal = 40.dp)
+                    .constrainAs(title) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                    })
             FormTextField(
                 text = ownerText,
                 label = stringResource(id = R.string.owner),
@@ -136,7 +142,7 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
                 },
                 enabled = isButtonEnabled,
                 modifier = Modifier
-                    .padding(vertical = 12.dp)
+                    .padding(vertical = 24.dp)
                     .constrainAs(saveButton) {
                         top.linkTo(detail.bottom)
                         start.linkTo(parent.start)

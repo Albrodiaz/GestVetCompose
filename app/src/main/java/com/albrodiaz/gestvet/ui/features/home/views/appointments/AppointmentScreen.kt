@@ -1,9 +1,10 @@
 package com.albrodiaz.gestvet.ui.features.home.views.appointments
 
-import androidx.compose.animation.*
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,7 +15,9 @@ import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -27,71 +30,75 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
+import com.albrodiaz.gestvet.ui.theme.*
 import kotlin.math.roundToInt
 
-//TODO: Mejorar todo el código
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
 
     val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
     val showDialog by appointmentViewModel.visibleDialog.observeAsState(initial = false)
+    val showDeleteDialog by appointmentViewModel.visibleDeleteDialog.observeAsState(false)
+    val lazyListState = rememberLazyListState()
 
     AddAppointmentDialog(show = showDialog, appointmentViewModel = appointmentViewModel)
-    AppointmentScreenContent(appointments = appointments, appointmentViewModel = appointmentViewModel)
-}
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun AppointmentScreenContent(
-    appointments: List<AppointmentModel>,
-    appointmentViewModel: AppointmentViewModel
-) {
-    val lazyListState = rememberLazyListState()
-    val showDeleteDialog by appointmentViewModel.visibleDeleteDialog.observeAsState(false)
 
     ConstraintLayout(Modifier.fillMaxSize()) {
-        val (listItem, addButton) = createRefs()
+        val (addButton) = createRefs()
         LazyColumn(
-            modifier = Modifier
+            state = lazyListState, modifier = Modifier
                 .fillMaxSize()
-                .constrainAs(listItem, constrainBlock = {}),
-            state = lazyListState
         ) {
-            items(items = appointments, key = { it.id ?: -1 }) { appointment ->
-                Box(Modifier.animateItemPlacement(animationSpec = tween(500))) {
-                    ConfirmDeleteDialog(
-                        show = showDeleteDialog,
-                        onConfirm = {
-                            appointmentViewModel.deleteAppointment(appointment)
-                            appointmentViewModel.showDeleteDialog(false)
-                        },
-                        onDismiss = { appointmentViewModel.showDeleteDialog(false) }
-                    )
-                    ItemAppointment(appointment) { appointmentViewModel.showDeleteDialog(true) }
+            items(items = appointments, key = { it.id ?: -1 }) {
+                Box(modifier = Modifier
+                    .clickable { Log.i("alberto", "Item: ${it.id}") }
+                    .animateItemPlacement(tween(1000))) {
+                    ItemAppointment(
+                        appointment = it,
+                        modifier = Modifier
+                    ) { appointmentViewModel.showDeleteDialog(true) }
                 }
+                ConfirmDeleteDialog(
+                    show = showDeleteDialog,
+                    onDismiss = { appointmentViewModel.showDeleteDialog(false) },
+                    onConfirm = {
+                        Log.i("alberto", "${it.owner}")
+                        appointmentViewModel.showDeleteDialog(false)
+                    })
             }
         }
-        AnimatedAddFab(modifier = Modifier.constrainAs(addButton) {
-            start.linkTo(parent.start)
-            bottom.linkTo(parent.bottom)
-        }, lazyListState.isScrolled) { appointmentViewModel.showDialog(true) }
+        AnimatedAddFab(
+            visible = lazyListState.isScrolled,
+            modifier = Modifier.constrainAs(addButton) {
+                bottom.linkTo(parent.bottom)
+                end.linkTo(parent.end)
+            }) {
+            appointmentViewModel.showDialog(true)
+        }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ItemAppointment(appointment: AppointmentModel, onDeleteAppointment: () -> Unit) {
+fun ItemAppointment(
+    appointment: AppointmentModel,
+    modifier: Modifier,
+    showDeleteDialog: () -> Unit
+) {
     val swipeableState = rememberSwipeableState(initialValue = 0)
     val buttonZIndex = animateFloatAsState(targetValue = swipeableState.progress.fraction)
     val width = 75.dp
     val sizePx = with(LocalDensity.current) { width.toPx() }
     val anchors = mapOf(0f to 0, -sizePx to 1)
 
-    ConstraintLayout(Modifier.fillMaxWidth()) {
-        val (container, button) = createRefs()
-        AppointmentCard(
-            modifier = Modifier
-                .constrainAs(container) {}
+    ConstraintLayout(modifier) {
+        val (button) = createRefs()
+        Card(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(120.dp)
                 .zIndex(1f)
                 .swipeable(
                     swipeableState,
@@ -100,90 +107,97 @@ fun ItemAppointment(appointment: AppointmentModel, onDeleteAppointment: () -> Un
                     orientation = Orientation.Horizontal,
                 )
                 .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
+                .padding(6.dp),
+            elevation = CardDefaults.cardElevation(3.dp),
         ) {
-            AppointmentLayout(appointment = appointment)
+            ItemContent(appointment = appointment, modifier = Modifier)
         }
         DeleteButton(
             swipeableState = swipeableState,
             modifier = Modifier
-                .height(40.dp)
-                .padding(end = 16.dp)
+                .padding(end = 12.dp)
                 .zIndex(buttonZIndex.value)
                 .constrainAs(button) {
                     top.linkTo(parent.top)
-                    end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
-                },
-            onDeleteAppointment = { onDeleteAppointment() }
-        )
+                    end.linkTo(parent.end)
+                }) { showDeleteDialog() }
     }
 }
 
 @Composable
-fun AppointmentLayout(appointment: AppointmentModel) {
-    ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
-    ) {
+fun ItemContent(appointment: AppointmentModel, modifier: Modifier) {
+    ConstraintLayout(modifier.fillMaxSize()) {
         val (date, hour, divider, owner, pet, subject) = createRefs()
-
-        Text(text = appointment.date ?: "",
-            fontWeight = FontWeight.Bold,
-            fontSize = 12.sp,
+        DateTextField(
+            text = "${appointment.date}",
             modifier = Modifier
-                .padding(horizontal = 10.dp, vertical = 24.dp)
+                .padding(horizontal = 8.dp)
+                .padding(top = 16.dp, bottom = 8.dp)
                 .constrainAs(date) {
                     top.linkTo(parent.top)
-                    end.linkTo(divider.start)
                     start.linkTo(parent.start)
-                })
-        Text(text = appointment.hour ?: "",
-            fontWeight = FontWeight.Bold,
-            fontSize = 12.sp,
+                    bottom.linkTo(hour.top)
+                }
+        )
+        DateTextField(
+            text = "${appointment.hour}",
             modifier = Modifier
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 8.dp)
                 .constrainAs(hour) {
                     top.linkTo(date.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(divider.start)
+                    start.linkTo(date.start)
+                    end.linkTo(date.end)
                 })
-        Divider(
-            Modifier
-                .width(1.dp)
-                .padding(vertical = 6.dp)
-                .fillMaxHeight()
-                .constrainAs(divider) {
-                    start.linkTo(date.end)
-                    end.linkTo(owner.start)
-                })
-        Text(
-            fontSize = 15.sp,
-            text = appointment.owner ?: "",
+        CardDivider(modifier = Modifier.constrainAs(divider) {
+            start.linkTo(date.end)
+        })
+        AppointmentTextField(text = "${appointment.owner}", modifier = Modifier
+            .padding(top = 12.dp)
+            .constrainAs(owner) {
+                start.linkTo(divider.end)
+                top.linkTo(parent.top)
+            })
+        AppointmentTextField(
+            text = "${appointment.pet}",
             modifier = Modifier
-                .padding(horizontal = 12.dp)
-                .constrainAs(owner) {
-                    start.linkTo(divider.end)
-                    bottom.linkTo(pet.top)
-                    top.linkTo(parent.top)
-                })
-        Text(
-            text = appointment.pet ?: "",
-            fontSize = 14.sp,
-            modifier = Modifier
-                .padding(horizontal = 12.dp)
+                .padding(top = 12.dp)
                 .constrainAs(pet) {
                     top.linkTo(owner.bottom)
                     start.linkTo(owner.start)
-                    bottom.linkTo(subject.top)
                 })
-        Text(
-            text = appointment.subject ?: "",
-            fontSize = 14.sp,
+        AppointmentTextField(
+            text = "${appointment.subject}",
             modifier = Modifier
-                .padding(horizontal = 12.dp)
+                .padding(top = 12.dp)
                 .constrainAs(subject) {
                     top.linkTo(pet.bottom)
-                    start.linkTo(pet.start)
-                    bottom.linkTo(parent.bottom)
+                    start.linkTo(owner.start)
                 })
     }
+}
+
+@Composable
+fun DateTextField(text: String, modifier: Modifier) {
+    Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = modifier)
+}
+
+@Composable
+fun AppointmentTextField(text: String, modifier: Modifier) {
+    Text(
+        text = text,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Medium,
+        modifier = modifier.padding(start = 6.dp)
+    )
+}
+
+@Composable
+fun CardDivider(modifier: Modifier) {
+    Divider(
+        modifier
+            .fillMaxHeight()
+            .padding(6.dp)
+            .width(1.dp)
+    )
 }
