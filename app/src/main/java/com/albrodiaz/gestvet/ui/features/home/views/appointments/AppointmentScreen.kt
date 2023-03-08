@@ -29,29 +29,26 @@ import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 import kotlin.math.roundToInt
 
+//TODO: Mejorar todo el código
 @Composable
 fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
 
     val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
     val showDialog by appointmentViewModel.visibleDialog.observeAsState(initial = false)
 
-    when {
-        showDialog -> AddAppointmentDialog(appointmentViewModel)
-        else -> AppointmentScreenContent(
-            appointments,
-            appointmentViewModel
-        ) { appointmentViewModel.showDialog(true) }
-    }
+    AddAppointmentDialog(show = showDialog, appointmentViewModel = appointmentViewModel)
+    AppointmentScreenContent(appointments = appointments, appointmentViewModel = appointmentViewModel)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppointmentScreenContent(
     appointments: List<AppointmentModel>,
-    appointmentViewModel: AppointmentViewModel,
-    showDialog: () -> Unit
+    appointmentViewModel: AppointmentViewModel
 ) {
     val lazyListState = rememberLazyListState()
+    val showDeleteDialog by appointmentViewModel.visibleDeleteDialog.observeAsState(false)
+
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (listItem, addButton) = createRefs()
         LazyColumn(
@@ -62,14 +59,22 @@ fun AppointmentScreenContent(
         ) {
             items(items = appointments, key = { it.id ?: -1 }) { appointment ->
                 Box(Modifier.animateItemPlacement(animationSpec = tween(500))) {
-                    ItemAppointment(appointment) { appointmentViewModel.deleteAppointment(appointment) }
+                    ConfirmDeleteDialog(
+                        show = showDeleteDialog,
+                        onConfirm = {
+                            appointmentViewModel.deleteAppointment(appointment)
+                            appointmentViewModel.showDeleteDialog(false)
+                        },
+                        onDismiss = { appointmentViewModel.showDeleteDialog(false) }
+                    )
+                    ItemAppointment(appointment) { appointmentViewModel.showDeleteDialog(true) }
                 }
             }
         }
         AnimatedAddFab(modifier = Modifier.constrainAs(addButton) {
             start.linkTo(parent.start)
             bottom.linkTo(parent.bottom)
-        }, lazyListState.isScrolled) { showDialog() }
+        }, lazyListState.isScrolled) { appointmentViewModel.showDialog(true) }
     }
 }
 

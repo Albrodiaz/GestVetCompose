@@ -22,10 +22,9 @@ import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
+fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val isButtonEnabled by appointmentViewModel.isButtonEnabled.observeAsState(false)
-    val showDialog by appointmentViewModel.visibleDialog.observeAsState(false)
     val ownerText by appointmentViewModel.ownerText.observeAsState("")
     val petText by appointmentViewModel.petText.observeAsState("")
     val dateText by appointmentViewModel.dateText.observeAsState("")
@@ -34,7 +33,7 @@ fun AddAppointmentDialog(appointmentViewModel: AppointmentViewModel) {
     val detailText by appointmentViewModel.detailsText.observeAsState("")
 
     AddDialog(
-        show = showDialog,
+        show = show,
         onDismiss = { appointmentViewModel.showDialog(false) }
     ) {
         ConstraintLayout(Modifier.fillMaxSize()) {

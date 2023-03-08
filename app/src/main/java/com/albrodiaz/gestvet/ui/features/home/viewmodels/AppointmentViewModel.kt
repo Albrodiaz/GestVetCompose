@@ -33,6 +33,12 @@ class AppointmentViewModel @Inject constructor(
         _visibleDialog.value = enabled
     }
 
+    private val _visibleDeleteDialog = MutableLiveData<Boolean>()
+    val visibleDeleteDialog: LiveData<Boolean> get() = _visibleDeleteDialog
+    fun showDeleteDialog(enabled: Boolean) {
+        _visibleDeleteDialog.value = enabled
+    }
+
     //Form control
     private var _ownerText = MutableLiveData("")
     val ownerText: LiveData<String> get() = _ownerText

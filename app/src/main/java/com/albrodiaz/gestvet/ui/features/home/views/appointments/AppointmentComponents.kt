@@ -160,3 +160,25 @@ fun AddDialog(
         }
     }
 }
+
+@Composable
+fun ConfirmDeleteDialog(show: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    if (show) {
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            title = { Text(text = "¿Eliminar la cita?") },
+            text = { Text(text = "Una vez eliminada no se podrá recuperar.") },
+            confirmButton = {
+                TextButton(onClick = { onConfirm() }) {
+                    Text(text = "OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text(text = "Cancelar")
+                }
+            },
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        )
+    }
+}
