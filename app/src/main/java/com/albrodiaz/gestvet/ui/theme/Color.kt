@@ -32,6 +32,7 @@ val md_theme_light_shadow = Color(0xFF000000)
 val md_theme_light_surfaceTint = Color(0xFF006A69)
 val md_theme_light_outlineVariant = Color(0xFFBEC9C8)
 val md_theme_light_scrim = Color(0xFF000000)
+val appointment_card_container = Color(0xFFF5F4F1)
 //Dark Colors
 val md_theme_dark_primary = Color(0xFF4DDAD8)
 val md_theme_dark_onPrimary = Color(0xFF003736)
