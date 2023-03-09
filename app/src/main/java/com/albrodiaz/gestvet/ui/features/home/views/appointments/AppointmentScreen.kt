@@ -11,10 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.SwipeableState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.*
@@ -22,15 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
@@ -196,89 +187,5 @@ private fun ItemContent(appointment: AppointmentModel, modifier: Modifier) {
                     top.linkTo(pet.bottom)
                     start.linkTo(owner.start)
                 })
-    }
-}
-
-@Composable
-private fun DateTextField(text: String, modifier: Modifier) {
-    Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = modifier)
-}
-
-@Composable
-private fun AppointmentTextField(text: String, modifier: Modifier) {
-    Text(
-        text = text,
-        fontSize = 14.sp,
-        fontWeight = FontWeight.Medium,
-        modifier = modifier.padding(start = 6.dp)
-    )
-}
-
-@Composable
-private fun ConfirmDeleteDialog(show: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit) {
-    if (show) {
-        AlertDialog(
-            onDismissRequest = { onDismiss() },
-            title = { Text(text = "¿Eliminar la cita?") },
-            text = { Text(text = "Una vez eliminada no se podrá recuperar.") },
-            confirmButton = {
-                TextButton(onClick = { onConfirm() }) {
-                    Text(text = "OK")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { onDismiss() }) {
-                    Text(text = "Cancelar")
-                }
-            },
-            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-        )
-    }
-}
-
-@Composable
-fun AnimatedAddFab(modifier: Modifier, visible: Boolean, showDialog: () -> Unit) {
-    val density = LocalDensity.current
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .padding(14.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.End
-    ) {
-        AnimatedVisibility(
-            visible = visible,
-            enter = slideInVertically { with(density) { 60.dp.roundToPx() } },
-            exit = slideOutVertically { with(density) { 100.dp.roundToPx() } }
-        ) {
-            FloatingActionButton(modifier = modifier.size(45.dp), onClick = { showDialog() }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "")
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun DeleteButton(
-    modifier: Modifier,
-    swipeableState: SwipeableState<Int>? = null,
-    onDeleteAppointment: () -> Unit
-) {
-    val density = LocalDensity.current
-    Box(modifier = modifier.fillMaxHeight()) {
-        AnimatedVisibility(
-            visible = swipeableState?.targetValue == 1 && swipeableState.progress.fraction > 0.5,
-            enter = fadeIn(animationSpec = tween(1500)) + slideInHorizontally { with(density) { 100.dp.roundToPx() } },
-            exit = fadeOut(animationSpec = tween(1500)) + slideOutHorizontally { with(density) { 50.dp.roundToPx() } }
-        ) {
-            FloatingActionButton(
-                onClick = { onDeleteAppointment() },
-                containerColor = md_theme_light_error
-            ) {
-                Icon(Icons.Filled.Delete, contentDescription = "", tint = Color.White)
-            }
-        }
     }
 }

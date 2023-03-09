@@ -10,22 +10,43 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.albrodiaz.gestvet.ui.features.home.models.Routes
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddAppointmentViewModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 
 @Composable
-fun MainScreen(navController: NavController, appointmentViewModel: AppointmentViewModel) {
+fun MainScreen(
+    navController: NavController,
+    appointmentViewModel: AppointmentViewModel,
+    addAppointmentViewModel: AddAppointmentViewModel
+) {
+    val navStackEntry by navController.currentBackStackEntryAsState()
+    val bottomNavState = rememberSaveable { mutableStateOf(true) }
+
+    when (navStackEntry?.destination?.route) {
+        Routes.AddAppointment.route -> {
+            bottomNavState.value = false
+        }
+        else -> bottomNavState.value = true
+    }
+
     Scaffold(
-        bottomBar = { MainBottomNav(navController) }
+        bottomBar = { if (!bottomNavState.value) return@Scaffold else MainBottomNav(navController = navController) }
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = it.calculateBottomPadding())
         ) {
-            NavController(navigationController = navController, appointmentViewModel)
+            NavController(
+                navigationController = navController,
+                appointmentViewModel,
+                addAppointmentViewModel
+            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.albrodiaz.gestvet.ui.features.home.views.appointments
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,7 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,19 +26,23 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.R
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddAppointmentViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AddAppointmentScreen(appointmentViewModel: AppointmentViewModel, navigationController: NavHostController) {
-    val isButtonEnabled by appointmentViewModel.isButtonEnabled.observeAsState(false)
-    val ownerText by appointmentViewModel.ownerText.observeAsState("")
-    val petText by appointmentViewModel.petText.observeAsState("")
-    val dateText by appointmentViewModel.dateText.observeAsState("")
-    val hourText by appointmentViewModel.hourText.observeAsState("")
-    val subjectText by appointmentViewModel.subjectText.observeAsState("")
-    val detailText by appointmentViewModel.detailsText.observeAsState("")
+fun AddAppointmentScreen(
+    addAppointmentViewModel: AddAppointmentViewModel,
+    navigationController: NavHostController
+) {
+    val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.observeAsState(false)
+    val isAddedSuccess by addAppointmentViewModel.isAddedSuccess.observeAsState()
+    val ownerText by addAppointmentViewModel.ownerText.observeAsState("")
+    val petText by addAppointmentViewModel.petText.observeAsState("")
+    val dateText by addAppointmentViewModel.dateText.observeAsState("")
+    val hourText by addAppointmentViewModel.hourText.observeAsState("")
+    val subjectText by addAppointmentViewModel.subjectText.observeAsState("")
+    val detailText by addAppointmentViewModel.detailsText.observeAsState("")
+    val context = LocalContext.current
 
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (title, owner, pet, date, hour, subject, detail, saveButton, close) = createRefs()
@@ -55,7 +60,7 @@ fun AddAppointmentScreen(appointmentViewModel: AppointmentViewModel, navigationC
             Icon(imageVector = Icons.Filled.Close, contentDescription = "")
         }
         Text(
-            text = stringResource(id = R.string.addTitle) ,
+            text = stringResource(id = R.string.addTitle),
             fontWeight = FontWeight.Bold,
             fontSize = 32.sp,
             modifier = Modifier
@@ -72,8 +77,11 @@ fun AddAppointmentScreen(appointmentViewModel: AppointmentViewModel, navigationC
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, capitalization = KeyboardCapitalization.Words),
-            textChange = { appointmentViewModel.setOwner(it) }
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
+            ),
+            textChange = { addAppointmentViewModel.setOwner(it) }
         )
         FormTextField(
             text = petText,
@@ -83,8 +91,11 @@ fun AddAppointmentScreen(appointmentViewModel: AppointmentViewModel, navigationC
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, capitalization = KeyboardCapitalization.Words),
-            textChange = { appointmentViewModel.setPet(it) }
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
+            ),
+            textChange = { addAppointmentViewModel.setPet(it) }
 
         )
         FormTextField(
@@ -97,8 +108,11 @@ fun AddAppointmentScreen(appointmentViewModel: AppointmentViewModel, navigationC
                     start.linkTo(parent.start)
                     end.linkTo(hour.start)
                 },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
-            textChange = { appointmentViewModel.setDate(it) },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Number
+            ),
+            textChange = { addAppointmentViewModel.setDate(it) },
         )
         FormTextField(
             text = hourText,
@@ -110,8 +124,11 @@ fun AddAppointmentScreen(appointmentViewModel: AppointmentViewModel, navigationC
                     start.linkTo(date.end)
                     end.linkTo(parent.end)
                 },
-            textChange = { appointmentViewModel.setHour(it) },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number)
+            textChange = { addAppointmentViewModel.setHour(it) },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Number
+            )
         )
         FormTextField(
             text = subjectText,
@@ -121,8 +138,11 @@ fun AddAppointmentScreen(appointmentViewModel: AppointmentViewModel, navigationC
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            textChange = { appointmentViewModel.setSubject(it) },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, capitalization = KeyboardCapitalization.Sentences)
+            textChange = { addAppointmentViewModel.setSubject(it) },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Sentences
+            )
         )
         FormTextField(
             text = detailText,
@@ -132,16 +152,21 @@ fun AddAppointmentScreen(appointmentViewModel: AppointmentViewModel, navigationC
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            textChange = { appointmentViewModel.setDetails(it) },
+            textChange = { addAppointmentViewModel.setDetails(it) },
             maxLines = 15,
             singleLine = false,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, capitalization = KeyboardCapitalization.Sentences),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done,
+                capitalization = KeyboardCapitalization.Sentences
+            ),
             keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
         )
         Button(
             onClick = {
-                appointmentViewModel.addAppointment()
-                navigationController.navigateUp()
+                addAppointmentViewModel.addAppointment()
+                isAddedSuccess?.let {
+                    if (it) navigationController.navigateUp() else Toast.makeText(context, "Revise los datos", Toast.LENGTH_SHORT).show()
+                }
             },
             enabled = isButtonEnabled,
             modifier = Modifier
@@ -154,36 +179,4 @@ fun AddAppointmentScreen(appointmentViewModel: AppointmentViewModel, navigationC
             Text(text = stringResource(id = R.string.save))
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FormTextField(
-    text: String,
-    label: String = "",
-    modifier: Modifier,
-    maxLines: Int = 1,
-    singleLine: Boolean = true,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-    textChange: (String) -> Unit
-) {
-    OutlinedTextField(
-        modifier = modifier
-            .fillMaxWidth(.8f)
-            .padding(vertical = 6.dp),
-        value = text,
-        label = { Text(text = label) },
-        onValueChange = { textChange(it) },
-        maxLines = maxLines,
-        singleLine = singleLine,
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        colors = TextFieldDefaults.textFieldColors(
-            focusedIndicatorColor = md_theme_light_primary,
-            cursorColor = md_theme_light_primary,
-            focusedLabelColor = md_theme_light_primary,
-            containerColor = Color.Transparent
-        )
-    )
 }
