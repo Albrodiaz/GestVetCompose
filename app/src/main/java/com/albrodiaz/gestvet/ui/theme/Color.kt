@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 //Light Colors
 val md_theme_light_primary = Color(0xFF006A69)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
-val md_theme_light_primaryContainer = Color(0xFF6FF7F5)
+val md_theme_light_primaryContainer = Color(0xFFFCC26C)
 val md_theme_light_onPrimaryContainer = Color(0xFF002020)
 val md_theme_light_secondary = Color(0xFF4A6362)
 val md_theme_light_onSecondary = Color(0xFFFFFFFF)
@@ -32,7 +32,6 @@ val md_theme_light_shadow = Color(0xFF000000)
 val md_theme_light_surfaceTint = Color(0xFF006A69)
 val md_theme_light_outlineVariant = Color(0xFFBEC9C8)
 val md_theme_light_scrim = Color(0xFF000000)
-val appointment_card_container = Color(0xFFF5F4F1)
 //Dark Colors
 val md_theme_dark_primary = Color(0xFF4DDAD8)
 val md_theme_dark_onPrimary = Color(0xFF003736)

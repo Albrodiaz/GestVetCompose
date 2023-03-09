@@ -29,7 +29,6 @@ import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewModel) {
-    val keyboardController = LocalSoftwareKeyboardController.current
     val isButtonEnabled by appointmentViewModel.isButtonEnabled.observeAsState(false)
     val ownerText by appointmentViewModel.ownerText.observeAsState("")
     val petText by appointmentViewModel.petText.observeAsState("")
@@ -44,6 +43,8 @@ fun AddAppointmentDialog(show: Boolean, appointmentViewModel: AppointmentViewMod
     ) {
         ConstraintLayout(Modifier.fillMaxSize()) {
             val (title, owner, pet, date, hour, subject, detail, saveButton, close) = createRefs()
+            val keyboardController = LocalSoftwareKeyboardController.current
+
             IconButton(
                 onClick = { appointmentViewModel.showDialog(false) },
                 modifier = Modifier

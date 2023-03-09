@@ -8,4 +8,5 @@
     <string name="subject">Asunto</string>
     <string name="details">Detalles</string>
     <string name="save">Guardar</string>
+    <string name="detailTextfield">Sin observaciones</string>
 </resources>

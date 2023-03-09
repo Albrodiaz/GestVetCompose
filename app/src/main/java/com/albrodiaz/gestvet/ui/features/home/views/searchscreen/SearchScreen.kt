@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -92,6 +93,10 @@ private fun CustomSearchTextField(modifier: Modifier, valueChange: (String) -> U
         maxLines = 1,
         cursorBrush = SolidColor(md_theme_light_onSurface),
         visualTransformation = VisualTransformation.None,
+        keyboardActions = KeyboardActions(onDone = {
+            keyboardController?.hide()
+            focus.clearFocus()
+        }),
         decorationBox = { innerTextField ->
             Row(
                 Modifier

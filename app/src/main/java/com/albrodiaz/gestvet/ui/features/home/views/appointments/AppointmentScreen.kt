@@ -127,8 +127,7 @@ private fun ItemAppointment(
                 )
                 .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
                 .padding(6.dp),
-            elevation = CardDefaults.cardElevation(3.dp),
-            colors = CardDefaults.cardColors(containerColor = appointment_card_container)
+            elevation = CardDefaults.cardElevation(3.dp)
         ) {
             ItemContent(appointment = appointment, modifier = Modifier)
         }
