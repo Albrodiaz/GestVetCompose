@@ -15,7 +15,6 @@ import androidx.navigation.NavController
 import com.albrodiaz.gestvet.ui.features.home.models.Routes
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavController, appointmentViewModel: AppointmentViewModel) {
     Scaffold(

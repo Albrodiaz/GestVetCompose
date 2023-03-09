@@ -4,7 +4,6 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +23,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -32,27 +30,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
+import com.albrodiaz.gestvet.ui.features.home.models.Routes
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.theme.*
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
+fun AppointmentScreen(
+    appointmentViewModel: AppointmentViewModel,
+    navigationController: NavHostController
+) {
 
     val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
-    val showDialog by appointmentViewModel.visibleDialog.observeAsState(initial = false)
     val showDeleteDialog by appointmentViewModel.visibleDeleteDialog.observeAsState(false)
     val selectedAppointment by appointmentViewModel.selectedAppointment.observeAsState()
     val lazyListState = rememberLazyListState()
 
-    AddAppointmentDialog(show = showDialog, appointmentViewModel = appointmentViewModel)
     ConfirmDeleteDialog(
         show = showDeleteDialog,
         onDismiss = { appointmentViewModel.showDeleteDialog(false) }) {
@@ -93,9 +93,7 @@ fun AppointmentScreen(appointmentViewModel: AppointmentViewModel) {
             modifier = Modifier.constrainAs(addButton) {
                 bottom.linkTo(parent.bottom)
                 end.linkTo(parent.end)
-            }) {
-            appointmentViewModel.showDialog(true)
-        }
+            }) { navigationController.navigate(Routes.AddAppointment.route) }
     }
 }
 
@@ -235,32 +233,6 @@ private fun ConfirmDeleteDialog(show: Boolean, onDismiss: () -> Unit, onConfirm:
             },
             properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
         )
-    }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun AddAppointmentDialog(
-    show: Boolean,
-    onDismiss: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    if (show) {
-        Dialog(
-            onDismissRequest = { onDismiss() },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false,
-                dismissOnBackPress = false
-            )
-        ) {
-            androidx.compose.material.Surface(
-                Modifier
-                    .fillMaxSize()
-                    .background(md_theme_light_surface)
-            ) {
-                content()
-            }
-        }
     }
 }
 

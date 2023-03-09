@@ -27,12 +27,6 @@ class AppointmentViewModel @Inject constructor(
     private val _appointments: Flow<List<AppointmentModel>> = getAppointmentsUseCase.invoke()
     val appointments: Flow<List<AppointmentModel>> get() = _appointments
 
-    private val _visibleDialog = MutableLiveData<Boolean>()
-    val visibleDialog: LiveData<Boolean> get() = _visibleDialog
-    fun showDialog(enabled: Boolean) {
-        _visibleDialog.value = enabled
-    }
-
     private val _visibleDeleteDialog = MutableLiveData<Boolean>()
     val visibleDeleteDialog: LiveData<Boolean> get() = _visibleDeleteDialog
     fun showDeleteDialog(enabled: Boolean) {
