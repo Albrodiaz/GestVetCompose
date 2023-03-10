@@ -11,46 +11,52 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_error
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
+import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormTextField(
     text: String,
-    label: String = "",
+    placeholder: String = "",
     modifier: Modifier,
     maxLines: Int = 1,
     singleLine: Boolean = true,
+    readOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    textChange: (String) -> Unit
+    textChange: (String) -> Unit,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextField(
         modifier = modifier
-            .fillMaxWidth(.8f)
+            .fillMaxWidth(0.9f)
             .padding(vertical = 6.dp),
         value = text,
-        label = { Text(text = label) },
+        placeholder = { Text(text = placeholder) },
         onValueChange = { textChange(it) },
         maxLines = maxLines,
         singleLine = singleLine,
+        trailingIcon = trailingIcon,
+        readOnly = readOnly,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         colors = TextFieldDefaults.textFieldColors(
-            focusedIndicatorColor = md_theme_light_primary,
+            focusedIndicatorColor = Color.LightGray,
+            unfocusedIndicatorColor = Color.LightGray,
             cursorColor = md_theme_light_primary,
             focusedLabelColor = md_theme_light_primary,
-            containerColor = Color.Transparent
+            containerColor = md_theme_light_inverseOnSurface
         )
     )
 }
@@ -125,7 +131,7 @@ fun DeleteButton(
     val density = LocalDensity.current
     Box(modifier = modifier.fillMaxHeight()) {
         AnimatedVisibility(
-            visible = swipeableState?.targetValue == 1 && swipeableState.progress.fraction > 0.5,
+            visible = (swipeableState?.targetValue == 1) && (swipeableState.progress.fraction > 0.5),
             enter = fadeIn(animationSpec = tween(1500)) + slideInHorizontally { with(density) { 100.dp.roundToPx() } },
             exit = fadeOut(animationSpec = tween(1500)) + slideOutHorizontally { with(density) { 50.dp.roundToPx() } }
         ) {
@@ -137,4 +143,44 @@ fun DeleteButton(
             }
         }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppointmentDatePicker(
+    datePickerState: DatePickerState,
+    show: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    if (show) {
+        DatePickerDialog(
+            modifier = Modifier.fillMaxSize(),
+            onDismissRequest = { onDismiss() },
+            confirmButton = {
+                TextButton(onClick = { onConfirm() }) {
+                    Text(stringResource(id = R.string.save))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text(stringResource(id = R.string.cancel))
+                }
+            }) {
+            AddDatePicker(
+                datePickerState = datePickerState
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddDatePicker(datePickerState: DatePickerState) {
+    DatePicker(
+        state = datePickerState,
+        dateFormatter = DatePickerFormatter(selectedDateSkeleton = "ddMMyyyy"),
+        showModeToggle = false
+    )
 }

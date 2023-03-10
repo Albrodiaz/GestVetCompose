@@ -9,4 +9,5 @@
     <string name="details">Detalles</string>
     <string name="save">Guardar</string>
     <string name="detailTextfield">Sin observaciones</string>
+    <string name="cancel">Cancelar</string>
 </resources>

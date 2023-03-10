@@ -4,10 +4,12 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,6 +18,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -26,9 +29,10 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddAppointmentViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AddAppointmentScreen(
     addAppointmentViewModel: AddAppointmentViewModel,
@@ -36,13 +40,23 @@ fun AddAppointmentScreen(
 ) {
     val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.observeAsState(false)
     val isAddedSuccess by addAppointmentViewModel.isAddedSuccess.observeAsState()
+    val showDatePicker by addAppointmentViewModel.showDatePicker.observeAsState(false)
     val ownerText by addAppointmentViewModel.ownerText.observeAsState("")
     val petText by addAppointmentViewModel.petText.observeAsState("")
     val dateText by addAppointmentViewModel.dateText.observeAsState("")
     val hourText by addAppointmentViewModel.hourText.observeAsState("")
     val subjectText by addAppointmentViewModel.subjectText.observeAsState("")
     val detailText by addAppointmentViewModel.detailsText.observeAsState("")
+    val datePickerState = rememberDatePickerState()
     val context = LocalContext.current
+
+    AppointmentDatePicker(
+        show = showDatePicker,
+        datePickerState = datePickerState,
+        onDismiss = { addAppointmentViewModel.setShowDatePicker(false) },
+        onConfirm = { addAppointmentViewModel.setDate(datePickerState.selectedDateMillis!!.toDate()) }
+    )
+
 
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (title, owner, pet, date, hour, subject, detail, saveButton, close) = createRefs()
@@ -71,7 +85,7 @@ fun AddAppointmentScreen(
                 })
         FormTextField(
             text = ownerText,
-            label = stringResource(id = R.string.owner),
+            placeholder = stringResource(id = R.string.owner),
             modifier = Modifier.constrainAs(owner) {
                 top.linkTo(title.bottom)
                 start.linkTo(parent.start)
@@ -85,7 +99,7 @@ fun AddAppointmentScreen(
         )
         FormTextField(
             text = petText,
-            label = stringResource(id = R.string.pet),
+            placeholder = stringResource(id = R.string.pet),
             modifier = Modifier.constrainAs(pet) {
                 top.linkTo(owner.bottom)
                 start.linkTo(parent.start)
@@ -96,43 +110,50 @@ fun AddAppointmentScreen(
                 capitalization = KeyboardCapitalization.Words
             ),
             textChange = { addAppointmentViewModel.setPet(it) }
-
         )
         FormTextField(
-            text = dateText,
-            label = stringResource(id = R.string.date),
             modifier = Modifier
-                .fillMaxWidth(.35f)
+                .fillMaxWidth(.45f)
                 .constrainAs(date) {
                     top.linkTo(pet.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(hour.start)
                 },
+            text = dateText,
+            placeholder = stringResource(id = R.string.date),
+            readOnly = true,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Number
             ),
             textChange = { addAppointmentViewModel.setDate(it) },
+            trailingIcon = { IconButton(onClick = { addAppointmentViewModel.setShowDatePicker(true) }) {
+                Icon(imageVector = Icons.Filled.DateRange, contentDescription = "show datePicker", modifier = Modifier.size(20.dp))
+            } }
         )
         FormTextField(
-            text = hourText,
-            label = stringResource(id = R.string.hour),
             modifier = Modifier
-                .fillMaxWidth(.35f)
+                .fillMaxWidth(.4f)
                 .constrainAs(hour) {
                     top.linkTo(pet.bottom)
                     start.linkTo(date.end)
                     end.linkTo(parent.end)
                 },
+            text = hourText,
+            placeholder = stringResource(id = R.string.hour),
             textChange = { addAppointmentViewModel.setHour(it) },
+            readOnly = true,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Number
-            )
+            ),
+            trailingIcon = { IconButton(onClick = { addAppointmentViewModel.setShowDatePicker(true) }) {
+                Icon(painter = painterResource(id = R.drawable.ic_clock_24), contentDescription = "show timePicker")
+            } }
         )
         FormTextField(
             text = subjectText,
-            label = stringResource(id = R.string.subject),
+            placeholder = stringResource(id = R.string.subject),
             modifier = Modifier.constrainAs(subject) {
                 top.linkTo(date.bottom)
                 start.linkTo(parent.start)
@@ -146,7 +167,7 @@ fun AddAppointmentScreen(
         )
         FormTextField(
             text = detailText,
-            label = stringResource(id = R.string.details),
+            placeholder = stringResource(id = R.string.details),
             modifier = Modifier.constrainAs(detail) {
                 top.linkTo(subject.bottom)
                 start.linkTo(parent.start)
@@ -165,7 +186,11 @@ fun AddAppointmentScreen(
             onClick = {
                 addAppointmentViewModel.addAppointment()
                 isAddedSuccess?.let {
-                    if (it) navigationController.navigateUp() else Toast.makeText(context, "Revise los datos", Toast.LENGTH_SHORT).show()
+                    if (it) navigationController.navigateUp() else Toast.makeText(
+                        context,
+                        "Revise los datos",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             },
             enabled = isButtonEnabled,

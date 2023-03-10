@@ -22,6 +22,12 @@ class AddAppointmentViewModel @Inject constructor(
     private val _isAddedSuccess = MutableLiveData(true)
     val isAddedSuccess: LiveData<Boolean?> get() = _isAddedSuccess
 
+    private val _showDatePicker = MutableLiveData(false)
+    val showDatePicker: LiveData<Boolean> get() = _showDatePicker
+    fun setShowDatePicker(show: Boolean) {
+        _showDatePicker.value = show
+    }
+
     private var _ownerText = MutableLiveData("")
     val ownerText: LiveData<String> get() = _ownerText
     fun setOwner(owner: String) {
