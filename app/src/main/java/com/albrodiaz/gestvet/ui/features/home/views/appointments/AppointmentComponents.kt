@@ -229,7 +229,8 @@ fun AddTimePicker(value: (String) -> Unit) {
                 setOnTimeChangedListener { _, _, _ ->
                     value("${hour.hourFormatter()}:${minute.hourFormatter()}")
                 }
-                setBackgroundColor(resources.getColor(/*TODO*/))
+                setBackgroundColor(resources.getColor(R.color.surface_light))
+                /*TODO: Ajustar colores del TimePicker*/
             }
         })
     }
