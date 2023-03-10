@@ -85,7 +85,7 @@ class AddAppointmentViewModel @Inject constructor(
                         _hourText.value,
                         _subjectText.value,
                         _detailsText.value,
-                        _dateText.value!!.dateToMillis() + _hourText.value!!.hourToMillis() //TODO: Usar otro id y usar objetos Date para enviar a Firebase
+                        _dateText.value!!.dateToMillis() + _hourText.value!!.hourToMillis() /*TODO: Usar otro id y usar objetos Date para enviar a Firebase*/
                     )
                 )
             } catch (e: Throwable) {
@@ -94,5 +94,4 @@ class AddAppointmentViewModel @Inject constructor(
             }
         }
     }
-
 }

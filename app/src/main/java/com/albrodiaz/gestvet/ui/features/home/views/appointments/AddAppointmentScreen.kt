@@ -18,7 +18,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -30,6 +29,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
+import com.albrodiaz.gestvet.core.states.rememberCustomDatePickerState
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddAppointmentViewModel
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -47,16 +47,20 @@ fun AddAppointmentScreen(
     val hourText by addAppointmentViewModel.hourText.observeAsState("")
     val subjectText by addAppointmentViewModel.subjectText.observeAsState("")
     val detailText by addAppointmentViewModel.detailsText.observeAsState("")
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberCustomDatePickerState()
     val context = LocalContext.current
 
     AppointmentDatePicker(
         show = showDatePicker,
         datePickerState = datePickerState,
         onDismiss = { addAppointmentViewModel.setShowDatePicker(false) },
-        onConfirm = { addAppointmentViewModel.setDate(datePickerState.selectedDateMillis!!.toDate()) }
+        onConfirm = {
+            addAppointmentViewModel.apply {
+                setDate(datePickerState.selectedDateMillis!!.toDate())
+                setShowDatePicker(false)
+            }
+        }
     )
-
 
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (title, owner, pet, date, hour, subject, detail, saveButton, close) = createRefs()
@@ -142,14 +146,11 @@ fun AddAppointmentScreen(
             text = hourText,
             placeholder = stringResource(id = R.string.hour),
             textChange = { addAppointmentViewModel.setHour(it) },
-            readOnly = true,
+            readOnly = false,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Number
-            ),
-            trailingIcon = { IconButton(onClick = { addAppointmentViewModel.setShowDatePicker(true) }) {
-                Icon(painter = painterResource(id = R.drawable.ic_clock_24), contentDescription = "show timePicker")
-            } }
+            )
         )
         FormTextField(
             text = subjectText,

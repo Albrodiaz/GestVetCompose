@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.theme.*
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -181,6 +182,9 @@ fun AddDatePicker(datePickerState: DatePickerState) {
     DatePicker(
         state = datePickerState,
         dateFormatter = DatePickerFormatter(selectedDateSkeleton = "ddMMyyyy"),
-        showModeToggle = false
+        showModeToggle = true
     )
 }
+
+
+/* TODO: A la espera de versión estable de Timepicker */
