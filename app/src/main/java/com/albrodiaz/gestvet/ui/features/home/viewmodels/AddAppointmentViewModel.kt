@@ -28,6 +28,12 @@ class AddAppointmentViewModel @Inject constructor(
         _showDatePicker.value = show
     }
 
+    private val _showTimePicker = MutableLiveData(false)
+    val showTimePicker: LiveData<Boolean> get() = _showTimePicker
+    fun setShowTimePicker(show: Boolean) {
+        _showTimePicker.value = show
+    }
+
     private var _ownerText = MutableLiveData("")
     val ownerText: LiveData<String> get() = _ownerText
     fun setOwner(owner: String) {

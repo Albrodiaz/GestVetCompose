@@ -1,5 +1,6 @@
 package com.albrodiaz.gestvet.ui.features.home.views.appointments
 
+import android.widget.TimePicker
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -20,8 +21,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.core.extensions.hourFormatter
 import com.albrodiaz.gestvet.ui.theme.*
 import java.util.*
 
@@ -188,3 +191,46 @@ fun AddDatePicker(datePickerState: DatePickerState) {
 
 
 /* TODO: A la espera de versión estable de Timepicker */
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimePickerWidget(
+    show: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var hourListener = ""
+    if (show) {
+        DatePickerDialog(
+            onDismissRequest = { onDismiss() },
+            confirmButton = {
+                TextButton(onClick = { onConfirm(hourListener) }) {
+                    Text(stringResource(id = R.string.save))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text(stringResource(id = R.string.cancel))
+                }
+            }
+        ) {
+            AddTimePicker {
+                hourListener = it
+            }
+        }
+    }
+}
+
+@Composable
+fun AddTimePicker(value: (String) -> Unit) {
+    GestVetTheme {
+        AndroidView(factory = {
+            TimePicker(it).apply {
+                setOnTimeChangedListener { _, _, _ ->
+                    value("${hour.hourFormatter()}:${minute.hourFormatter()}")
+                }
+                setBackgroundColor(resources.getColor(/*TODO*/))
+            }
+        })
+    }
+}

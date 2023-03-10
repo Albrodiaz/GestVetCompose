@@ -18,6 +18,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -41,6 +42,7 @@ fun AddAppointmentScreen(
     val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.observeAsState(false)
     val isAddedSuccess by addAppointmentViewModel.isAddedSuccess.observeAsState()
     val showDatePicker by addAppointmentViewModel.showDatePicker.observeAsState(false)
+    val showTimePicker by addAppointmentViewModel.showTimePicker.observeAsState(false)
     val ownerText by addAppointmentViewModel.ownerText.observeAsState("")
     val petText by addAppointmentViewModel.petText.observeAsState("")
     val dateText by addAppointmentViewModel.dateText.observeAsState("")
@@ -61,6 +63,15 @@ fun AddAppointmentScreen(
             }
         }
     )
+
+    TimePickerWidget(
+        show = showTimePicker,
+        onDismiss = { addAppointmentViewModel.setShowTimePicker(false) }) {
+        addAppointmentViewModel.apply {
+            setHour(it)
+            setShowTimePicker(false)
+        }
+    }
 
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (title, owner, pet, date, hour, subject, detail, saveButton, close) = createRefs()
@@ -131,9 +142,15 @@ fun AddAppointmentScreen(
                 keyboardType = KeyboardType.Number
             ),
             textChange = { addAppointmentViewModel.setDate(it) },
-            trailingIcon = { IconButton(onClick = { addAppointmentViewModel.setShowDatePicker(true) }) {
-                Icon(imageVector = Icons.Filled.DateRange, contentDescription = "show datePicker", modifier = Modifier.size(20.dp))
-            } }
+            trailingIcon = {
+                IconButton(onClick = { addAppointmentViewModel.setShowDatePicker(true) }) {
+                    Icon(
+                        imageVector = Icons.Filled.DateRange,
+                        contentDescription = "show datePicker",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
         )
         FormTextField(
             modifier = Modifier
@@ -146,7 +163,16 @@ fun AddAppointmentScreen(
             text = hourText,
             placeholder = stringResource(id = R.string.hour),
             textChange = { addAppointmentViewModel.setHour(it) },
-            readOnly = false,
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = { addAppointmentViewModel.setShowTimePicker(true) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_clock_24),
+                        contentDescription = "show timePicker",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Number
