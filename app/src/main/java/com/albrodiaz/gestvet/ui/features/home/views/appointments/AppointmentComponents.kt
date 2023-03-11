@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat.getColor
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.hourFormatter
 import com.albrodiaz.gestvet.ui.theme.*
@@ -202,6 +203,9 @@ fun TimePickerWidget(
     var hourListener = ""
     if (show) {
         DatePickerDialog(
+            colors = DatePickerDefaults.colors(
+                containerColor = md_theme_light_surfaceVariant
+            ),
             onDismissRequest = { onDismiss() },
             confirmButton = {
                 TextButton(onClick = { onConfirm(hourListener) }) {
@@ -229,7 +233,7 @@ fun AddTimePicker(value: (String) -> Unit) {
                 setOnTimeChangedListener { _, _, _ ->
                     value("${hour.hourFormatter()}:${minute.hourFormatter()}")
                 }
-                setBackgroundColor(resources.getColor(R.color.surface_light))
+                setBackgroundColor(getColor(it, R.color.surface_light))
                 /*TODO: Ajustar colores del TimePicker*/
             }
         })
