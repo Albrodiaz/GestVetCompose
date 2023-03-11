@@ -52,25 +52,26 @@ fun AddAppointmentScreen(
     val datePickerState = rememberCustomDatePickerState()
     val context = LocalContext.current
 
-    AppointmentDatePicker(
+    DateTimeDialog(
+        state = datePickerState,
         show = showDatePicker,
-        datePickerState = datePickerState,
         onDismiss = { addAppointmentViewModel.setShowDatePicker(false) },
         onConfirm = {
             addAppointmentViewModel.apply {
                 setDate(datePickerState.selectedDateMillis!!.toDate())
                 setShowDatePicker(false)
             }
-        }
-    )
+        }) {
+        AddDatePicker(datePickerState = datePickerState)
+    }
 
-    TimePickerWidget(
+    DateTimeDialog(
+        state = null,
         show = showTimePicker,
-        onDismiss = { addAppointmentViewModel.setShowTimePicker(false) }) {
-        addAppointmentViewModel.apply {
-            setHour(it)
-            setShowTimePicker(false)
-        }
+        onDismiss = { addAppointmentViewModel.setShowTimePicker(false) },
+        onConfirm = { addAppointmentViewModel.apply {addAppointmentViewModel.setShowTimePicker(false) } }
+    ) {
+        AddTimePicker(value = { addAppointmentViewModel.setHour(it) })
     }
 
     ConstraintLayout(Modifier.fillMaxSize()) {

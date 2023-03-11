@@ -153,18 +153,19 @@ fun DeleteButton(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppointmentDatePicker(
-    datePickerState: DatePickerState,
+fun <T> DateTimeDialog(
+    state: T? = null,
     show: Boolean,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: (String?) -> Unit,
+    content: @Composable (T?) -> Unit
 ) {
     if (show) {
         DatePickerDialog(
             modifier = Modifier.fillMaxSize(),
             onDismissRequest = { onDismiss() },
             confirmButton = {
-                TextButton(onClick = { onConfirm() }) {
+                TextButton(onClick = { onConfirm(null) }) {
                     Text(stringResource(id = R.string.save))
                 }
             },
@@ -172,10 +173,9 @@ fun AppointmentDatePicker(
                 TextButton(onClick = { onDismiss() }) {
                     Text(stringResource(id = R.string.cancel))
                 }
-            }) {
-            AddDatePicker(
-                datePickerState = datePickerState
-            )
+            }
+        ) {
+            if (state != null) content(state) else content(null)
         }
     }
 }
@@ -191,51 +191,34 @@ fun AddDatePicker(datePickerState: DatePickerState) {
 }
 
 
-/* TODO: A la espera de versión estable de Timepicker */
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TimePickerWidget(
-    show: Boolean,
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
-) {
-    var hourListener = ""
-    if (show) {
-        DatePickerDialog(
-            colors = DatePickerDefaults.colors(
-                containerColor = md_theme_light_surfaceVariant
-            ),
-            onDismissRequest = { onDismiss() },
-            confirmButton = {
-                TextButton(onClick = { onConfirm(hourListener) }) {
-                    Text(stringResource(id = R.string.save))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { onDismiss() }) {
-                    Text(stringResource(id = R.string.cancel))
-                }
-            }
-        ) {
-            AddTimePicker {
-                hourListener = it
-            }
-        }
-    }
-}
 
 @Composable
 fun AddTimePicker(value: (String) -> Unit) {
-    GestVetTheme {
-        AndroidView(factory = {
-            TimePicker(it).apply {
-                setOnTimeChangedListener { _, _, _ ->
-                    value("${hour.hourFormatter()}:${minute.hourFormatter()}")
-                }
-                setBackgroundColor(getColor(it, R.color.surface_light))
-                /*TODO: Ajustar colores del TimePicker*/
+    AndroidView(factory = {
+        TimePicker(it).apply {
+            setBackgroundColor(getColor(it, R.color.surface_light))
+            setIs24HourView(true)
+            this.alpha = .81f
+            setOnTimeChangedListener { _, _, _ ->
+                value("${hour.hourFormatter()}:${minute.hourFormatter()}")
             }
-        })
-    }
+        }
+    })
 }
+/*  TODO: A la espera de versión estable de Timepicker Compose
+
+@Preview(showBackground = true)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CompTimePicker() {
+    val state = rememberTimePickerState()
+    GestVetTheme {
+        TimePicker(
+            state = state,
+            modifier = Modifier,
+            colors = TimePickerDefaults.colors(
+                //Propiedades del TimePicker
+            ),
+        )
+    }
+}*/
