@@ -18,13 +18,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
+import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.models.Routes
@@ -54,8 +58,7 @@ fun AppointmentScreen(
             showDeleteDialog(false)
         }
     }
-
-
+    
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (addButton) = createRefs()
         LazyColumn(
@@ -79,6 +82,7 @@ fun AppointmentScreen(
                 }
             }
         }
+        NoAppointmentsScreen(show = appointments.isEmpty())
         AnimatedAddFab(
             visible = lazyListState.isScrolled,
             modifier = Modifier.constrainAs(addButton) {
@@ -187,5 +191,18 @@ private fun ItemContent(appointment: AppointmentModel, modifier: Modifier) {
                     top.linkTo(pet.bottom)
                     start.linkTo(owner.start)
                 })
+    }
+}
+
+@Composable
+fun NoAppointmentsScreen(show: Boolean) {
+    if (show) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(stringResource(id = R.string.noAppointments), fontSize = 34.sp)
+        }
     }
 }
