@@ -9,6 +9,7 @@ import com.albrodiaz.gestvet.domain.GetAppointmentsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,7 +20,9 @@ class AppointmentViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val _appointments: Flow<List<AppointmentModel>> = getAppointmentsUseCase.invoke()
+    private val _appointments: Flow<List<AppointmentModel>> = getAppointmentsUseCase.invoke().map {values ->
+        values.toObjects(AppointmentModel::class.java)
+    }
     val appointments: Flow<List<AppointmentModel>> get() = _appointments
 
     private val _visibleDeleteDialog = MutableLiveData<Boolean>()

@@ -17,5 +17,3 @@ fun String.hourToMillis(): Long {
 }
 
 fun String.isValidEmail() = Patterns.EMAIL_ADDRESS.matcher(this).matches()
-
-fun Int.hourFormatter(): String = if (this.toString().length == 1) "0$this" else this.toString()
