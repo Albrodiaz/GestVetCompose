@@ -68,7 +68,7 @@ fun AppointmentScreen(
             items(items = appointments, key = { it.id ?: -1 }) { appointment ->
                 Box(
                     modifier = Modifier
-                        .animateItemPlacement(tween(1000))
+                        .animateItemPlacement(tween(500))
                 ) {
                     ItemAppointment(
                         appointment = appointment,

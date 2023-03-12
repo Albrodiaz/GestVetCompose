@@ -15,23 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.albrodiaz.gestvet.ui.features.home.models.Routes
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddAppointmentViewModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 
 @Composable
 fun MainScreen(
     navController: NavController,
-    appointmentViewModel: AppointmentViewModel,
-    addAppointmentViewModel: AddAppointmentViewModel
+    appointmentViewModel: AppointmentViewModel
 ) {
     val navStackEntry by navController.currentBackStackEntryAsState()
     val bottomNavState = rememberSaveable { mutableStateOf(true) }
 
     when (navStackEntry?.destination?.route) {
-        Routes.AddAppointment.route -> {
-            bottomNavState.value = false
+        Routes.Appointment.route, Routes.Search.route, Routes.Client.route -> {
+            bottomNavState.value = true
         }
-        else -> bottomNavState.value = true
+        else -> bottomNavState.value = false
     }
 
     Scaffold(
@@ -42,11 +40,7 @@ fun MainScreen(
                 .fillMaxSize()
                 .padding(bottom = it.calculateBottomPadding())
         ) {
-            NavController(
-                navigationController = navController,
-                appointmentViewModel,
-                addAppointmentViewModel
-            )
+            MainNavController(navigationController = navController, appointmentViewModel = appointmentViewModel)
         }
     }
 }
