@@ -9,4 +9,4 @@ fun Long.toDate(): String {
     val date = Date(this)
     return SimpleDateFormat("dd/MM/yyyy").format(date)
 }
-fun Int.hourFormatter(): String = if (this.toString().length == 1) "0$this" else this.toString()
+fun Int.showLeftZero(): String = if (this.toString().length == 1) "0$this" else this.toString()

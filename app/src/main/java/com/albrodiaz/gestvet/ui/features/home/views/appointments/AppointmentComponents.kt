@@ -25,7 +25,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat.getColor
 import com.albrodiaz.gestvet.R
-import com.albrodiaz.gestvet.core.extensions.hourFormatter
+import com.albrodiaz.gestvet.core.extensions.showLeftZero
 import com.albrodiaz.gestvet.ui.theme.*
 import java.util.*
 
@@ -200,7 +200,7 @@ fun AddTimePicker(value: (String) -> Unit) {
             setIs24HourView(true)
             this.alpha = .81f
             setOnTimeChangedListener { _, _, _ ->
-                value("${hour.hourFormatter()}:${minute.hourFormatter()}")
+                value("${hour.showLeftZero()}:${minute.showLeftZero()}")
             }
         }
     })
