@@ -198,7 +198,6 @@ fun AddTimePicker(value: (String) -> Unit) {
         TimePicker(it).apply {
             setBackgroundColor(getColor(it, R.color.surface_light))
             setIs24HourView(true)
-            this.alpha = .81f
             setOnTimeChangedListener { _, _, _ ->
                 value("${hour.showLeftZero()}:${minute.showLeftZero()}")
             }

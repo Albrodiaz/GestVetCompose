@@ -28,10 +28,7 @@ fun MainNavController(
         composable(Routes.Client.route) { ClientScreen() }
         composable(Routes.Search.route) { SearchScreen(appointmentViewModel) }
         composable(Routes.AddAppointment.route) {
-            AddAppointmentScreen(
-                addAppointmentViewModel = hiltViewModel(),
-                navigationController
-            )
+            AddAppointmentScreen(addAppointmentViewModel = hiltViewModel(), navigationController)
         }
     }
 }

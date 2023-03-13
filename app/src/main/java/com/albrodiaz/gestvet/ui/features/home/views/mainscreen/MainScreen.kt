@@ -33,7 +33,7 @@ fun MainScreen(
     }
 
     Scaffold(
-        bottomBar = { if (!bottomNavState.value) return@Scaffold else MainBottomNav(navController = navController) }
+        bottomBar = { if (bottomNavState.value) MainBottomNav(navController = navController) }
     ) {
         Box(
             modifier = Modifier
