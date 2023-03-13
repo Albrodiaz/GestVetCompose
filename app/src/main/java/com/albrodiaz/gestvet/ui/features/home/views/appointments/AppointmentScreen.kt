@@ -7,6 +7,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -36,7 +37,6 @@ import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.theme.*
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppointmentScreen(
     appointmentViewModel: AppointmentViewModel,
@@ -58,11 +58,29 @@ fun AppointmentScreen(
             showDeleteDialog(false)
         }
     }
-    
+
+    NoAppointmentsScreen(show = appointments.isEmpty())
+
+    AppointmentsScreen(
+        state = lazyListState,
+        appointments = appointments,
+        appointmentViewModel = appointmentViewModel,
+        navigationController = navigationController
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AppointmentsScreen(
+    state: LazyListState,
+    appointments: List<AppointmentModel>,
+    appointmentViewModel: AppointmentViewModel,
+    navigationController: NavHostController
+) {
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (addButton) = createRefs()
         LazyColumn(
-            state = lazyListState, modifier = Modifier
+            state = state, modifier = Modifier
                 .fillMaxSize()
         ) {
             items(items = appointments, key = { it.id ?: -1 }) { appointment ->
@@ -82,9 +100,9 @@ fun AppointmentScreen(
                 }
             }
         }
-        NoAppointmentsScreen(show = appointments.isEmpty())
+
         AnimatedAddFab(
-            visible = lazyListState.isScrolled,
+            visible = state.isScrolled,
             modifier = Modifier.constrainAs(addButton) {
                 bottom.linkTo(parent.bottom)
                 end.linkTo(parent.end)
@@ -202,7 +220,7 @@ fun NoAppointmentsScreen(show: Boolean) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(stringResource(id = R.string.noAppointments), fontSize = 34.sp)
+            Text(stringResource(id = R.string.noAppointments), fontSize = 16.sp)
         }
     }
 }
