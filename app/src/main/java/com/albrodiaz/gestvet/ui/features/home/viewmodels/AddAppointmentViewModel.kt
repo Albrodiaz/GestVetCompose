@@ -9,15 +9,32 @@ import com.albrodiaz.gestvet.core.extensions.combine
 import com.albrodiaz.gestvet.core.extensions.dateToMillis
 import com.albrodiaz.gestvet.core.extensions.hourToMillis
 import com.albrodiaz.gestvet.domain.AddAppointmentUseCase
+import com.albrodiaz.gestvet.domain.GetAppointmentsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddAppointmentViewModel @Inject constructor(
-    private val addAppointmentUseCase: AddAppointmentUseCase
+    private val addAppointmentUseCase: AddAppointmentUseCase,
+    getAppointmentsUseCase: GetAppointmentsUseCase
 ) : ViewModel() {
+
+    private val _apptId = MutableLiveData<Long?>()
+    fun setApptId(id: Long) {
+        _apptId.value = id
+    }
+
+    private val _selectedAppt: Flow<AppointmentModel> = getAppointmentsUseCase.invoke(_apptId.value?:0).map {
+        it.toObject(AppointmentModel::class.java)
+    }
+
+    init {
+        setData()
+    }
 
     private val _isAddedSuccess = MutableLiveData(true)
     val isAddedSuccess: LiveData<Boolean?> get() = _isAddedSuccess
@@ -68,6 +85,19 @@ class AddAppointmentViewModel @Inject constructor(
     val detailsText: LiveData<String> get() = _detailsText
     fun setDetails(details: String) {
         _detailsText.value = details
+    }
+
+    private fun setData() {
+        viewModelScope.launch {
+            _selectedAppt.collect {
+                setOwner(it.owner?:"")
+                setPet(it.pet?:"")
+                setDate(it.date?:"")
+                setHour(it.hour?:"")
+                setSubject(it.subject?:"")
+                setDetails(it.details?:"")
+            }
+        }
     }
 
     var isButtonEnabled: LiveData<Boolean> = ownerText.combine(
