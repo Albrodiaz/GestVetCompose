@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -47,7 +46,6 @@ fun AppointmentScreen(
     val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
     val showDeleteDialog by appointmentViewModel.visibleDeleteDialog.observeAsState(false)
     val selectedAppointment by appointmentViewModel.selectedAppointment.observeAsState()
-    val lazyListState = rememberLazyListState()
 
     ConfirmDeleteDialog(
         show = showDeleteDialog,
@@ -62,8 +60,7 @@ fun AppointmentScreen(
 
     NoAppointmentsScreen(show = appointments.isEmpty())
 
-    AppointmentsScreen(
-        state = lazyListState,
+    Appointments(
         appointments = appointments,
         appointmentViewModel = appointmentViewModel,
         navigationController = navigationController
@@ -74,14 +71,14 @@ fun AppointmentScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AppointmentsScreen(
-    state: LazyListState,
+fun Appointments(
     appointments: List<AppointmentModel>,
     appointmentViewModel: AppointmentViewModel,
     navigationController: NavHostController,
     onItemSelected: (Long) -> Unit
 ) {
     ConstraintLayout(Modifier.fillMaxSize()) {
+        val state = rememberLazyListState()
         val (addButton) = createRefs()
         LazyColumn(
             state = state, modifier = Modifier
@@ -91,7 +88,7 @@ fun AppointmentsScreen(
                 Box(
                     modifier = Modifier
                         .animateItemPlacement(tween(500))
-                        .clickable { onItemSelected(appointment.id ?: 4L) }
+                        .clickable { onItemSelected(appointment.id ?: 0L) }
                 ) {
                     ItemAppointment(
                         appointment = appointment,
@@ -111,7 +108,7 @@ fun AppointmentsScreen(
             modifier = Modifier.constrainAs(addButton) {
                 bottom.linkTo(parent.bottom)
                 end.linkTo(parent.end)
-            }) { navigationController.navigate(Routes.AddAppointment.route) }
+            }) { navigationController.navigate(Routes.AddAppointment.createRoute(0L)) }
     }
 }
 

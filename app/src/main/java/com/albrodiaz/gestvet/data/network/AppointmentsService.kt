@@ -18,7 +18,7 @@ class AppointmentsService @Inject constructor(private val firebase: FirebaseClie
 
     val appointments
         get() = callbackFlow {
-            val data = firebase.dataBase.collection(APPOINTMENTS_PATH)
+            val data = firebase.dataBase.collection(APPOINTMENTS_PATH).orderBy("dateInMillis")
                 .addSnapshotListener { values, error ->
                     error?.let {
                         Log.e(APPOINTMENT_TAG, "Error al cargar los datos: $error")

@@ -115,13 +115,14 @@ class AddAppointmentViewModel @Inject constructor(
             try {
                 addAppointmentUseCase.invoke(
                     AppointmentModel(
-                        _ownerText.value,
-                        _petText.value,
-                        _dateText.value,
-                        _hourText.value,
-                        _subjectText.value,
-                        _detailsText.value,
-                        _dateText.value!!.dateToMillis() + _hourText.value!!.hourToMillis() /*TODO: Usar otro id y usar objetos Date para enviar a Firebase*/
+                        owner = _ownerText.value,
+                        pet = _petText.value,
+                        date = _dateText.value,
+                        hour = _hourText.value,
+                        dateInMillis = _dateText.value!!.dateToMillis() + _hourText.value!!.hourToMillis(),
+                        subject = _subjectText.value,
+                        details = _detailsText.value,
+                        id = System.currentTimeMillis()
                     )
                 )
             } catch (e: Throwable) {
