@@ -37,7 +37,8 @@ import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddAppointmentViewModel
 @Composable
 fun AddAppointmentScreen(
     addAppointmentViewModel: AddAppointmentViewModel,
-    navigationController: NavHostController
+    navigationController: NavHostController,
+    appointmentId: Long?
 ) {
     val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.observeAsState(false)
     val isAddedSuccess by addAppointmentViewModel.isAddedSuccess.observeAsState()
@@ -51,6 +52,8 @@ fun AddAppointmentScreen(
     val detailText by addAppointmentViewModel.detailsText.observeAsState("")
     val datePickerState = rememberCustomDatePickerState()
     val context = LocalContext.current
+
+    addAppointmentViewModel.setApptId(appointmentId?:0L)
 
     DateTimeDialog(
         state = datePickerState,

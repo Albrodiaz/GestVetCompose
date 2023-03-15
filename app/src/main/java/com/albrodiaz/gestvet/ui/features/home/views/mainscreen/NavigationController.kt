@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.albrodiaz.gestvet.ui.features.home.models.Routes
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AddAppointmentScreen
@@ -27,8 +28,12 @@ fun MainNavController(
         }
         composable(Routes.Client.route) { ClientScreen() }
         composable(Routes.Search.route) { SearchScreen(appointmentViewModel) }
-        composable(Routes.AddAppointment.route) {
-            AddAppointmentScreen(addAppointmentViewModel = hiltViewModel(), navigationController)
+        composable(Routes.AddAppointment.route, arguments = listOf(navArgument("id"){ defaultValue = 1L })) {
+            AddAppointmentScreen(
+                addAppointmentViewModel = hiltViewModel(),
+                navigationController = navigationController,
+                appointmentId = it.arguments?.getLong("id")
+            )
         }
     }
 }

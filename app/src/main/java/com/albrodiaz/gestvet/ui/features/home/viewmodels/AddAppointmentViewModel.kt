@@ -1,10 +1,7 @@
 package com.albrodiaz.gestvet.ui.features.home.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.albrodiaz.gestvet.core.extensions.combine
 import com.albrodiaz.gestvet.core.extensions.dateToMillis
 import com.albrodiaz.gestvet.core.extensions.hourToMillis
@@ -20,17 +17,20 @@ import javax.inject.Inject
 @HiltViewModel
 class AddAppointmentViewModel @Inject constructor(
     private val addAppointmentUseCase: AddAppointmentUseCase,
-    getAppointmentsUseCase: GetAppointmentsUseCase
+    getAppointmentsUseCase: GetAppointmentsUseCase,
+    private val state: SavedStateHandle
 ) : ViewModel() {
 
-    private val _apptId = MutableLiveData<Long?>()
+    private val _appointmentId = state.getLiveData("id", 0L)
+
     fun setApptId(id: Long) {
-        _apptId.value = id
+        state["id"] = id
     }
 
-    private val _selectedAppt: Flow<AppointmentModel> = getAppointmentsUseCase.invoke(_apptId.value?:0).map {
-        it.toObject(AppointmentModel::class.java)
-    }
+    private val selectedAppt: Flow<AppointmentModel> =
+        getAppointmentsUseCase.invoke(_appointmentId.value!!).map {
+            it.toObject(AppointmentModel::class.java)
+        }
 
     init {
         setData()
@@ -89,13 +89,13 @@ class AddAppointmentViewModel @Inject constructor(
 
     private fun setData() {
         viewModelScope.launch {
-            _selectedAppt.collect {
-                setOwner(it.owner?:"")
-                setPet(it.pet?:"")
-                setDate(it.date?:"")
-                setHour(it.hour?:"")
-                setSubject(it.subject?:"")
-                setDetails(it.details?:"")
+            selectedAppt.collect {
+                setOwner(it.owner ?: "")
+                setPet(it.pet ?: "")
+                setDate(it.date ?: "")
+                setHour(it.hour ?: "")
+                setSubject(it.subject ?: "")
+                setDetails(it.details ?: "")
             }
         }
     }
