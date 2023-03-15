@@ -19,17 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
-import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.models.Routes
@@ -58,8 +54,6 @@ fun AppointmentScreen(
         }
     }
 
-    NoAppointmentsScreen(show = appointments.isEmpty())
-
     Appointments(
         appointments = appointments,
         appointmentViewModel = appointmentViewModel,
@@ -79,24 +73,34 @@ fun Appointments(
 ) {
     ConstraintLayout(Modifier.fillMaxSize()) {
         val state = rememberLazyListState()
-        val (addButton) = createRefs()
-        LazyColumn(
-            state = state, modifier = Modifier
-                .fillMaxSize()
-        ) {
-            items(items = appointments, key = { it.id ?: -1 }) { appointment ->
-                Box(
-                    modifier = Modifier
-                        .animateItemPlacement(tween(500))
-                        .clickable { onItemSelected(appointment.id ?: 0L) }
-                ) {
-                    ItemAppointment(
-                        appointment = appointment,
+        val (addButton, emptyAppointments) = createRefs()
+
+        if (appointments.isEmpty()) {
+            Text(text = "Nada por ahora...", modifier = Modifier.constrainAs(emptyAppointments) {
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            })
+        } else {
+            LazyColumn(
+                state = state, modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                items(items = appointments, key = { it.id ?: -1 }) { appointment ->
+                    Box(
                         modifier = Modifier
+                            .animateItemPlacement(tween(500))
+                            .clickable { onItemSelected(appointment.id ?: 0L) }
                     ) {
-                        appointmentViewModel.apply {
-                            setSelectedAppointment(appointment)
-                            showDeleteDialog(true)
+                        ItemAppointment(
+                            appointment = appointment,
+                            modifier = Modifier
+                        ) {
+                            appointmentViewModel.apply {
+                                setSelectedAppointment(appointment)
+                                showDeleteDialog(true)
+                            }
                         }
                     }
                 }
@@ -117,7 +121,7 @@ fun Appointments(
 private fun ItemAppointment(
     appointment: AppointmentModel,
     modifier: Modifier,
-    showDeleteDialog: () -> Unit
+    onDelete: () -> Unit
 ) {
     val swipeableState = rememberSwipeableState(initialValue = 0)
     val buttonZIndex = animateFloatAsState(targetValue = swipeableState.progress.fraction)
@@ -153,7 +157,7 @@ private fun ItemAppointment(
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                     end.linkTo(parent.end)
-                }) { showDeleteDialog() }
+                }) { onDelete() }
     }
 }
 
@@ -211,18 +215,5 @@ private fun ItemContent(appointment: AppointmentModel, modifier: Modifier) {
                     top.linkTo(pet.bottom)
                     start.linkTo(owner.start)
                 })
-    }
-}
-
-@Composable
-fun NoAppointmentsScreen(show: Boolean) {
-    if (show) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(stringResource(id = R.string.noAppointments), fontSize = 16.sp)
-        }
     }
 }
