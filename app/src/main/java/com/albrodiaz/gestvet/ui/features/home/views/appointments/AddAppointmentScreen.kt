@@ -93,11 +93,13 @@ fun AddAppointmentScreen(
             Icon(imageVector = Icons.Filled.Close, contentDescription = "")
         }
         Text(
-            text = stringResource(id = R.string.addTitle),
+            text = if (appointmentId == 0L) stringResource(id = R.string.addTitle) else stringResource(
+                id = R.string.modifyAppt
+            ),
             fontWeight = FontWeight.Bold,
             fontSize = 32.sp,
             modifier = Modifier
-                .padding(vertical = 16.dp, horizontal = 40.dp)
+                .padding(vertical = 16.dp, horizontal = 24.dp)
                 .constrainAs(title) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
