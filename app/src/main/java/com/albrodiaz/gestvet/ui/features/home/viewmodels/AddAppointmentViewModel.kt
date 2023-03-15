@@ -122,7 +122,7 @@ class AddAppointmentViewModel @Inject constructor(
                         dateInMillis = _dateText.value!!.dateToMillis() + _hourText.value!!.hourToMillis(),
                         subject = _subjectText.value,
                         details = _detailsText.value,
-                        id = System.currentTimeMillis()
+                        id = if (_appointmentId.value == 0L) System.currentTimeMillis() else _appointmentId.value
                     )
                 )
             } catch (e: Throwable) {
