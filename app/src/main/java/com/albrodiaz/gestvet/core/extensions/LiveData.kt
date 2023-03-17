@@ -12,6 +12,12 @@ fun <A, B, Result> LiveData<A>.combine(
         val b = other.value
         if (b != null) result.postValue(combiner(a, b))
     }
+
+    result.addSource(other) { b ->
+        val a = this@combine.value
+        if (a != null) result.postValue(combiner(a, b))
+    }
+
     return result
 }
 

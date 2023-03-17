@@ -38,6 +38,7 @@ fun FormTextField(
     maxLines: Int = 1,
     singleLine: Boolean = true,
     readOnly: Boolean = false,
+    isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     textChange: (String) -> Unit,
@@ -54,6 +55,7 @@ fun FormTextField(
         singleLine = singleLine,
         trailingIcon = trailingIcon,
         readOnly = readOnly,
+        isError = isError,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         colors = TextFieldDefaults.textFieldColors(
