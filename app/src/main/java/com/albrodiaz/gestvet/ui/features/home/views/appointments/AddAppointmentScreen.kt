@@ -44,6 +44,7 @@ fun AddAppointmentScreen(
     val isAddedSuccess by addAppointmentViewModel.isAddedSuccess.observeAsState()
     val showDatePicker by addAppointmentViewModel.showDatePicker.observeAsState(false)
     val showTimePicker by addAppointmentViewModel.showTimePicker.observeAsState(false)
+    val isErrorEnabled by addAppointmentViewModel.isErrorEnabled.observeAsState(false)
     val ownerText by addAppointmentViewModel.ownerText.observeAsState("")
     val petText by addAppointmentViewModel.petText.observeAsState("")
     val dateText by addAppointmentViewModel.dateText.observeAsState("")
@@ -143,6 +144,7 @@ fun AddAppointmentScreen(
             text = dateText,
             placeholder = stringResource(id = R.string.date),
             readOnly = true,
+            isError = isErrorEnabled,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Number
@@ -170,6 +172,7 @@ fun AddAppointmentScreen(
             placeholder = stringResource(id = R.string.hour),
             textChange = { addAppointmentViewModel.setHour(it) },
             readOnly = true,
+            isError = isErrorEnabled,
             trailingIcon = {
                 IconButton(onClick = { addAppointmentViewModel.setShowTimePicker(true) }) {
                     Icon(

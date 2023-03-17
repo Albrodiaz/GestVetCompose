@@ -21,12 +21,13 @@ fun <A, B, Result> LiveData<A>.combine(
     return result
 }
 
-fun <A, B, C, D, E, Result> LiveData<A>.combine(
+fun <A, B, C, D, E, F, Result> LiveData<A>.combine(
     other1: LiveData<B>,
     other2: LiveData<C>,
     other3: LiveData<D>,
     other4: LiveData<E>,
-    combiner: (A, B, C, D, E) -> Result
+    other5: LiveData<F>,
+    combiner: (A, B, C, D, E, F) -> Result
 ): LiveData<Result> {
     val result = MediatorLiveData<Result>()
     result.addSource(this) { a ->
@@ -34,8 +35,9 @@ fun <A, B, C, D, E, Result> LiveData<A>.combine(
         val c = other2.value
         val d = other3.value
         val e = other4.value
-        if (b != null && c != null && d != null && e != null) {
-            result.postValue(combiner(a, b, c, d, e))
+        val f = other5.value
+        if (b != null && c != null && d != null && e != null && f !=null) {
+            result.postValue(combiner(a, b, c, d, e, f))
         }
     }
     result.addSource(other1) { b ->
@@ -43,8 +45,9 @@ fun <A, B, C, D, E, Result> LiveData<A>.combine(
         val c = other2.value
         val d = other3.value
         val e = other4.value
-        if (a != null && c != null && d != null && e != null) {
-            result.postValue(combiner(a, b, c, d, e))
+        val f = other5.value
+        if (a != null && c != null && d != null && e != null && f != null) {
+            result.postValue(combiner(a, b, c, d, e, f))
         }
     }
     result.addSource(other2) { c ->
@@ -52,8 +55,9 @@ fun <A, B, C, D, E, Result> LiveData<A>.combine(
         val b = other1.value
         val d = other3.value
         val e = other4.value
-        if (a != null && b != null && d != null && e != null) {
-            result.postValue(combiner(a, b, c, d, e))
+        val f = other5.value
+        if (a != null && b != null && d != null && e != null && f != null) {
+            result.postValue(combiner(a, b, c, d, e, f))
         }
     }
     result.addSource(other3) { d ->
@@ -61,8 +65,9 @@ fun <A, B, C, D, E, Result> LiveData<A>.combine(
         val b = other1.value
         val c = other2.value
         val e = other4.value
-        if (a != null && b != null && c != null && e != null) {
-            result.postValue(combiner(a, b, c, d, e))
+        val f = other5.value
+        if (a != null && b != null && c != null && e != null && f != null) {
+            result.postValue(combiner(a, b, c, d, e, f))
         }
     }
     result.addSource(other4) { e ->
@@ -70,8 +75,19 @@ fun <A, B, C, D, E, Result> LiveData<A>.combine(
         val b = other1.value
         val c = other2.value
         val d = other3.value
-        if (a != null && b != null && c != null && d != null) {
-            result.postValue(combiner(a, b, c, d, e))
+        val f = other5.value
+        if (a != null && b != null && c != null && d != null && f != null) {
+            result.postValue(combiner(a, b, c, d, e, f))
+        }
+    }
+    result.addSource(other5) { f ->
+        val a = this@combine.value
+        val b = other1.value
+        val c = other2.value
+        val d = other3.value
+        val e = other4.value
+        if (a != null && b != null && c != null && d != null && e != null) {
+            result.postValue(combiner(a, b, c, d, e, f))
         }
     }
     return result

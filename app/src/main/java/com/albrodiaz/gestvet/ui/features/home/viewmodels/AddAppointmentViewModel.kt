@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.albrodiaz.gestvet.core.extensions.combine
 import com.albrodiaz.gestvet.core.extensions.dateToMillis
 import com.albrodiaz.gestvet.core.extensions.hourToMillis
+import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.domain.AddAppointmentUseCase
 import com.albrodiaz.gestvet.domain.GetAppointmentsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
@@ -23,6 +24,8 @@ class AddAppointmentViewModel @Inject constructor(
 
     private val _appointmentId = state.getLiveData("id", 0L)
 
+    private val dateList = MutableLiveData<List<Long>>(emptyList())
+
     fun setApptId(id: Long) {
         state["id"] = id
     }
@@ -34,6 +37,13 @@ class AddAppointmentViewModel @Inject constructor(
 
     init {
         setData()
+        viewModelScope.launch {
+            getAppointmentsUseCase.invoke().collect { appointments ->
+                dateList.value = appointments.toObjects(AppointmentModel::class.java).map {
+                    it.dateInMillis
+                }
+            }
+        }
     }
 
     private val _isAddedSuccess = MutableLiveData(true)
@@ -63,13 +73,13 @@ class AddAppointmentViewModel @Inject constructor(
         _petText.value = pet
     }
 
-    private val _dateText = MutableLiveData("")
+    private val _dateText = MutableLiveData(System.currentTimeMillis().toDate())
     val dateText: LiveData<String> get() = _dateText
     fun setDate(date: String) {
         _dateText.value = date
     }
 
-    private val _hourText = MutableLiveData("")
+    private val _hourText = MutableLiveData("00:00")
     val hourText: LiveData<String> get() = _hourText
     fun setHour(hour: String) {
         _hourText.value = hour
@@ -100,13 +110,18 @@ class AddAppointmentViewModel @Inject constructor(
         }
     }
 
+    val isErrorEnabled: LiveData<Boolean> = dateText.combine(hourText) { date, hour ->
+        return@combine dateList.value?.contains(hour.hourToMillis() + date.dateToMillis()) ?: false
+    }
+
     var isButtonEnabled: LiveData<Boolean> = ownerText.combine(
         petText,
         dateText,
         hourText,
-        subjectText
-    ) { owner, pet, date, hour, subject ->
-        return@combine owner.isNotEmpty() && pet.isNotEmpty() && date.isNotEmpty() && hour.isNotEmpty() && subject.isNotEmpty()
+        subjectText,
+        isErrorEnabled
+    ) { owner, pet, date, hour, subject, error->
+        return@combine owner.isNotEmpty() && pet.isNotEmpty() && date.isNotEmpty() && hour.isNotEmpty() && subject.isNotEmpty() && !error
     }
 
     fun addAppointment() {
