@@ -5,7 +5,6 @@ import androidx.lifecycle.*
 import com.albrodiaz.gestvet.core.extensions.combine
 import com.albrodiaz.gestvet.core.extensions.dateToMillis
 import com.albrodiaz.gestvet.core.extensions.hourToMillis
-import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.domain.AddAppointmentUseCase
 import com.albrodiaz.gestvet.domain.GetAppointmentsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
@@ -73,13 +72,13 @@ class AddAppointmentViewModel @Inject constructor(
         _petText.value = pet
     }
 
-    private val _dateText = MutableLiveData(System.currentTimeMillis().toDate())
+    private val _dateText = MutableLiveData<String>()
     val dateText: LiveData<String> get() = _dateText
     fun setDate(date: String) {
         _dateText.value = date
     }
 
-    private val _hourText = MutableLiveData("00:00")
+    private val _hourText = MutableLiveData<String>()
     val hourText: LiveData<String> get() = _hourText
     fun setHour(hour: String) {
         _hourText.value = hour
