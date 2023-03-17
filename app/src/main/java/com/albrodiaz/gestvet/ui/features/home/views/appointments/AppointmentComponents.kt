@@ -140,7 +140,7 @@ fun DeleteButton(
         AnimatedVisibility(
             visible = (swipeableState?.targetValue == 1) && (swipeableState.progress.fraction > 0.5),
             enter = fadeIn(animationSpec = tween(1500)) + slideInHorizontally { with(density) { 100.dp.roundToPx() } },
-            exit = fadeOut(animationSpec = tween(1500)) + slideOutHorizontally { with(density) { 50.dp.roundToPx() } }
+            exit = fadeOut(animationSpec = tween(1500)) + slideOutHorizontally { with(density) { 80.dp.roundToPx() } }
         ) {
             FloatingActionButton(
                 onClick = { onDeleteAppointment() },
@@ -188,11 +188,10 @@ fun AddDatePicker(datePickerState: DatePickerState) {
     DatePicker(
         state = datePickerState,
         dateFormatter = DatePickerFormatter(selectedDateSkeleton = "ddMMyyyy"),
-        showModeToggle = true
+        showModeToggle = true,
+        dateValidator = { it >= Date().time - 86400000 }
     )
 }
-
-
 
 @Composable
 fun AddTimePicker(value: (String) -> Unit) {
