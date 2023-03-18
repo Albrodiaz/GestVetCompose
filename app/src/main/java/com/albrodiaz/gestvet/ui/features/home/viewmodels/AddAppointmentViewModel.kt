@@ -109,8 +109,14 @@ class AddAppointmentViewModel @Inject constructor(
         }
     }
 
-    val isErrorEnabled: LiveData<Boolean> = dateText.combine(hourText) { date, hour ->
+    private val _isDateUnavailable: MutableLiveData<Boolean> = dateText.combine(hourText) { date, hour ->
         return@combine dateList.value?.contains(hour.hourToMillis() + date.dateToMillis()) ?: false
+    } as MutableLiveData<Boolean>
+
+    val isDateUnavailable: LiveData<Boolean> get() = _isDateUnavailable
+
+    fun setDateAvailable() {
+        _isDateUnavailable.value = false
     }
 
     var isButtonEnabled: LiveData<Boolean> = ownerText.combine(
@@ -118,7 +124,7 @@ class AddAppointmentViewModel @Inject constructor(
         dateText,
         hourText,
         subjectText,
-        isErrorEnabled
+        isDateUnavailable
     ) { owner, pet, date, hour, subject, error->
         return@combine owner.isNotEmpty() && pet.isNotEmpty() && date.isNotEmpty() && hour.isNotEmpty() && subject.isNotEmpty() && !error
     }

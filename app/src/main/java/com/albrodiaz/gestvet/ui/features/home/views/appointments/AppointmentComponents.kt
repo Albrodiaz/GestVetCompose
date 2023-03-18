@@ -1,6 +1,5 @@
 package com.albrodiaz.gestvet.ui.features.home.views.appointments
 
-import android.widget.TimePicker
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -21,11 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.content.ContextCompat.getColor
 import com.albrodiaz.gestvet.R
-import com.albrodiaz.gestvet.core.extensions.showLeftZero
 import com.albrodiaz.gestvet.ui.theme.*
 import java.util.*
 
@@ -193,32 +189,14 @@ fun AddDatePicker(datePickerState: DatePickerState) {
     )
 }
 
-@Composable
-fun AddTimePicker(value: (String) -> Unit) {
-    AndroidView(factory = {
-        TimePicker(it).apply {
-            setBackgroundColor(getColor(it, R.color.surface_light))
-            setIs24HourView(true)
-            setOnTimeChangedListener { _, _, _ ->
-                value("${hour.showLeftZero()}:${minute.showLeftZero()}")
-            }
-        }
-    })
-}
-/*  TODO: A la espera de versión estable de Timepicker Compose
+/*  TODO: A la espera de versión estable de Timepicker Compose*/
 
-@Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CompTimePicker() {
-    val state = rememberTimePickerState()
+fun AddTimePicker(state: TimePickerState) {
     GestVetTheme {
-        TimePicker(
-            state = state,
-            modifier = Modifier,
-            colors = TimePickerDefaults.colors(
-                //Propiedades del TimePicker
-            ),
-        )
+        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            TimePicker(state = state)
+        }
     }
-}*/
+}

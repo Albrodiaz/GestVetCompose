@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.core.extensions.showLeftZero
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.core.states.rememberCustomDatePickerState
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddAppointmentViewModel
@@ -38,13 +39,14 @@ import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddAppointmentViewModel
 fun AddAppointmentScreen(
     addAppointmentViewModel: AddAppointmentViewModel,
     navigationController: NavHostController,
+    isDateAvailable: (String) -> Unit,
     appointmentId: Long?
 ) {
     val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.observeAsState(false)
     val isAddedSuccess by addAppointmentViewModel.isAddedSuccess.observeAsState()
     val showDatePicker by addAppointmentViewModel.showDatePicker.observeAsState(false)
     val showTimePicker by addAppointmentViewModel.showTimePicker.observeAsState(false)
-    val isErrorEnabled by addAppointmentViewModel.isErrorEnabled.observeAsState(false)
+    val unavailableDate by addAppointmentViewModel.isDateUnavailable.observeAsState(false)
     val ownerText by addAppointmentViewModel.ownerText.observeAsState("")
     val petText by addAppointmentViewModel.petText.observeAsState("")
     val dateText by addAppointmentViewModel.dateText.observeAsState("")
@@ -52,9 +54,11 @@ fun AddAppointmentScreen(
     val subjectText by addAppointmentViewModel.subjectText.observeAsState("")
     val detailText by addAppointmentViewModel.detailsText.observeAsState("")
     val datePickerState = rememberCustomDatePickerState()
+    val timePickerState = rememberTimePickerState()
     val context = LocalContext.current
 
-    addAppointmentViewModel.setApptId(appointmentId?:0L)
+    addAppointmentViewModel.setApptId(appointmentId ?: 0L)
+    if (unavailableDate) isDateAvailable("Fecha no disponible")
 
     DateTimeDialog(
         state = datePickerState,
@@ -73,9 +77,14 @@ fun AddAppointmentScreen(
         state = null,
         show = showTimePicker,
         onDismiss = { addAppointmentViewModel.setShowTimePicker(false) },
-        onConfirm = { addAppointmentViewModel.apply {addAppointmentViewModel.setShowTimePicker(false) } }
+        onConfirm = {
+            addAppointmentViewModel.apply {
+                addAppointmentViewModel.setShowTimePicker(false)
+                setHour("${timePickerState.hour.showLeftZero()}:${timePickerState.minute.showLeftZero()}")
+            }
+        }
     ) {
-        AddTimePicker(value = { addAppointmentViewModel.setHour(it) })
+        AddTimePicker(state = timePickerState)
     }
 
     ConstraintLayout(Modifier.fillMaxSize()) {
@@ -83,7 +92,10 @@ fun AddAppointmentScreen(
         val keyboardController = LocalSoftwareKeyboardController.current
 
         IconButton(
-            onClick = { navigationController.navigateUp() },
+            onClick = {
+                addAppointmentViewModel.setDateAvailable()
+                navigationController.navigateUp()
+            },
             modifier = Modifier
                 .padding(12.dp)
                 .constrainAs(close) {
@@ -144,7 +156,6 @@ fun AddAppointmentScreen(
             text = dateText,
             placeholder = stringResource(id = R.string.date),
             readOnly = true,
-            isError = isErrorEnabled,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Number
@@ -172,7 +183,6 @@ fun AddAppointmentScreen(
             placeholder = stringResource(id = R.string.hour),
             textChange = { addAppointmentViewModel.setHour(it) },
             readOnly = true,
-            isError = isErrorEnabled,
             trailingIcon = {
                 IconButton(onClick = { addAppointmentViewModel.setShowTimePicker(true) }) {
                     Icon(

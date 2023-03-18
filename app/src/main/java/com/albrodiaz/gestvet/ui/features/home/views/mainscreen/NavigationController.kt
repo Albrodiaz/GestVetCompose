@@ -17,7 +17,8 @@ import com.albrodiaz.gestvet.ui.features.home.views.searchscreen.SearchScreen
 @Composable
 fun MainNavController(
     navigationController: NavController,
-    appointmentViewModel: AppointmentViewModel
+    appointmentViewModel: AppointmentViewModel,
+    isDateAvailable: (String) -> Unit
 ) {
     NavHost(
         navController = navigationController as NavHostController,
@@ -28,10 +29,14 @@ fun MainNavController(
         }
         composable(Routes.Client.route) { ClientScreen() }
         composable(Routes.Search.route) { SearchScreen(appointmentViewModel) }
-        composable(Routes.AddAppointment.route, arguments = listOf(navArgument("id"){ defaultValue = 1L })) {
+        composable(
+            Routes.AddAppointment.route,
+            arguments = listOf(navArgument("id") { defaultValue = 1L })
+        ) {
             AddAppointmentScreen(
                 addAppointmentViewModel = hiltViewModel(),
                 navigationController = navigationController,
+                isDateAvailable = { available -> isDateAvailable(available) },
                 appointmentId = it.arguments?.getLong("id")
             )
         }

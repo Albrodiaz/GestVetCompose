@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.albrodiaz.gestvet.ui.features.home.models.Routes
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
@@ -24,6 +25,8 @@ fun MainScreen(
 ) {
     val navStackEntry by navController.currentBackStackEntryAsState()
     val bottomNavState = rememberSaveable { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     when (navStackEntry?.destination?.route) {
         Routes.Appointment.route, Routes.Search.route, Routes.Client.route -> {
@@ -33,14 +36,19 @@ fun MainScreen(
     }
 
     Scaffold(
-        bottomBar = { if (bottomNavState.value) MainBottomNav(navController = navController) }
+        bottomBar = { if (bottomNavState.value) MainBottomNav(navController = navController) },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = it.calculateBottomPadding())
         ) {
-            MainNavController(navigationController = navController, appointmentViewModel = appointmentViewModel)
+            MainNavController(navigationController = navController, appointmentViewModel = appointmentViewModel) { available ->
+                scope.launch {
+                    snackbarHostState.showSnackbar(available)
+                }
+            }
         }
     }
 }
