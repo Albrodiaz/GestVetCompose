@@ -61,7 +61,6 @@ fun AddAppointmentScreen(
     if (unavailableDate) isDateAvailable("Fecha no disponible")
 
     DateTimeDialog(
-        state = datePickerState,
         show = showDatePicker,
         onDismiss = { addAppointmentViewModel.setShowDatePicker(false) },
         onConfirm = {
@@ -74,7 +73,6 @@ fun AddAppointmentScreen(
     }
 
     DateTimeDialog(
-        state = null,
         show = showTimePicker,
         onDismiss = { addAppointmentViewModel.setShowTimePicker(false) },
         onConfirm = {

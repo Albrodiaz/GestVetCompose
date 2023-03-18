@@ -151,19 +151,18 @@ fun DeleteButton(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T> DateTimeDialog(
-    state: T? = null,
+fun DateTimeDialog(
     show: Boolean,
     onDismiss: () -> Unit,
-    onConfirm: (String?) -> Unit,
-    content: @Composable (T?) -> Unit
+    onConfirm: () -> Unit,
+    content: @Composable () -> Unit
 ) {
     if (show) {
         DatePickerDialog(
             modifier = Modifier.fillMaxSize(),
             onDismissRequest = { onDismiss() },
             confirmButton = {
-                TextButton(onClick = { onConfirm(null) }) {
+                TextButton(onClick = { onConfirm() }) {
                     Text(stringResource(id = R.string.save))
                 }
             },
@@ -173,7 +172,7 @@ fun <T> DateTimeDialog(
                 }
             }
         ) {
-            if (state != null) content(state) else content(null)
+            content()
         }
     }
 }
