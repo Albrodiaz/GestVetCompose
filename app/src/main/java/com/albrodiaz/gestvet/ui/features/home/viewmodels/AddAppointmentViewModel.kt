@@ -115,7 +115,7 @@ class AddAppointmentViewModel @Inject constructor(
 
     val isDateUnavailable: LiveData<Boolean> get() = _isDateUnavailable
 
-    fun setDateAvailable() {
+    fun cancelDateSnackbar() {
         _isDateUnavailable.value = false
     }
 

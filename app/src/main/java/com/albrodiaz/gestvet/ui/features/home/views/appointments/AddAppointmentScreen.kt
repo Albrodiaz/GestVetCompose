@@ -91,7 +91,7 @@ fun AddAppointmentScreen(
 
         IconButton(
             onClick = {
-                addAppointmentViewModel.setDateAvailable()
+                addAppointmentViewModel.cancelDateSnackbar()
                 navigationController.navigateUp()
             },
             modifier = Modifier
@@ -160,7 +160,10 @@ fun AddAppointmentScreen(
             ),
             textChange = { addAppointmentViewModel.setDate(it) },
             trailingIcon = {
-                IconButton(onClick = { addAppointmentViewModel.setShowDatePicker(true) }) {
+                IconButton(onClick = {
+                    addAppointmentViewModel.cancelDateSnackbar()
+                    addAppointmentViewModel.setShowDatePicker(true)
+                }) {
                     Icon(
                         imageVector = Icons.Filled.DateRange,
                         contentDescription = "show datePicker",
@@ -182,7 +185,10 @@ fun AddAppointmentScreen(
             textChange = { addAppointmentViewModel.setHour(it) },
             readOnly = true,
             trailingIcon = {
-                IconButton(onClick = { addAppointmentViewModel.setShowTimePicker(true) }) {
+                IconButton(onClick = {
+                    addAppointmentViewModel.cancelDateSnackbar()
+                    addAppointmentViewModel.setShowTimePicker(true)
+                }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_clock_24),
                         contentDescription = "show timePicker",
