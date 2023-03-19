@@ -42,11 +42,13 @@ fun AddAppointmentScreen(
     isDateAvailable: (String) -> Unit,
     appointmentId: Long?
 ) {
+    if (addAppointmentViewModel.isDateUnavailable.value == true) isDateAvailable("Fecha no disponible")
+    addAppointmentViewModel.setApptId(appointmentId ?: 0L)
+
     val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.observeAsState(false)
     val isAddedSuccess by addAppointmentViewModel.isAddedSuccess.observeAsState()
     val showDatePicker by addAppointmentViewModel.showDatePicker.observeAsState(false)
     val showTimePicker by addAppointmentViewModel.showTimePicker.observeAsState(false)
-    val unavailableDate by addAppointmentViewModel.isDateUnavailable.observeAsState(false)
     val ownerText by addAppointmentViewModel.ownerText.observeAsState("")
     val petText by addAppointmentViewModel.petText.observeAsState("")
     val dateText by addAppointmentViewModel.dateText.observeAsState("")
@@ -56,9 +58,6 @@ fun AddAppointmentScreen(
     val datePickerState = rememberCustomDatePickerState()
     val timePickerState = rememberTimePickerState()
     val context = LocalContext.current
-
-    addAppointmentViewModel.setApptId(appointmentId ?: 0L)
-    if (unavailableDate) isDateAvailable("Fecha no disponible")
 
     DateTimeDialog(
         show = showDatePicker,
