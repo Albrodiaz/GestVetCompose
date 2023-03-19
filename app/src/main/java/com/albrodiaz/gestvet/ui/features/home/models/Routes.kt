@@ -7,4 +7,5 @@ sealed class Routes(val route: String) {
     object AddAppointment: Routes("addappointmentscreen?id={id}") {
         fun createRoute(id: Long) = "addappointmentscreen?id=$id"
     }
+    object AddClient: Routes("addclientscreen")
 }

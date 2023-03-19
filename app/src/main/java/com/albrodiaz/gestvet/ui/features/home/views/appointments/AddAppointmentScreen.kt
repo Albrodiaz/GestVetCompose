@@ -23,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -154,8 +153,7 @@ fun AddAppointmentScreen(
             placeholder = stringResource(id = R.string.date),
             readOnly = true,
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next,
-                keyboardType = KeyboardType.Number
+                imeAction = ImeAction.Next
             ),
             textChange = { addAppointmentViewModel.setDate(it) },
             trailingIcon = {
@@ -196,8 +194,7 @@ fun AddAppointmentScreen(
                 }
             },
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next,
-                keyboardType = KeyboardType.Number
+                imeAction = ImeAction.Next
             )
         )
         FormTextField(

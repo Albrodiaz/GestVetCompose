@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">GestVet</string>
-    <string name="owner">Propietario</string>
-    <string name="pet">Mascota</string>
+    <string name="owner">Propietario *</string>
+    <string name="pet">Mascota *</string>
     <string name="addTitle">Añadir cita</string>
-    <string name="date">Fecha</string>
-    <string name="hour">Hora</string>
-    <string name="subject">Asunto</string>
-    <string name="details">Detalles</string>
+    <string name="date">Fecha *</string>
+    <string name="hour">Hora *</string>
+    <string name="subject">Asunto *</string>
+    <string name="details">Detalles (Opcional)</string>
     <string name="save">Guardar</string>
     <string name="detailTextfield">Sin observaciones</string>
     <string name="cancel">Cancelar</string>

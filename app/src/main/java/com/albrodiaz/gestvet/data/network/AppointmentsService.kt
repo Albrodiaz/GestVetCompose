@@ -13,7 +13,7 @@ class AppointmentsService @Inject constructor(private val firebase: FirebaseClie
 
     companion object {
         const val APPOINTMENT_TAG = "Appointments"
-        const val APPOINTMENTS_PATH = "users/alrodiaz15@gmail.com/appointments"
+        const val APPOINTMENTS_PATH = "alrodiaz15@gmail.com/management/appointments"
     }
 
     val appointments
@@ -21,7 +21,7 @@ class AppointmentsService @Inject constructor(private val firebase: FirebaseClie
             val data = firebase.dataBase.collection(APPOINTMENTS_PATH).orderBy("dateInMillis")
                 .addSnapshotListener { values, error ->
                     error?.let {
-                        Log.e(APPOINTMENT_TAG, "Error al cargar los datos: $error")
+                        Log.e(APPOINTMENT_TAG, "Error al cargar los datos: ${it.message}")
                     }
                     values?.let { value ->
                         trySend(value)
