@@ -8,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.albrodiaz.gestvet.ui.features.home.models.Routes
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddAppointmentViewModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AddAppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AppointmentScreen
@@ -42,7 +41,7 @@ fun MainNavController(
             arguments = listOf(navArgument("id") { defaultValue = 1L })
         ) {
             AddAppointmentScreen(
-                addAppointmentViewModel = hiltViewModel<AddAppointmentViewModel>(),
+                addAppointmentViewModel = hiltViewModel(),
                 navigationController = navigationController,
                 isDateAvailable = { available -> isDateAvailable(available) },
                 appointmentId = it.arguments?.getLong("id")

@@ -8,6 +8,7 @@ import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,31 +24,31 @@ class AddClientViewModel @Inject constructor(private val addClientUseCase: AddCl
     }
 
     private val _clientLastName = MutableStateFlow("")
-    val clientLastName: Flow<String> get() = _clientLastName
+    val clientLastName: StateFlow<String> get() = _clientLastName
     fun setLastName(lastName: String) {
         _clientLastName.value = lastName
     }
 
     private val _clientAddress = MutableStateFlow("")
-    val clientAddress: Flow<String> get() = _clientAddress
+    val clientAddress: StateFlow<String> get() = _clientAddress
     fun setAddress(address: String) {
         _clientAddress.value = address
     }
 
     private val _clientPhone = MutableStateFlow("")
-    val clientPhone: Flow<String> get() = _clientPhone
+    val clientPhone: StateFlow<String> get() = _clientPhone
     fun setPhone(phone: String) {
         _clientPhone.value = phone
     }
 
     private val _clientEmail = MutableStateFlow("")
-    val clientEmail: Flow<String> get() = _clientEmail
+    val clientEmail: StateFlow<String> get() = _clientEmail
     fun setEmail(email: String) {
         _clientEmail.value = email
     }
 
     private val _clientId = MutableStateFlow<String?>(null)
-    val clientId: Flow<String?> get() = _clientId
+    val clientId: StateFlow<String?> get() = _clientId
     fun setId(identification: String) {
         _clientId.value = identification
     }
