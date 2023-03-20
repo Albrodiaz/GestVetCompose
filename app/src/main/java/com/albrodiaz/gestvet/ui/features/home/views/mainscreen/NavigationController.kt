@@ -13,6 +13,7 @@ import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AddAppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.clients.AddClientScreen
+import com.albrodiaz.gestvet.ui.features.home.views.clients.ClientDetailScreen
 import com.albrodiaz.gestvet.ui.features.home.views.clients.ClientScreen
 import com.albrodiaz.gestvet.ui.features.home.views.searchscreen.SearchScreen
 
@@ -52,6 +53,9 @@ fun MainNavController(
                 navigationController = navigationController,
                 addClientViewModel = hiltViewModel()
             )
+        }
+        composable(Routes.ClientDetails.route) {
+            ClientDetailScreen()
         }
     }
 }

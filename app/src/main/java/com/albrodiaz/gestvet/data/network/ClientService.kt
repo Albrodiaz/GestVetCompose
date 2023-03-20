@@ -18,7 +18,7 @@ class ClientService @Inject constructor(private val firebase: FirebaseClient) {
     val clients
         get() = callbackFlow {
             val data = firebase.dataBase.collection(CLIENTS_PATH)
-                .orderBy("name", Query.Direction.ASCENDING)
+                .orderBy("lastname", Query.Direction.ASCENDING)
                 .addSnapshotListener { values, error ->
                     error?.let {
                         Log.e(CLIENTS_TAG, "Error al cargar los datos: ${it.message}")

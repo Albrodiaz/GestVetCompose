@@ -1,12 +1,19 @@
 package com.albrodiaz.gestvet.ui.features.home.views.clients
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -20,9 +27,6 @@ import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddClientViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.FormTextField
 import com.albrodiaz.gestvet.ui.theme.GestVetTheme
-import com.albrodiaz.gestvet.ui.theme.md_theme_dark_errorContainer
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_error
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_onError
 
 
 @Composable
@@ -67,12 +71,13 @@ fun AddClientScreen(
                         start.linkTo(parent.start)
                     })
             Column(
-                Modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 24.dp, vertical = 12.dp)
                     .constrainAs(content) {
                         top.linkTo(title.bottom)
-                    }
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 FormTextField(
                     text = clientName,
@@ -125,36 +130,21 @@ fun AddClientScreen(
                     )
                 )
                 FormTextField(
-                    text = clientId?:"",
+                    text = clientId ?: "",
                     modifier = Modifier.fillMaxWidth(),
                     textChange = { addClientViewModel.setId(it) },
                     placeholder = "NIF/CIF (Opcional)",
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        24.dp,
-                        Alignment.CenterHorizontally
-                    )
-                ) {
-                    Button(modifier = Modifier.padding(vertical = 24.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isSystemInDarkTheme()) md_theme_dark_errorContainer else md_theme_light_error,
-                            contentColor = md_theme_light_onError
-                        ),
-                        onClick = { /*TODO*/ }) {
-                        Text(text = "Eliminar")
-                    }
-                    Button(modifier = Modifier.padding(vertical = 24.dp), enabled = isSaveEnabled, onClick = {
+                Button(
+                    modifier = Modifier.padding(vertical = 24.dp),
+                    enabled = isSaveEnabled,
+                    onClick = {
                         addClientViewModel.saveClient()
                         navigationController.navigateUp()
                     }) {
-                        Text(text = "Guardar")
-                    }
+                    Text(text = "Guardar")
                 }
-
             }
         }
     }

@@ -12,4 +12,9 @@
     <string name="cancel">Cancelar</string>
     <string name="noAppointments">Nada que mostrar…</string>
     <string name="modifyAppt">Modificar cita</string>
+    <string name="name">Nombre</string>
+    <string name="lastName">Apellidos</string>
+    <string name="address">Dirección</string>
+    <string name="email">Email</string>
+    <string name="phone">Teléfono</string>
 </resources>

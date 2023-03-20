@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -18,9 +17,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
+import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.home.models.Routes
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.ClientViewModel
@@ -55,8 +56,11 @@ fun ClientScreen(clientViewModel: ClientViewModel, navigationController: NavHost
                             )
                         },
                         trailingContent = {
-                            IconButton(onClick = { /*TODO*/ }) {
-                                Icon(imageVector = Icons.Outlined.Edit, contentDescription = "")
+                            IconButton(onClick = { navigationController.navigate(Routes.ClientDetails.route) }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_arrow_right),
+                                    contentDescription = ""
+                                )
                             }
                         }
                     )
