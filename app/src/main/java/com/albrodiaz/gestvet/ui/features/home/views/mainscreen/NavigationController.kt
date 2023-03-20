@@ -54,7 +54,7 @@ fun MainNavController(
             )
         }
         composable(Routes.ClientDetails.route) {
-            ClientDetailScreen(navigationController)
+            ClientDetailScreen(navigationController = navigationController)
         }
     }
 }

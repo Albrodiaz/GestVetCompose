@@ -11,7 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +45,10 @@ private fun ClientSection(navigationController: NavHostController) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        val (divider, title, close, name, lastname, address, email, phone, nameInput, lastnameInput, addressInput, emailInput, phoneInput, seniority) = createRefs()
+        val (divider, title, close, name, lastname, address, email, phone, id,
+            nameInput, lastnameInput, addressInput, emailInput,
+            phoneInput, seniority, idInput) = createRefs()
+
         Text(
             text = stringResource(id = R.string.client),
             fontWeight = FontWeight.Bold,
@@ -56,70 +59,113 @@ private fun ClientSection(navigationController: NavHostController) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                 })
-        IconButton(onClick = { navigationController.navigateUp() }, modifier = Modifier.constrainAs(close) {
-            end.linkTo(parent.end)
-            top.linkTo(title.top)
-            bottom.linkTo(title.bottom)
-        }) {
+        IconButton(
+            onClick = { navigationController.navigateUp() },
+            modifier = Modifier.constrainAs(close) {
+                end.linkTo(parent.end)
+                top.linkTo(title.top)
+                bottom.linkTo(title.bottom)
+            }) {
             Icon(imageVector = Icons.Filled.Close, contentDescription = "")
         }
-        ClientDetailText(text = stringResource(id = R.string.name), modifier = Modifier.constrainAs(name) {
-            top.linkTo(title.bottom)
-            start.linkTo(parent.start)
-        })
-        ClientDetailText(text = stringResource(id = R.string.lastName), modifier = Modifier.constrainAs(lastname) {
-            top.linkTo(name.bottom)
-            start.linkTo(name.start)
-        })
-        ClientDetailText(text = stringResource(id = R.string.address), modifier = Modifier.constrainAs(address) {
-            top.linkTo(lastname.bottom)
-            start.linkTo(lastname.start)
-        })
-        ClientDetailText(text = stringResource(id = R.string.email), modifier = Modifier.constrainAs(email) {
-            top.linkTo(address.bottom)
-            start.linkTo(address.start)
-        })
-        ClientDetailText(text = stringResource(id = R.string.phone), modifier = Modifier.constrainAs(phone) {
-            top.linkTo(email.bottom)
-            start.linkTo(email.start)
-        })
-        ClientTextfield(modifier = Modifier.constrainAs(nameInput) {
-            top.linkTo(name.top)
-            end.linkTo(parent.end)
-            bottom.linkTo(name.bottom)
-        }, valueChange = { })
-        ClientTextfield(modifier = Modifier.constrainAs(lastnameInput) {
-            top.linkTo(lastname.top)
-            end.linkTo(parent.end)
-            bottom.linkTo(lastname.bottom)
-
-        }, valueChange = { })
-        ClientTextfield(modifier = Modifier.constrainAs(addressInput) {
-            top.linkTo(address.top)
-            end.linkTo(parent.end)
-            bottom.linkTo(address.bottom)
-        }, valueChange = { })
-        ClientTextfield(modifier = Modifier.constrainAs(emailInput) {
-            top.linkTo(email.top)
-            end.linkTo(parent.end)
-            bottom.linkTo(email.bottom)
-        }, valueChange = { })
+        ClientDetailText(
+            text = stringResource(id = R.string.name),
+            modifier = Modifier.constrainAs(name) {
+                top.linkTo(title.bottom)
+                start.linkTo(parent.start)
+            })
+        ClientDetailText(
+            text = stringResource(id = R.string.lastName),
+            modifier = Modifier.constrainAs(lastname) {
+                top.linkTo(name.bottom)
+                start.linkTo(name.start)
+            })
+        ClientDetailText(
+            text = stringResource(id = R.string.address),
+            modifier = Modifier.constrainAs(address) {
+                top.linkTo(lastname.bottom)
+                start.linkTo(lastname.start)
+            })
+        ClientDetailText(
+            text = stringResource(id = R.string.email),
+            modifier = Modifier.constrainAs(email) {
+                top.linkTo(address.bottom)
+                start.linkTo(address.start)
+            })
+        ClientDetailText(
+            text = stringResource(id = R.string.phone),
+            modifier = Modifier.constrainAs(phone) {
+                top.linkTo(email.bottom)
+                start.linkTo(email.start)
+            })
+        ClientDetailText(
+            text = stringResource(id = R.string.id),
+            modifier = Modifier.constrainAs(id) {
+                top.linkTo(phone.bottom)
+                start.linkTo(phone.start)
+            }
+        )
+        ClientDetailText(text = "${stringResource(id = R.string.since)} 12/03/2023",
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(seniority) {
+                    top.linkTo(id.bottom)
+                    start.linkTo(parent.start)
+                })
         ClientTextfield(
+            text = "Nombre",
+            modifier = Modifier.constrainAs(nameInput) {
+                top.linkTo(name.top)
+                end.linkTo(parent.end)
+                bottom.linkTo(name.bottom)
+            }, valueChange = { })
+        ClientTextfield(
+            text = "Apellidos",
+            modifier = Modifier.constrainAs(lastnameInput) {
+                top.linkTo(lastname.top)
+                end.linkTo(parent.end)
+                bottom.linkTo(lastname.bottom)
+
+            }, valueChange = { })
+        ClientTextfield(
+            text = "Dirección",
+            modifier = Modifier.constrainAs(addressInput) {
+                top.linkTo(address.top)
+                end.linkTo(parent.end)
+                bottom.linkTo(address.bottom)
+            }, valueChange = { })
+        ClientTextfield(
+            text = "Email",
+            modifier = Modifier.constrainAs(emailInput) {
+                top.linkTo(email.top)
+                end.linkTo(parent.end)
+                bottom.linkTo(email.bottom)
+            }, valueChange = { })
+        ClientTextfield(
+            text = "Teléfono",
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             modifier = Modifier.constrainAs(phoneInput) {
                 top.linkTo(phone.top)
                 end.linkTo(parent.end)
                 bottom.linkTo(phone.bottom)
             }, valueChange = { })
-        ClientDetailText(text = "${stringResource(id = R.string.since)} 12/03/2023", modifier = Modifier
-            .fillMaxWidth()
-            .constrainAs(seniority) {
-                top.linkTo(phone.bottom)
-                start.linkTo(parent.start)
-            })
-        Divider(modifier = Modifier.background(client_textfield_background).constrainAs(divider){
-            bottom.linkTo(parent.bottom)
-        }, thickness = .3.dp, )
+        ClientTextfield(
+            text = "DNI",
+            modifier = Modifier.constrainAs(idInput) {
+                top.linkTo(id.top)
+                end.linkTo(parent.end)
+                bottom.linkTo(id.bottom)
+            },
+            valueChange = {  }
+        )
+        Divider(
+            modifier = Modifier
+                .background(client_textfield_background)
+                .constrainAs(divider) {
+                    bottom.linkTo(parent.bottom)
+                },
+            thickness = .3.dp,
+        )
     }
 }
 
@@ -128,7 +174,8 @@ private fun PetSection() {
     Column(
         Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)) {
+            .padding(horizontal = 16.dp)
+    ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 text = stringResource(id = R.string.pets),
@@ -149,7 +196,13 @@ private fun PetSection() {
                 name = "Alberto",
                 lastname = "Rodríguez Díaz",
                 phoneNumber = "666777888"
-            ), ClientsModel(id = 2, name = "Paloma", lastname = "Genescá Gómez", phoneNumber = "666888777")
+            ),
+            ClientsModel(
+                id = 2,
+                name = "Paloma",
+                lastname = "Genescá Gómez",
+                phoneNumber = "666888777"
+            )
         )
         LazyColumn(
             modifier = Modifier
@@ -171,21 +224,17 @@ private fun PetSection() {
 
 @Composable
 private fun ClientTextfield(
+    text: String,
     modifier: Modifier,
     valueChange: (String) -> Unit,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
-    var text: String by remember { mutableStateOf("") }
-
     BasicTextField(
         value = text,
         modifier = modifier
             .fillMaxWidth(.7f)
             .height(45.dp),
-        onValueChange = {
-            text = it
-            valueChange(it)
-        },
+        onValueChange = { valueChange(it) },
         singleLine = true,
         maxLines = 1,
         keyboardOptions = keyboardOptions,
