@@ -16,37 +16,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
+import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
 import com.albrodiaz.gestvet.ui.theme.client_textfield_background
 import com.albrodiaz.gestvet.ui.theme.md_theme_light_surfaceTint
 
-@Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun ClientDetailScreen() {
+fun ClientDetailScreen(navigationController: NavHostController) {
     Column(Modifier.fillMaxSize()) {
-        ClientSection()
+        ClientSection(navigationController = navigationController)
         PetSection()
     }
 }
 
 @Composable
-private fun ClientSection() {
+private fun ClientSection(navigationController: NavHostController) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        val (title, close, name, lastname, address, email, phone, nameInput, lastnameInput, addressInput, emailInput, phoneInput, seniority) = createRefs()
+        val (divider, title, close, name, lastname, address, email, phone, nameInput, lastnameInput, addressInput, emailInput, phoneInput, seniority) = createRefs()
         Text(
-            text = "Cliente",
+            text = stringResource(id = R.string.client),
             fontWeight = FontWeight.Bold,
             fontSize = 32.sp,
             modifier = Modifier
@@ -55,30 +56,30 @@ private fun ClientSection() {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                 })
-        IconButton(onClick = { /*TODO*/ }, modifier = Modifier.constrainAs(close) {
+        IconButton(onClick = { navigationController.navigateUp() }, modifier = Modifier.constrainAs(close) {
             end.linkTo(parent.end)
             top.linkTo(title.top)
             bottom.linkTo(title.bottom)
         }) {
             Icon(imageVector = Icons.Filled.Close, contentDescription = "")
         }
-        ClientDetailText(text = "Nombre", modifier = Modifier.constrainAs(name) {
+        ClientDetailText(text = stringResource(id = R.string.name), modifier = Modifier.constrainAs(name) {
             top.linkTo(title.bottom)
             start.linkTo(parent.start)
         })
-        ClientDetailText(text = "Apellidos", modifier = Modifier.constrainAs(lastname) {
+        ClientDetailText(text = stringResource(id = R.string.lastName), modifier = Modifier.constrainAs(lastname) {
             top.linkTo(name.bottom)
             start.linkTo(name.start)
         })
-        ClientDetailText(text = "Dirección", modifier = Modifier.constrainAs(address) {
+        ClientDetailText(text = stringResource(id = R.string.address), modifier = Modifier.constrainAs(address) {
             top.linkTo(lastname.bottom)
             start.linkTo(lastname.start)
         })
-        ClientDetailText(text = "Email", modifier = Modifier.constrainAs(email) {
+        ClientDetailText(text = stringResource(id = R.string.email), modifier = Modifier.constrainAs(email) {
             top.linkTo(address.bottom)
             start.linkTo(address.start)
         })
-        ClientDetailText(text = "Teléfono", modifier = Modifier.constrainAs(phone) {
+        ClientDetailText(text = stringResource(id = R.string.phone), modifier = Modifier.constrainAs(phone) {
             top.linkTo(email.bottom)
             start.linkTo(email.start)
         })
@@ -110,10 +111,15 @@ private fun ClientSection() {
                 end.linkTo(parent.end)
                 bottom.linkTo(phone.bottom)
             }, valueChange = { })
-        ClientDetailText(text = "Cliente desde: ", modifier = Modifier.fillMaxWidth().constrainAs(seniority) {
-            top.linkTo(phone.bottom)
-            start.linkTo(parent.start)
-        })
+        ClientDetailText(text = "${stringResource(id = R.string.since)} 12/03/2023", modifier = Modifier
+            .fillMaxWidth()
+            .constrainAs(seniority) {
+                top.linkTo(phone.bottom)
+                start.linkTo(parent.start)
+            })
+        Divider(modifier = Modifier.background(client_textfield_background).constrainAs(divider){
+            bottom.linkTo(parent.bottom)
+        }, thickness = .3.dp, )
     }
 }
 
@@ -125,7 +131,7 @@ private fun PetSection() {
             .padding(horizontal = 16.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
-                text = "Mascotas",
+                text = stringResource(id = R.string.pets),
                 modifier = Modifier.padding(vertical = 12.dp, horizontal = 6.dp),
                 style = TextStyle(
                     fontSize = 16.sp,
@@ -133,22 +139,23 @@ private fun PetSection() {
                 )
             )
             TextButton(onClick = { /*TODO*/ }) {
-                Text(text = "Añadir")
+                Text(text = stringResource(id = R.string.add))
             }
         }
-        /*TODO: Borrar cuando tenga lista de clientes y crear stringResources*/
+        /*TODO: Borrar cuando tenga lista de mascotas*/
         val clients = listOf(
             ClientsModel(
+                id = 1,
                 name = "Alberto",
                 lastname = "Rodríguez Díaz",
                 phoneNumber = "666777888"
-            ), ClientsModel(name = "Paloma", lastname = "Genescá Gómez", phoneNumber = "666888777")
+            ), ClientsModel(id = 2, name = "Paloma", lastname = "Genescá Gómez", phoneNumber = "666888777")
         )
         LazyColumn(
             modifier = Modifier
                 .padding(bottom = 12.dp)
         ) {
-            items(clients + clients + clients) {
+            items(items = clients, key = { it.id }) {
                 ListItem(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -217,8 +224,7 @@ private fun ClientDetailText(text: String, modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxWidth(.3f)) {
         Text(
             text = text,
-            modifier = modifier.padding(vertical = 14.dp, horizontal = 6.dp),
-            fontSize = 14.sp
+            modifier = modifier.padding(vertical = 14.dp, horizontal = 6.dp)
         )
     }
 }

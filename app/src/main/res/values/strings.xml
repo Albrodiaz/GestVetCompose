@@ -17,4 +17,8 @@
     <string name="address">Dirección</string>
     <string name="email">Email</string>
     <string name="phone">Teléfono</string>
+    <string name="client">Cliente</string>
+    <string name="since">Cliente desde:</string>
+    <string name="pets">Mascotas</string>
+    <string name="add">Añadir</string>
 </resources>
