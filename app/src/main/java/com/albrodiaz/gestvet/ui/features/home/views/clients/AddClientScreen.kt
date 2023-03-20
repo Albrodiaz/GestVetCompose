@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddClientViewModel
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.AddClientViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.FormTextField
 import com.albrodiaz.gestvet.ui.theme.GestVetTheme
 

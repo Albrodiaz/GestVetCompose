@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.features.home.viewmodels
+package com.albrodiaz.gestvet.ui.features.home.viewmodels.clients
 
 import androidx.lifecycle.ViewModel
 import com.albrodiaz.gestvet.domain.GetClientsUseCase

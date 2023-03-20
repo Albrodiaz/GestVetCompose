@@ -23,8 +23,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
-import com.albrodiaz.gestvet.ui.features.home.models.Routes
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.ClientViewModel
+import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AnimatedAddFab
 
 @Composable

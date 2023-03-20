@@ -31,7 +31,7 @@ import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.showLeftZero
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.core.states.rememberCustomDatePickerState
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.AddAppointmentViewModel
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AddAppointmentViewModel
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable

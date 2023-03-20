@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.features.home.viewmodels
+package com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

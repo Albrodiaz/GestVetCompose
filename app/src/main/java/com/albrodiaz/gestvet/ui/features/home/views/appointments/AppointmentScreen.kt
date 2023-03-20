@@ -28,8 +28,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
-import com.albrodiaz.gestvet.ui.features.home.models.Routes
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
+import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.theme.*
 import kotlin.math.roundToInt
 

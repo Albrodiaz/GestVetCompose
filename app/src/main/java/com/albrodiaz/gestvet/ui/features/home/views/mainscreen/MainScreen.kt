@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.albrodiaz.gestvet.ui.features.home.models.Routes
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
+import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import kotlinx.coroutines.launch
 
 @Composable

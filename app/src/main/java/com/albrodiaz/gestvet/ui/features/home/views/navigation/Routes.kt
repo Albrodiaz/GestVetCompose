@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.features.home.models
+package com.albrodiaz.gestvet.ui.features.home.views.navigation
 
 sealed class Routes(val route: String) {
     object Appointment: Routes("appointmentscreen")
@@ -8,5 +8,7 @@ sealed class Routes(val route: String) {
         fun createRoute(id: Long) = "addappointmentscreen?id=$id"
     }
     object AddClient: Routes("addclientscreen")
-    object ClientDetails: Routes("clientdetailscreen")
+    object ClientDetails: Routes("clientdetailscreen?clientId={clientId}") {
+        fun createRoute(clientId: Long) = "clientdetailscreen?clientId=$clientId"
+    }
 }

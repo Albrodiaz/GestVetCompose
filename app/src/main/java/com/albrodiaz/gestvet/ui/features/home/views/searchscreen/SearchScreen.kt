@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.core.extensions.searchBy
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.AppointmentViewModel
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable

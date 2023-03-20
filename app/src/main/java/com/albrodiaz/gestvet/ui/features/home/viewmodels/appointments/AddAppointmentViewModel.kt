@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.features.home.viewmodels
+package com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments
 
 import android.util.Log
 import androidx.lifecycle.*
