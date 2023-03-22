@@ -12,11 +12,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
+import com.albrodiaz.gestvet.ui.features.home.views.navigation.MainNavController
 import kotlinx.coroutines.launch
 
 @Composable
@@ -45,7 +48,10 @@ fun MainScreen(
                 .fillMaxSize()
                 .padding(bottom = it.calculateBottomPadding())
         ) {
-            MainNavController(navigationController = navController, appointmentViewModel = appointmentViewModel) { available ->
+            MainNavController(
+                navigationController = navController,
+                appointmentViewModel = appointmentViewModel
+            ) { available ->
                 scope.launch {
                     snackbarHostState.showSnackbar(available, actionLabel = "OK")
                 }
@@ -60,7 +66,7 @@ fun MainBottomNav(navController: NavController) {
     NavigationBar(Modifier.fillMaxWidth()) {
         NavigationBarItem(
             icon = { Icon(Icons.Filled.DateRange, contentDescription = "") },
-            label = { Text("Citas") },
+            label = { Text(stringResource(id = R.string.appointments)) },
             selected = selectedItem == 0,
             onClick = {
                 navController.navigate(Routes.Appointment.route)
@@ -70,19 +76,23 @@ fun MainBottomNav(navController: NavController) {
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Person, contentDescription = "") },
-            label = { Text("Clientes") },
+            label = { Text(stringResource(id = R.string.clients)) },
             selected = selectedItem == 2,
             onClick = {
-                navController.navigate(Routes.Client.route)
+                navController.navigate(Routes.Client.route) {
+                    popUpTo(Routes.Appointment.route) { inclusive = false }
+                }
                 selectedItem = 2
             }
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Search, contentDescription = "") },
-            label = { Text("Buscar") },
+            label = { Text(stringResource(id = R.string.search)) },
             selected = selectedItem == 3,
             onClick = {
-                navController.navigate(Routes.Search.route)
+                navController.navigate(Routes.Search.route) {
+                    popUpTo(Routes.Appointment.route) { inclusive = false }
+                }
                 selectedItem = 3
             }
         )

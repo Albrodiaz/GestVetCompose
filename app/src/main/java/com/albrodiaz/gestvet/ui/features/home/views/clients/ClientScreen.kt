@@ -3,6 +3,7 @@ package com.albrodiaz.gestvet.ui.features.home.views.clients
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -46,6 +47,7 @@ fun ClientScreen(clientViewModel: ClientViewModel, navigationController: NavHost
             ) {
                 items(clients, key = { it.id }) {
                     ListItem(
+                        modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
                         shadowElevation = 4.dp,
                         supportingText = { Text(text = it.lastname.toString()) },
                         headlineText = { Text(text = it.name.toString()) },

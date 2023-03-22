@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.features.home.views.mainscreen
+package com.albrodiaz.gestvet.ui.features.home.views.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -8,7 +8,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AddAppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AppointmentScreen

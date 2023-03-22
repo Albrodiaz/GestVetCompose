@@ -24,4 +24,7 @@
     <string name="id">DNI</string>
     <string name="unavailableDate">Fecha no disponible</string>
     <string name="savedChanges">Cambios guardados</string>
+    <string name="clients">Clientes</string>
+    <string name="appointments">Citas</string>
+    <string name="search">Buscar</string>
 </resources>
