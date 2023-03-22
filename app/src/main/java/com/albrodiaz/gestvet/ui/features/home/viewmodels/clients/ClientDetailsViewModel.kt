@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.data.network.ClientService.Companion.CLIENTS_TAG
 import com.albrodiaz.gestvet.domain.AddClientUseCase
+import com.albrodiaz.gestvet.domain.DeleteClientUseCase
 import com.albrodiaz.gestvet.domain.GetClientsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class ClientDetailsViewModel @Inject constructor(
     private val state: SavedStateHandle,
     private val getClientsUseCase: GetClientsUseCase,
-    private val addClientUseCase: AddClientUseCase
+    private val addClientUseCase: AddClientUseCase,
+    private val deleteClientUseCase: DeleteClientUseCase
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -31,6 +33,12 @@ class ClientDetailsViewModel @Inject constructor(
 
     init {
         setData()
+    }
+
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> get() = _showDialog
+    fun setShowDialog(enabled: Boolean) {
+        _showDialog.value = enabled
     }
 
     private val _name = MutableStateFlow("")
@@ -108,6 +116,12 @@ class ClientDetailsViewModel @Inject constructor(
             }
         } catch (error: Throwable) {
             Log.e(CLIENTS_TAG, "Error al guardar los datos: ${error.message}")
+        }
+    }
+
+    fun deleteClient() {
+        viewModelScope.launch {
+            deleteClientUseCase.deleteClient(state.get<Long>("id")!!)
         }
     }
 }

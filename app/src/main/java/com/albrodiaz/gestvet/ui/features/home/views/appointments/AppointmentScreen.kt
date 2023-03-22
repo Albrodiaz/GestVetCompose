@@ -21,11 +21,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
+import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
@@ -45,7 +47,10 @@ fun AppointmentScreen(
 
     ConfirmDeleteDialog(
         show = showDeleteDialog,
-        onDismiss = { appointmentViewModel.showDeleteDialog(false) }) {
+        onDismiss = { appointmentViewModel.showDeleteDialog(false) },
+        title = stringResource(id = R.string.confirmDelete),
+        text = stringResource(id = R.string.deleteDescription)
+    ) {
         appointmentViewModel.apply {
             selectedAppointment?.let {
                 deleteAppointment(it)

@@ -51,4 +51,16 @@ class ClientService @Inject constructor(private val firebase: FirebaseClient) {
             .set(clientsModel).await()
     }
 
+    suspend fun deleteClient(id: Long) {
+        firebase.dataBase.collection(CLIENTS_PATH).document("$id")
+            .delete()
+            .addOnSuccessListener {
+                Log.i(CLIENTS_TAG, "Cita guardada con éxito")
+            }
+            .addOnCanceledListener {
+                Log.e(CLIENTS_TAG, "Error al borrar la cita")
+            }
+            .await()
+    }
+
 }

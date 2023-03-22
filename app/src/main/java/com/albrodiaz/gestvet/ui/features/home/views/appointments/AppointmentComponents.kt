@@ -79,12 +79,18 @@ fun AppointmentTextField(text: String, modifier: Modifier) {
 }
 
 @Composable
-fun ConfirmDeleteDialog(show: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit) {
+fun ConfirmDeleteDialog(
+    title: String,
+    text: String,
+    show: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
     if (show) {
         AlertDialog(
             onDismissRequest = { onDismiss() },
-            title = { Text(text = "¿Eliminar la cita?") },
-            text = { Text(text = "Una vez eliminada no se podrá recuperar.") },
+            title = { Text(text = title) },
+            text = { Text(text = text) },
             confirmButton = {
                 TextButton(onClick = { onConfirm() }) {
                     Text(text = "OK")
@@ -92,7 +98,7 @@ fun ConfirmDeleteDialog(show: Boolean, onDismiss: () -> Unit, onConfirm: () -> U
             },
             dismissButton = {
                 TextButton(onClick = { onDismiss() }) {
-                    Text(text = "Cancelar")
+                    Text(text = stringResource(id = R.string.cancel))
                 }
             },
             properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)

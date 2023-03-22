@@ -36,6 +36,7 @@ import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
+import com.albrodiaz.gestvet.ui.features.home.views.appointments.ConfirmDeleteDialog
 import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable
@@ -47,8 +48,23 @@ fun ClientDetailScreen(
     val context = LocalContext.current
     val isEditActive by clientsDetailsViewModel.isEditActive.collectAsState()
     val seniorityText by clientsDetailsViewModel.clientSeniority.collectAsState()
+    val showDeleteDialog by clientsDetailsViewModel.showDialog.collectAsState()
 
-    Column(Modifier.fillMaxSize().verticalScroll(scrollState)) {
+    ConfirmDeleteDialog(
+        title = stringResource(id = R.string.confirmDeleteClient),
+        text = stringResource(id = R.string.deleteDescription),
+        show = showDeleteDialog,
+        onDismiss = { clientsDetailsViewModel.setShowDialog(false) }
+    ) {
+        clientsDetailsViewModel.deleteClient()
+        navigationController.navigateUp()
+    }
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ) {
         ClientHeader(
             onClose = { navigationController.popBackStack() },
             onEdit = {
@@ -64,7 +80,9 @@ fun ClientDetailScreen(
             DetailsDescriptionText()
             ClientSection(clientsDetailsViewModel = clientsDetailsViewModel)
         }
-        ActionsSection(seniorityText = seniorityText)
+        ActionsSection(seniorityText = seniorityText) {
+            clientsDetailsViewModel.setShowDialog(true)
+        }
         Divider(modifier = Modifier.padding(horizontal = 18.dp))
         PetSection()
     }
@@ -226,7 +244,7 @@ private fun ClientSection(
 }
 
 @Composable
-fun ActionsSection(seniorityText: Long) {
+fun ActionsSection(seniorityText: Long, onDelete: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -234,8 +252,11 @@ fun ActionsSection(seniorityText: Long) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = "${stringResource(id = R.string.since)} ${seniorityText.toDate()}", fontSize = 14.sp)
-        TextButton(onClick = { /*TODO*/ }) {
+        Text(
+            text = "${stringResource(id = R.string.since)} ${seniorityText.toDate()}",
+            fontSize = 14.sp
+        )
+        TextButton(onClick = { onDelete() }) {
             Text(text = stringResource(id = R.string.delete))
         }
     }
