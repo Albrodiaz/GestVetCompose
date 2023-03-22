@@ -27,4 +27,5 @@
     <string name="clients">Clientes</string>
     <string name="appointments">Citas</string>
     <string name="search">Buscar</string>
+    <string name="delete">Eliminar</string>
 </resources>
