@@ -22,4 +22,6 @@
     <string name="pets">Mascotas</string>
     <string name="add">Añadir</string>
     <string name="id">DNI</string>
+    <string name="unavailableDate">Fecha no disponible</string>
+    <string name="savedChanges">Cambios guardados</string>
 </resources>

@@ -9,7 +9,9 @@ import com.albrodiaz.gestvet.domain.AddAppointmentUseCase
 import com.albrodiaz.gestvet.domain.GetAppointmentsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,13 +27,10 @@ class AddAppointmentViewModel @Inject constructor(
 
     private val dateList = MutableLiveData<List<Long>>(emptyList())
 
-    fun setApptId(id: Long) {
-        state["id"] = id
-    }
-
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val selectedAppt: Flow<AppointmentModel> =
-        getAppointmentsUseCase.invoke(_appointmentId.value!!).map {
-            it.toObject(AppointmentModel::class.java)
+        state.getStateFlow("id", 0L).flatMapLatest { id ->
+            getAppointmentsUseCase.invoke(id).map { it.toObject(AppointmentModel::class.java) }
         }
 
     init {
@@ -109,9 +108,11 @@ class AddAppointmentViewModel @Inject constructor(
         }
     }
 
-    private val _isDateUnavailable: MutableLiveData<Boolean> = dateText.combine(hourText) { date, hour ->
-        return@combine dateList.value?.contains(hour.hourToMillis() + date.dateToMillis()) ?: false
-    } as MutableLiveData<Boolean>
+    private val _isDateUnavailable: MutableLiveData<Boolean> =
+        dateText.combine(hourText) { date, hour ->
+            return@combine dateList.value?.contains(hour.hourToMillis() + date.dateToMillis())
+                ?: false
+        } as MutableLiveData<Boolean>
 
     val isDateUnavailable: LiveData<Boolean> get() = _isDateUnavailable
 
@@ -125,30 +126,29 @@ class AddAppointmentViewModel @Inject constructor(
         hourText,
         subjectText,
         isDateUnavailable
-    ) { owner, pet, date, hour, subject, error->
+    ) { owner, pet, date, hour, subject, error ->
         return@combine owner.isNotEmpty() && pet.isNotEmpty() && date.isNotEmpty() && hour.isNotEmpty() && subject.isNotEmpty() && !error
     }
 
-    fun addAppointment() {
+    fun saveAppointment() {
         _isAddedSuccess.value = true
-        viewModelScope.launch {
-            try {
-                addAppointmentUseCase.invoke(
-                    AppointmentModel(
-                        owner = _ownerText.value,
-                        pet = _petText.value,
-                        date = _dateText.value,
-                        hour = _hourText.value,
-                        dateInMillis = _dateText.value!!.dateToMillis() + _hourText.value!!.hourToMillis(),
-                        subject = _subjectText.value,
-                        details = _detailsText.value,
-                        id = if (_appointmentId.value == 0L) System.currentTimeMillis() else _appointmentId.value
-                    )
-                )
-            } catch (e: Throwable) {
-                Log.e("AddAppointmentViewModel", "Error al añadir la cita: $e")
-                _isAddedSuccess.value = false
+        try {
+            val appointment = AppointmentModel(
+                owner = _ownerText.value,
+                pet = _petText.value,
+                date = _dateText.value,
+                hour = _hourText.value,
+                dateInMillis = _dateText.value!!.dateToMillis() + _hourText.value!!.hourToMillis(),
+                subject = _subjectText.value,
+                details = _detailsText.value,
+                id = if (state.get<Long>("id") == 0L) System.currentTimeMillis() else _appointmentId.value
+            )
+            viewModelScope.launch {
+                addAppointmentUseCase.invoke(appointment)
             }
+        } catch (e: Throwable) {
+            Log.e("AddAppointmentViewModel", "Error al añadir la cita: $e")
+            _isAddedSuccess.value = false
         }
     }
 }

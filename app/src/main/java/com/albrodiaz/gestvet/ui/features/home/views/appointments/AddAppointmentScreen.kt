@@ -41,8 +41,7 @@ fun AddAppointmentScreen(
     isDateAvailable: (String) -> Unit,
     appointmentId: Long?
 ) {
-    if (addAppointmentViewModel.isDateUnavailable.value == true) isDateAvailable("Fecha no disponible")
-    addAppointmentViewModel.setApptId(appointmentId ?: 0L)
+    if (addAppointmentViewModel.isDateUnavailable.value == true) isDateAvailable(stringResource(id = R.string.unavailableDate))
 
     val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.observeAsState(false)
     val isAddedSuccess by addAppointmentViewModel.isAddedSuccess.observeAsState()
@@ -230,7 +229,7 @@ fun AddAppointmentScreen(
         )
         Button(
             onClick = {
-                addAppointmentViewModel.addAppointment()
+                addAppointmentViewModel.saveAppointment()
                 isAddedSuccess?.let {
                     if (it) navigationController.navigateUp() else Toast.makeText(
                         context,

@@ -31,6 +31,21 @@ class ClientService @Inject constructor(private val firebase: FirebaseClient) {
             awaitClose { data.remove() }
         }
 
+    fun getClientById(id: Long) = callbackFlow {
+        val data = firebase.dataBase.collection(CLIENTS_PATH).whereEqualTo("id", id)
+            .addSnapshotListener { values, error ->
+                error?.let {
+                    Log.e(CLIENTS_TAG, "Error al recuperar el cliente: ${it.message}")
+                }
+                values?.let { client ->
+                    client.map {
+                        trySend(it)
+                    }
+                }
+            }
+        awaitClose { data.remove() }
+    }
+
     suspend fun addClient(clientsModel: ClientsModel) {
         firebase.dataBase.collection(CLIENTS_PATH).document("${clientsModel.id}")
             .set(clientsModel).await()

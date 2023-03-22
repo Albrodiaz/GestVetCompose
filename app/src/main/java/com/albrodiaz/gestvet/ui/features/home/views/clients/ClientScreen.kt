@@ -56,7 +56,7 @@ fun ClientScreen(clientViewModel: ClientViewModel, navigationController: NavHost
                             )
                         },
                         trailingContent = {
-                            IconButton(onClick = { navigationController.navigate(Routes.ClientDetails.route) }) {
+                            IconButton(onClick = { navigationController.navigate(Routes.ClientDetails.createRoute(it.id)) }) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_arrow_right),
                                     contentDescription = ""
