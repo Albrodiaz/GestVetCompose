@@ -58,8 +58,7 @@ fun FormTextField(
             focusedIndicatorColor = Color.LightGray,
             unfocusedIndicatorColor = Color.LightGray,
             cursorColor = md_theme_light_primary,
-            focusedLabelColor = md_theme_light_primary,
-            containerColor = md_theme_light_surfaceVariant.copy(alpha = 0.2f)
+            focusedLabelColor = md_theme_light_primary
         )
     )
 }

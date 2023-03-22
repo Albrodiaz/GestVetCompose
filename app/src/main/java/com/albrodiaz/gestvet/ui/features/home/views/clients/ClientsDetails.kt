@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,8 +38,7 @@ import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
-import com.albrodiaz.gestvet.ui.theme.client_textfield_background
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_surfaceTint
+import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable
 fun ClientDetailScreen(navigationController: NavHostController) {
@@ -286,6 +286,9 @@ private fun ClientTextfield(
         singleLine = true,
         enabled = enabled,
         maxLines = 1,
+        textStyle = TextStyle(
+            color = if (isSystemInDarkTheme()) md_theme_dark_onSurface else md_theme_light_onSurface
+        ),
         keyboardOptions = keyboardOptions,
         cursorBrush = SolidColor(md_theme_light_surfaceTint),
         visualTransformation = VisualTransformation.None,
@@ -294,7 +297,7 @@ private fun ClientTextfield(
                 Modifier
                     .fillMaxSize()
                     .padding(vertical = 8.dp)
-                    .background(client_textfield_background)
+                    .background(if (isSystemInDarkTheme()) md_theme_dark_surfaceVariant else md_theme_light_surfaceVariant)
                     .border(
                         width = .4.dp,
                         shape = RoundedCornerShape(4.dp),

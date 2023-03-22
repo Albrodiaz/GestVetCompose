@@ -1,6 +1,7 @@
 package com.albrodiaz.gestvet.ui.features.home.views.searchscreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -138,7 +139,13 @@ private fun ItemSearchScreen(appointment: AppointmentModel) {
         headlineText = { Text(text = appointment.owner ?: "") },
         supportingText = { Text(text = appointment.pet ?: "") },
         trailingContent = { Text(text = appointment.date ?: "") },
-        leadingContent = { Icon(Icons.Filled.DateRange, contentDescription = "") },
+        leadingContent = {
+            Icon(
+                Icons.Filled.DateRange,
+                contentDescription = "",
+                tint = if (isSystemInDarkTheme()) md_theme_dark_onSurface else md_theme_light_onSurface
+            )
+        },
         shadowElevation = 4.dp
     )
 }
