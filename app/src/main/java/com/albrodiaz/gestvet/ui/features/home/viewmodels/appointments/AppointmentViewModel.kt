@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.albrodiaz.gestvet.domain.DeleteAppointmentUseCase
-import com.albrodiaz.gestvet.domain.GetAppointmentsUseCase
+import com.albrodiaz.gestvet.domain.appointments.DeleteAppointmentUseCase
+import com.albrodiaz.gestvet.domain.appointments.GetAppointmentsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

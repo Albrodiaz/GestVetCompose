@@ -28,9 +28,9 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormTextField(
+    modifier: Modifier = Modifier,
     text: String,
     placeholder: String = "",
-    modifier: Modifier,
     maxLines: Int = 1,
     singleLine: Boolean = true,
     readOnly: Boolean = false,

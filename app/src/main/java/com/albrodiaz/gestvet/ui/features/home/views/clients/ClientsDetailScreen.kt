@@ -34,21 +34,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
-import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
+import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.ConfirmDeleteDialog
+import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
 import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable
 fun ClientDetailScreen(
     navigationController: NavHostController,
-    clientsDetailsViewModel: ClientDetailsViewModel = hiltViewModel()
+    clientsDetailsViewModel: ClientDetailsViewModel = hiltViewModel(),
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val isEditActive by clientsDetailsViewModel.isEditActive.collectAsState()
     val seniorityText by clientsDetailsViewModel.clientSeniority.collectAsState()
     val showDeleteDialog by clientsDetailsViewModel.showDialog.collectAsState()
+    val pets by clientsDetailsViewModel.pets.collectAsState(emptyList())
 
     ConfirmDeleteDialog(
         title = stringResource(id = R.string.confirmDeleteClient),
@@ -84,12 +86,18 @@ fun ClientDetailScreen(
             clientsDetailsViewModel.setShowDialog(true)
         }
         Divider(modifier = Modifier.padding(horizontal = 18.dp))
-        PetSection()
+        PetSection(pets = pets) {
+            navigationController.navigate(
+                Routes.AddPet.createRoute(
+                    clientsDetailsViewModel.ownerId ?: 0L
+                )
+            )
+        }
     }
 }
 
 @Composable
-private fun PetSection() {
+private fun PetSection(pets: List<PetModel>, onNavigate: () -> Unit) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -104,38 +112,24 @@ private fun PetSection() {
                     fontWeight = FontWeight.Bold
                 )
             )
-            TextButton(onClick = { /*TODO*/ }) {
+            TextButton(onClick = { onNavigate() }) {
                 Text(text = stringResource(id = R.string.add))
             }
         }
-        /*TODO: Borrar cuando tenga lista de mascotas*/
-        val clients = listOf(
-            ClientsModel(
-                id = 1,
-                name = "Alberto",
-                lastname = "Rodríguez Díaz",
-                phoneNumber = "666777888"
-            ),
-            ClientsModel(
-                id = 2,
-                name = "Paloma",
-                lastname = "Genescá Gómez",
-                phoneNumber = "666888777"
-            )
-        )
+
         LazyColumn(
             modifier = Modifier
                 .padding(bottom = 12.dp)
                 .height(250.dp)
         ) {
-            items(items = clients, key = { it.id }) {
+            items(pets) {
                 ListItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 2.dp),
                     shadowElevation = 2.dp,
-                    supportingText = { Text(text = "Algo") },
-                    headlineText = { Text(text = "Marley") }
+                    supportingText = { Text(text = "${it.breed}") },
+                    headlineText = { Text(text = "${it.name}") }
                 )
             }
         }
@@ -143,7 +137,7 @@ private fun PetSection() {
 }
 
 @Composable
-fun ClientHeader(onClose: () -> Unit, onEdit: () -> Unit, enabled: Boolean) {
+private fun ClientHeader(onClose: () -> Unit, onEdit: () -> Unit, enabled: Boolean) {
     ConstraintLayout(
         Modifier
             .fillMaxWidth()

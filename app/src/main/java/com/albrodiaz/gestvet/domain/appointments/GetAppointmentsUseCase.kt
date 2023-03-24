@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.domain
+package com.albrodiaz.gestvet.domain.appointments
 
 import com.albrodiaz.gestvet.data.network.AppointmentsService
 import com.google.firebase.firestore.QueryDocumentSnapshot

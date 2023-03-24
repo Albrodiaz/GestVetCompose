@@ -3,7 +3,7 @@ package com.albrodiaz.gestvet.ui.features.home.viewmodels.clients
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.albrodiaz.gestvet.domain.AddClientUseCase
+import com.albrodiaz.gestvet.domain.clients.AddClientUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

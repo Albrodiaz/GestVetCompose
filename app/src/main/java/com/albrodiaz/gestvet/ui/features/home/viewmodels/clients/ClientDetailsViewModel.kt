@@ -5,10 +5,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.data.network.ClientService.Companion.CLIENTS_TAG
-import com.albrodiaz.gestvet.domain.AddClientUseCase
-import com.albrodiaz.gestvet.domain.DeleteClientUseCase
-import com.albrodiaz.gestvet.domain.GetClientsUseCase
+import com.albrodiaz.gestvet.domain.clients.AddClientUseCase
+import com.albrodiaz.gestvet.domain.clients.DeleteClientUseCase
+import com.albrodiaz.gestvet.domain.clients.GetClientsUseCase
+import com.albrodiaz.gestvet.domain.pets.GetPetsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
+import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -20,7 +22,8 @@ class ClientDetailsViewModel @Inject constructor(
     private val state: SavedStateHandle,
     private val getClientsUseCase: GetClientsUseCase,
     private val addClientUseCase: AddClientUseCase,
-    private val deleteClientUseCase: DeleteClientUseCase
+    private val deleteClientUseCase: DeleteClientUseCase,
+    getPetsUseCase: GetPetsUseCase
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -30,10 +33,13 @@ class ClientDetailsViewModel @Inject constructor(
                 it.toObject(ClientsModel::class.java)
             }
         }
+    val ownerId = state.get<Long>("id")
 
     init {
         setData()
     }
+
+    val pets = getPetsUseCase.invoke(state["id"] ?: 0L).map { it.toObjects(PetModel::class.java) }
 
     private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> get() = _showDialog
@@ -108,7 +114,7 @@ class ClientDetailsViewModel @Inject constructor(
                     lastname = lastName.value,
                     address = address.value,
                     email = email.value,
-                    phoneNumber =  phone.value,
+                    phoneNumber = phone.value,
                     clientId = clientId.value,
                     id = state.get<Long>("id")!!
                 )

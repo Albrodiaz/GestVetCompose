@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.domain
+package com.albrodiaz.gestvet.domain.clients
 
 import com.albrodiaz.gestvet.data.network.ClientService
 import javax.inject.Inject

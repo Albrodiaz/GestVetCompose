@@ -31,4 +31,5 @@
     <string name="deleteDescription">Una vez se elimine, no se podrá recuperar</string>
     <string name="confirmDelete">¿Eliminar la cita?</string>
     <string name="confirmDeleteClient">¿Eliminar cliente?</string>
+    <string name="addPet">Añadir mascota</string>
 </resources>

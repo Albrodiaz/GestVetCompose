@@ -12,6 +12,7 @@ import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.Appointmen
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AddAppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.clients.AddClientScreen
+import com.albrodiaz.gestvet.ui.features.home.views.clients.AddPetScreen
 import com.albrodiaz.gestvet.ui.features.home.views.clients.ClientDetailScreen
 import com.albrodiaz.gestvet.ui.features.home.views.clients.ClientScreen
 import com.albrodiaz.gestvet.ui.features.home.views.searchscreen.SearchScreen
@@ -53,10 +54,19 @@ fun MainNavController(
                 addClientViewModel = hiltViewModel()
             )
         }
-        composable(Routes.ClientDetails.route,
-            arguments = listOf(navArgument("id") {type = NavType.LongType })
+        composable(
+            Routes.ClientDetails.route,
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
         ) {
             ClientDetailScreen(navigationController = navigationController)
+        }
+        composable(
+            Routes.AddPet.route,
+            arguments = listOf(navArgument("ownerId") {type = NavType.LongType})
+        ) {
+            AddPetScreen {
+                navigationController.popBackStack()
+            }
         }
     }
 }

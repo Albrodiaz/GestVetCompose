@@ -11,4 +11,7 @@ sealed class Routes(val route: String) {
     object ClientDetails: Routes("clientdetailscreen/{id}") {
         fun createRoute(id: Long) = "clientdetailscreen/$id"
     }
+    object AddPet: Routes("addpetscreen/{ownerId}") {
+        fun createRoute(ownerId: Long) = "addpetscreen/$ownerId"
+    }
 }

@@ -5,8 +5,8 @@ import androidx.lifecycle.*
 import com.albrodiaz.gestvet.core.extensions.combine
 import com.albrodiaz.gestvet.core.extensions.dateToMillis
 import com.albrodiaz.gestvet.core.extensions.hourToMillis
-import com.albrodiaz.gestvet.domain.AddAppointmentUseCase
-import com.albrodiaz.gestvet.domain.GetAppointmentsUseCase
+import com.albrodiaz.gestvet.domain.appointments.AddAppointmentUseCase
+import com.albrodiaz.gestvet.domain.appointments.GetAppointmentsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
