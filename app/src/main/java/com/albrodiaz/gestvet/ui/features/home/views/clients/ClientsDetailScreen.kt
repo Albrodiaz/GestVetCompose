@@ -123,8 +123,8 @@ private fun PetSection(pets: List<PetModel>, onNavigate: () -> Unit) {
                         .fillMaxWidth()
                         .padding(vertical = 2.dp),
                     shadowElevation = 2.dp,
-                    supportingText = { Text(text = "${it.breed}") },
-                    headlineText = { Text(text = "${it.name}") }
+                    supportingContent = { Text(text = "${it.breed}") },
+                    headlineContent = { Text(text = "${it.name}") }
                 )
             }
         }

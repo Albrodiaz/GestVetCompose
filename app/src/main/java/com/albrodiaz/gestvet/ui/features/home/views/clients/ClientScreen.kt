@@ -51,8 +51,8 @@ fun ClientScreen(
                     ListItem(
                         modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
                         shadowElevation = 4.dp,
-                        supportingText = { Text(text = it.lastname.toString()) },
-                        headlineText = { Text(text = it.name.toString()) },
+                        supportingContent = { Text(text = it.lastname.toString()) },
+                        headlineContent = { Text(text = it.name.toString()) },
                         leadingContent = {
                             Icon(
                                 imageVector = Icons.Filled.AccountCircle,

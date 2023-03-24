@@ -137,8 +137,8 @@ private fun CustomSearchTextField(modifier: Modifier, valueChange: (String) -> U
 @Composable
 private fun ItemSearchScreen(appointment: AppointmentModel) {
     ListItem(
-        headlineText = { Text(text = appointment.owner ?: "") },
-        supportingText = { Text(text = appointment.pet ?: "") },
+        headlineContent = { Text(text = appointment.owner ?: "") },
+        supportingContent = { Text(text = appointment.pet ?: "") },
         trailingContent = { Text(text = appointment.date ?: "") },
         leadingContent = {
             Icon(
