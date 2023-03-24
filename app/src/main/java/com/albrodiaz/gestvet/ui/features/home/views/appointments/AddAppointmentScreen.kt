@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,20 +19,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.showLeftZero
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.core.states.rememberCustomDatePickerState
-import com.albrodiaz.gestvet.ui.features.components.AddDatePicker
-import com.albrodiaz.gestvet.ui.features.components.AddTimePicker
-import com.albrodiaz.gestvet.ui.features.components.DateTimeDialog
-import com.albrodiaz.gestvet.ui.features.components.FormTextField
+import com.albrodiaz.gestvet.ui.features.components.*
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AddAppointmentViewModel
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -45,7 +39,6 @@ fun AddAppointmentScreen(
     onNavigate: () -> Unit
 ) {
     if (addAppointmentViewModel.isDateUnavailable.value == true) isDateAvailable(stringResource(id = R.string.unavailableDate))
-
     val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.observeAsState(false)
     val isAddedSuccess by addAppointmentViewModel.isAddedSuccess.observeAsState()
     val showDatePicker by addAppointmentViewModel.showDatePicker.observeAsState(false)
@@ -86,40 +79,22 @@ fun AddAppointmentScreen(
     }
 
     ConstraintLayout(Modifier.fillMaxSize()) {
-        val (title, owner, pet, date, hour, subject, detail, saveButton, close) = createRefs()
+        val (topBar, owner, pet, date, hour, subject, detail, saveButton) = createRefs()
         val keyboardController = LocalSoftwareKeyboardController.current
+        val title = if (appointmentId == 0L) stringResource(id = R.string.addTitle) else stringResource(
+                id = R.string.modifyAppt)
 
-        IconButton(
-            onClick = {
-                addAppointmentViewModel.cancelDateSnackbar()
-                onNavigate()
-            },
-            modifier = Modifier
-                .padding(12.dp)
-                .constrainAs(close) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                },
-        ) {
-            Icon(imageVector = Icons.Filled.Close, contentDescription = "")
+        AddTopBar(title = title, modifier = Modifier.constrainAs(topBar) {
+            top.linkTo(parent.top)
+            bottom.linkTo(owner.top)
+        }) {
+            onNavigate()
         }
-        Text(
-            text = if (appointmentId == 0L) stringResource(id = R.string.addTitle) else stringResource(
-                id = R.string.modifyAppt
-            ),
-            fontWeight = FontWeight.Bold,
-            fontSize = 32.sp,
-            modifier = Modifier
-                .padding(vertical = 16.dp, horizontal = 24.dp)
-                .constrainAs(title) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                })
         FormTextField(
             text = ownerText,
             placeholder = stringResource(id = R.string.owner),
             modifier = Modifier.constrainAs(owner) {
-                top.linkTo(title.bottom)
+                top.linkTo(topBar.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },

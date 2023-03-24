@@ -32,7 +32,6 @@ fun ClientScreen(
     navigateToCreate: ()-> Unit,
     navigateToDetails: (Long) -> Unit
 ) {
-
     val clients by clientViewModel.clients.collectAsState(initial = emptyList())
     val listState = rememberLazyListState()
 

@@ -7,10 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,12 +20,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.ui.features.components.DetailsTextfield
 import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
+import com.albrodiaz.gestvet.ui.features.components.DetailsTopBar
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
 
@@ -70,15 +66,14 @@ fun ClientDetailScreen(
                     savedToast(context)
                 }
             },
+            onDelete = { clientsDetailsViewModel.setShowDialog(true) },
             enabled = isEditActive
         )
         Row(Modifier.fillMaxWidth()) {
             DetailsDescriptionText()
             ClientSection(clientsDetailsViewModel = clientsDetailsViewModel)
         }
-        ActionsSection(seniorityText = seniorityText) {
-            clientsDetailsViewModel.setShowDialog(true)
-        }
+        SenioritySection(seniorityText = seniorityText)
         Divider(modifier = Modifier.padding(horizontal = 18.dp))
         PetSection(pets = pets) {
             onCreatePet(clientsDetailsViewModel.ownerId ?: 0L)
@@ -87,83 +82,19 @@ fun ClientDetailScreen(
 }
 
 @Composable
-private fun PetSection(pets: List<PetModel>, onNavigate: () -> Unit) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(
-                text = stringResource(id = R.string.pets),
-                modifier = Modifier.padding(vertical = 12.dp, horizontal = 6.dp),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            TextButton(onClick = { onNavigate() }) {
-                Text(text = stringResource(id = R.string.add))
-            }
-        }
-
-        LazyColumn(
-            modifier = Modifier
-                .padding(bottom = 12.dp)
-                .height(250.dp)
-        ) {
-            items(pets) {
-                ListItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 2.dp),
-                    shadowElevation = 2.dp,
-                    supportingContent = { Text(text = "${it.breed}") },
-                    headlineContent = { Text(text = "${it.name}") }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ClientHeader(onClose: () -> Unit, onEdit: () -> Unit, enabled: Boolean) {
-    ConstraintLayout(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-    ) {
-        val (title, edit, close) = createRefs()
-        Text(
-            text = stringResource(id = R.string.client),
-            fontWeight = FontWeight.Bold,
-            fontSize = 32.sp,
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .constrainAs(title) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                })
-        IconButton(
-            onClick = { onClose() },
-            modifier = Modifier.constrainAs(close) {
-                end.linkTo(parent.end)
-                top.linkTo(title.top)
-                bottom.linkTo(title.bottom)
-            }) {
-            Icon(imageVector = Icons.Filled.Close, contentDescription = "")
-        }
-        IconButton(onClick = { onEdit() },
-            modifier = Modifier.constrainAs(edit) {
-                top.linkTo(close.top)
-                end.linkTo(close.start)
-            }) {
-            Icon(
-                imageVector = if (!enabled) Icons.Filled.Edit else Icons.Filled.Done,
-                contentDescription = null
-            )
-        }
-    }
+private fun ClientHeader(
+    onClose: () -> Unit,
+    onEdit: () -> Unit,
+    enabled: Boolean,
+    onDelete: () -> Unit
+) {
+    DetailsTopBar(
+        title = stringResource(id = R.string.client),
+        editEnabled = enabled,
+        onDelete = { onDelete() },
+        onEdit = { onEdit() },
+        onNavigateBack = { onClose() }
+    )
 }
 
 @Composable
@@ -228,7 +159,7 @@ private fun ClientSection(
 }
 
 @Composable
-fun ActionsSection(seniorityText: Long, onDelete: () -> Unit) {
+fun SenioritySection(seniorityText: Long) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -240,8 +171,45 @@ fun ActionsSection(seniorityText: Long, onDelete: () -> Unit) {
             text = "${stringResource(id = R.string.since)} ${seniorityText.toDate()}",
             fontSize = 14.sp
         )
-        TextButton(onClick = { onDelete() }) {
-            Text(text = stringResource(id = R.string.delete))
+    }
+}
+
+@Composable
+private fun PetSection(pets: List<PetModel>, onNavigate: () -> Unit) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                text = stringResource(id = R.string.pets),
+                modifier = Modifier.padding(vertical = 12.dp, horizontal = 6.dp),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+            TextButton(onClick = { onNavigate() }) {
+                Text(text = stringResource(id = R.string.add))
+            }
+        }
+
+        LazyColumn(
+            modifier = Modifier
+                .padding(bottom = 12.dp)
+                .height(250.dp)
+        ) {
+            items(pets) {
+                ListItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 2.dp),
+                    shadowElevation = 2.dp,
+                    supportingContent = { Text(text = "${it.breed}") },
+                    headlineContent = { Text(text = "${it.name}") }
+                )
+            }
         }
     }
 }

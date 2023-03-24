@@ -38,4 +38,7 @@
     <string name="passportNumber">Nº de pasaporte</string>
     <string name="color">Color</string>
     <string name="neutered">Esterilizado</string>
+    <string name="petTitle">Mascota</string>
+    <string name="addClient">Añadir cliente</string>
+    <string name="optional">Opcional</string>
 </resources>
