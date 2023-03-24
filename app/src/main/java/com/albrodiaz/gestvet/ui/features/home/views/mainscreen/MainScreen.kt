@@ -13,19 +13,15 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.albrodiaz.gestvet.R
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.navigation.MainNavController
 import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(
-    appointmentViewModel: AppointmentViewModel = hiltViewModel()
-) {
+fun MainScreen() {
     val navController = rememberNavController()
     val navStackEntry by navController.currentBackStackEntryAsState()
     val bottomNavState = rememberSaveable { mutableStateOf(true) }
@@ -57,11 +53,10 @@ fun MainScreen(
                 .padding(bottom = it.calculateBottomPadding())
         ) {
             MainNavController(
-                navigationController = navController,
-                appointmentViewModel = appointmentViewModel
+                navigationController = navController
             ) { available ->
                 scope.launch {
-                    snackbarHostState.showSnackbar(available, actionLabel = "OK")
+                    snackbarHostState.showSnackbar(message = available, actionLabel = "OK")
                 }
             }
         }

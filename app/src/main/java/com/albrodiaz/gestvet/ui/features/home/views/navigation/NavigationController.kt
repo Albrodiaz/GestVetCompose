@@ -8,7 +8,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AddAppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.clients.AddClientScreen
@@ -20,7 +19,6 @@ import com.albrodiaz.gestvet.ui.features.home.views.searchscreen.SearchScreen
 @Composable
 fun MainNavController(
     navigationController: NavController,
-    appointmentViewModel: AppointmentViewModel,
     isDateAvailable: (String) -> Unit
 ) {
     NavHost(
@@ -28,7 +26,7 @@ fun MainNavController(
         startDestination = Routes.Appointment.route
     ) {
         composable(Routes.Appointment.route) {
-            AppointmentScreen(appointmentViewModel) {
+            AppointmentScreen {
                 navigationController.navigate(Routes.AddAppointment.createRoute(it ?: 0L))
             }
         }
@@ -40,7 +38,7 @@ fun MainNavController(
                 navigationController.navigate(Routes.ClientDetails.createRoute(it))
             }
         }
-        composable(Routes.Search.route) { SearchScreen(appointmentViewModel) }
+        composable(Routes.Search.route) { SearchScreen() }
         composable(
             Routes.AddAppointment.route,
             arguments = listOf(navArgument("id") { defaultValue = 1L })

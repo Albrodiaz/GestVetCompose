@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
@@ -35,7 +36,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun AppointmentScreen(
-    appointmentViewModel: AppointmentViewModel,
+    appointmentViewModel: AppointmentViewModel = hiltViewModel(),
     onNavigate: (Long?) -> Unit
 ) {
 

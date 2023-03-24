@@ -26,13 +26,14 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.core.extensions.searchBy
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable
-fun SearchScreen(appointmentViewModel: AppointmentViewModel) {
+fun SearchScreen(appointmentViewModel: AppointmentViewModel = hiltViewModel()) {
     var userText: String by remember { mutableStateOf("") }
     val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
     /*
