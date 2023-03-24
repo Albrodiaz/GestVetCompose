@@ -19,15 +19,13 @@ class AddPetViewModel @Inject constructor(
     state: SavedStateHandle
 ) : ViewModel() {
 
-    /*@OptIn(ExperimentalCoroutinesApi::class)
-    private val ownerId: Flow<ClientsModel> =
-        state.getStateFlow("id", 0L).flatMapLatest { id ->
-            getClientsUseCase.invoke(id).map {
-                it.toObject(ClientsModel::class.java)
-            }
-        }*/
-
     private val ownerId = state.getStateFlow("ownerId", 0L)
+
+    private val _showDatePicker = MutableStateFlow(false)
+    val showDatePicker: StateFlow<Boolean> get() = _showDatePicker
+    fun setShowDatePicker(value: Boolean) {
+        _showDatePicker.value = value
+    }
 
     private val _name = MutableStateFlow("")
     val name: StateFlow<String> get() = _name

@@ -6,8 +6,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -19,24 +17,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
+import com.albrodiaz.gestvet.ui.features.components.DetailsTextfield
 import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
-import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable
 fun ClientDetailScreen(
@@ -202,28 +197,28 @@ private fun ClientSection(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            ClientTextfield(
+            DetailsTextfield(
                 text = nameText,
                 enabled = isEditActive,
                 valueChange = { setName(it) })
-            ClientTextfield(
+            DetailsTextfield(
                 text = lastNameText,
                 enabled = isEditActive,
                 valueChange = { setLastName(it) })
-            ClientTextfield(
+            DetailsTextfield(
                 text = addressText,
                 enabled = isEditActive,
                 valueChange = { setAddress(it) })
-            ClientTextfield(
+            DetailsTextfield(
                 text = emailText,
                 enabled = isEditActive,
                 valueChange = { setEmail(it) })
-            ClientTextfield(
+            DetailsTextfield(
                 text = phoneText,
                 enabled = isEditActive,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 valueChange = { setPhone(it) })
-            ClientTextfield(
+            DetailsTextfield(
                 text = clientIdText,
                 enabled = isEditActive,
                 valueChange = { setClientId(it) }
@@ -249,56 +244,6 @@ fun ActionsSection(seniorityText: Long, onDelete: () -> Unit) {
             Text(text = stringResource(id = R.string.delete))
         }
     }
-}
-
-@Composable
-private fun ClientTextfield(
-    text: String,
-    modifier: Modifier = Modifier,
-    valueChange: (String) -> Unit,
-    enabled: Boolean = false,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
-) {
-    BasicTextField(
-        value = text,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(45.dp),
-        onValueChange = { valueChange(it) },
-        singleLine = true,
-        enabled = enabled,
-        maxLines = 1,
-        textStyle = TextStyle(
-            color = if (isSystemInDarkTheme()) md_theme_dark_onSurface else md_theme_light_onSurface
-        ),
-        keyboardOptions = keyboardOptions,
-        cursorBrush = SolidColor(md_theme_light_surfaceTint),
-        visualTransformation = VisualTransformation.None,
-        decorationBox = { innerTextField ->
-            Row(
-                Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 8.dp)
-                    .background(if (isSystemInDarkTheme()) md_theme_dark_surfaceVariant else md_theme_light_surfaceVariant)
-                    .border(
-                        width = .4.dp,
-                        shape = RoundedCornerShape(4.dp),
-                        color = Color.LightGray
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    innerTextField()
-                }
-            }
-        }
-    )
 }
 
 @Composable
