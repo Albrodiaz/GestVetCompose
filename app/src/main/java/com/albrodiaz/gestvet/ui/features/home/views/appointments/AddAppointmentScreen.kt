@@ -26,7 +26,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.showLeftZero
 import com.albrodiaz.gestvet.core.extensions.toDate
@@ -37,9 +36,9 @@ import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AddAppoint
 @Composable
 fun AddAppointmentScreen(
     addAppointmentViewModel: AddAppointmentViewModel,
-    navigationController: NavHostController,
     isDateAvailable: (String) -> Unit,
-    appointmentId: Long?
+    appointmentId: Long?,
+    onNavigate: () -> Unit
 ) {
     if (addAppointmentViewModel.isDateUnavailable.value == true) isDateAvailable(stringResource(id = R.string.unavailableDate))
 
@@ -89,7 +88,7 @@ fun AddAppointmentScreen(
         IconButton(
             onClick = {
                 addAppointmentViewModel.cancelDateSnackbar()
-                navigationController.navigateUp()
+                onNavigate()
             },
             modifier = Modifier
                 .padding(12.dp)
@@ -231,7 +230,7 @@ fun AddAppointmentScreen(
             onClick = {
                 addAppointmentViewModel.saveAppointment()
                 isAddedSuccess?.let {
-                    if (it) navigationController.navigateUp() else Toast.makeText(
+                    if (it) onNavigate() else Toast.makeText(
                         context,
                         "Revise los datos",
                         Toast.LENGTH_SHORT

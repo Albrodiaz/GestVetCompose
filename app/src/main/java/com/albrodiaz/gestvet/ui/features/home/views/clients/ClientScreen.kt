@@ -21,15 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
-import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AnimatedAddFab
 
 @Composable
-fun ClientScreen(clientViewModel: ClientViewModel, navigationController: NavHostController) {
+fun ClientScreen(
+    clientViewModel: ClientViewModel,
+    navigateToCreate: ()-> Unit,
+    navigateToDetails: (Long) -> Unit
+) {
 
     val clients by clientViewModel.clients.collectAsState(initial = emptyList())
     val listState = rememberLazyListState()
@@ -58,7 +60,7 @@ fun ClientScreen(clientViewModel: ClientViewModel, navigationController: NavHost
                             )
                         },
                         trailingContent = {
-                            IconButton(onClick = { navigationController.navigate(Routes.ClientDetails.createRoute(it.id)) }) {
+                            IconButton(onClick = { navigateToDetails(it.id) }) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_arrow_right),
                                     contentDescription = ""
@@ -75,7 +77,7 @@ fun ClientScreen(clientViewModel: ClientViewModel, navigationController: NavHost
                 },
                 visible = listState.isScrolled
             ) {
-                navigationController.navigate(Routes.AddClient.route)
+                navigateToCreate()
             }
         }
     }

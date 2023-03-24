@@ -40,7 +40,15 @@ fun MainScreen(
     }
 
     Scaffold(
-        bottomBar = { if (bottomNavState.value) MainBottomNav(navController = navController) },
+        bottomBar = { if (bottomNavState.value) MainBottomNav(
+            navToHome = { navController.navigate(Routes.Appointment.route) },
+            navToClients = { navController.navigate(Routes.Client.route){
+                popUpTo(Routes.Appointment.route)
+            } },
+            navToSearch = { navController.navigate(Routes.Search.route){
+                popUpTo(Routes.Appointment.route)
+            } }
+        ) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) {
         Box(
@@ -61,7 +69,11 @@ fun MainScreen(
 }
 
 @Composable
-fun MainBottomNav(navController: NavController) {
+fun MainBottomNav(
+    navToHome: () -> Unit,
+    navToClients: () -> Unit,
+    navToSearch: () -> Unit
+) {
     var selectedItem by remember { mutableStateOf(0) }
     NavigationBar(Modifier.fillMaxWidth()) {
         NavigationBarItem(
@@ -69,7 +81,7 @@ fun MainBottomNav(navController: NavController) {
             label = { Text(stringResource(id = R.string.appointments)) },
             selected = selectedItem == 0,
             onClick = {
-                navController.navigate(Routes.Appointment.route)
+                navToHome()
                 selectedItem = 0
 
             }
@@ -79,9 +91,7 @@ fun MainBottomNav(navController: NavController) {
             label = { Text(stringResource(id = R.string.clients)) },
             selected = selectedItem == 2,
             onClick = {
-                navController.navigate(Routes.Client.route) {
-                    popUpTo(Routes.Appointment.route) { inclusive = false }
-                }
+                navToClients()
                 selectedItem = 2
             }
         )
@@ -90,9 +100,7 @@ fun MainBottomNav(navController: NavController) {
             label = { Text(stringResource(id = R.string.search)) },
             selected = selectedItem == 3,
             onClick = {
-                navController.navigate(Routes.Search.route) {
-                    popUpTo(Routes.Appointment.route) { inclusive = false }
-                }
+                navToSearch()
                 selectedItem = 3
             }
         )

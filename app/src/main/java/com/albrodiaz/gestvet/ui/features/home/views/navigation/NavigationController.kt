@@ -28,13 +28,17 @@ fun MainNavController(
         startDestination = Routes.Appointment.route
     ) {
         composable(Routes.Appointment.route) {
-            AppointmentScreen(appointmentViewModel, navigationController)
+            AppointmentScreen(appointmentViewModel) {
+                navigationController.navigate(Routes.AddAppointment.createRoute(it ?: 0L))
+            }
         }
         composable(Routes.Client.route) {
             ClientScreen(
                 clientViewModel = hiltViewModel(),
-                navigationController
-            )
+                navigateToCreate = { navigationController.navigate(Routes.AddClient.route) }
+            ) {
+                navigationController.navigate(Routes.ClientDetails.createRoute(it))
+            }
         }
         composable(Routes.Search.route) { SearchScreen(appointmentViewModel) }
         composable(
@@ -43,26 +47,28 @@ fun MainNavController(
         ) {
             AddAppointmentScreen(
                 addAppointmentViewModel = hiltViewModel(),
-                navigationController = navigationController,
                 isDateAvailable = { available -> isDateAvailable(available) },
-                appointmentId = it.arguments?.getLong("id")
-            )
+                appointmentId = it.arguments?.getLong("id"),
+            ) {
+                navigationController.popBackStack()
+            }
         }
         composable(Routes.AddClient.route) {
-            AddClientScreen(
-                navigationController = navigationController,
-                addClientViewModel = hiltViewModel()
-            )
+            AddClientScreen(addClientViewModel = hiltViewModel()) {
+                navigationController.popBackStack()
+            }
         }
         composable(
             Routes.ClientDetails.route,
             arguments = listOf(navArgument("id") { type = NavType.LongType })
         ) {
-            ClientDetailScreen(navigationController = navigationController)
+            ClientDetailScreen(onNavigateUp = { navigationController.popBackStack() }) {
+                navigationController.navigate(Routes.AddPet.createRoute(it))
+            }
         }
         composable(
             Routes.AddPet.route,
-            arguments = listOf(navArgument("ownerId") {type = NavType.LongType})
+            arguments = listOf(navArgument("ownerId") { type = NavType.LongType })
         ) {
             AddPetScreen {
                 navigationController.popBackStack()

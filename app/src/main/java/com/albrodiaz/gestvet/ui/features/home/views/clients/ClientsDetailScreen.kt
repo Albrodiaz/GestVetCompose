@@ -31,19 +31,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.ConfirmDeleteDialog
-import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
 import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable
 fun ClientDetailScreen(
-    navigationController: NavHostController,
     clientsDetailsViewModel: ClientDetailsViewModel = hiltViewModel(),
+    onNavigateUp: () -> Unit,
+    onCreatePet: (Long) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -59,7 +58,7 @@ fun ClientDetailScreen(
         onDismiss = { clientsDetailsViewModel.setShowDialog(false) }
     ) {
         clientsDetailsViewModel.deleteClient()
-        navigationController.navigateUp()
+        onNavigateUp()
     }
 
     Column(
@@ -68,7 +67,7 @@ fun ClientDetailScreen(
             .verticalScroll(scrollState)
     ) {
         ClientHeader(
-            onClose = { navigationController.popBackStack() },
+            onClose = { onNavigateUp() },
             onEdit = {
                 clientsDetailsViewModel.enableEdit(!isEditActive)
                 if (isEditActive) {
@@ -87,11 +86,7 @@ fun ClientDetailScreen(
         }
         Divider(modifier = Modifier.padding(horizontal = 18.dp))
         PetSection(pets = pets) {
-            navigationController.navigate(
-                Routes.AddPet.createRoute(
-                    clientsDetailsViewModel.ownerId ?: 0L
-                )
-            )
+            onCreatePet(clientsDetailsViewModel.ownerId ?: 0L)
         }
     }
 }

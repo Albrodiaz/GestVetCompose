@@ -23,7 +23,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.AddClientViewModel
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.FormTextField
 import com.albrodiaz.gestvet.ui.theme.GestVetTheme
@@ -31,8 +30,8 @@ import com.albrodiaz.gestvet.ui.theme.GestVetTheme
 
 @Composable
 fun AddClientScreen(
-    navigationController: NavHostController,
-    addClientViewModel: AddClientViewModel
+    addClientViewModel: AddClientViewModel,
+    onNavigateUp: () -> Unit
 ) {
     val clientName by addClientViewModel.clientName.collectAsState(initial = "")
     val clientLastName by addClientViewModel.clientLastName.collectAsState(initial = "")
@@ -48,7 +47,7 @@ fun AddClientScreen(
             val (title, content, close) = createRefs()
             IconButton(
                 onClick = {
-                    navigationController.navigateUp()
+                    onNavigateUp()
                 },
                 modifier = Modifier
                     .padding(vertical = 16.dp, horizontal = 6.dp)
@@ -141,7 +140,7 @@ fun AddClientScreen(
                     enabled = isSaveEnabled,
                     onClick = {
                         addClientViewModel.saveClient()
-                        navigationController.navigateUp()
+                        onNavigateUp()
                     }) {
                     Text(text = "Guardar")
                 }

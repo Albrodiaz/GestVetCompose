@@ -26,11 +26,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavHostController
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
-import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.theme.*
 import kotlin.math.roundToInt
@@ -38,7 +36,7 @@ import kotlin.math.roundToInt
 @Composable
 fun AppointmentScreen(
     appointmentViewModel: AppointmentViewModel,
-    navigationController: NavHostController
+    onNavigate: (Long?) -> Unit
 ) {
 
     val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
@@ -62,9 +60,9 @@ fun AppointmentScreen(
     Appointments(
         appointments = appointments,
         appointmentViewModel = appointmentViewModel,
-        navigationController = navigationController
+        onNavigate = { onNavigate(0L) }
     ) {
-        navigationController.navigate(Routes.AddAppointment.createRoute(it))
+        onNavigate(it)
     }
 }
 
@@ -73,7 +71,7 @@ fun AppointmentScreen(
 fun Appointments(
     appointments: List<AppointmentModel>,
     appointmentViewModel: AppointmentViewModel,
-    navigationController: NavHostController,
+    onNavigate: (Long?)->Unit,
     onItemSelected: (Long) -> Unit
 ) {
     ConstraintLayout(Modifier.fillMaxSize()) {
@@ -117,7 +115,7 @@ fun Appointments(
             modifier = Modifier.constrainAs(addButton) {
                 bottom.linkTo(parent.bottom)
                 end.linkTo(parent.end)
-            }) { navigationController.navigate(Routes.AddAppointment.createRoute(0L)) }
+            }) { onNavigate(0L) }
     }
 }
 
