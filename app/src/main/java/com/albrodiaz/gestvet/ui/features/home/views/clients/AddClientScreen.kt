@@ -23,8 +23,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.albrodiaz.gestvet.ui.features.components.FormTextField
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.AddClientViewModel
-import com.albrodiaz.gestvet.ui.features.home.views.appointments.FormTextField
 import com.albrodiaz.gestvet.ui.theme.GestVetTheme
 
 

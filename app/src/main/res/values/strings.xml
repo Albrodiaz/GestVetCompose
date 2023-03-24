@@ -29,7 +29,7 @@
     <string name="search">Buscar</string>
     <string name="delete">Eliminar</string>
     <string name="deleteDescription">Una vez se elimine, no se podrá recuperar</string>
-    <string name="confirmDelete">¿Eliminar la cita?</string>
+    <string name="confirmDelete">¿Desea eliminar?</string>
     <string name="confirmDeleteClient">¿Eliminar cliente?</string>
     <string name="addPet">Añadir mascota</string>
 </resources>

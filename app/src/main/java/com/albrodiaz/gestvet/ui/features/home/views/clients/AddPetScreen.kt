@@ -5,8 +5,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -17,8 +20,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.ui.features.components.FormTextField
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.AddPetViewModel
-import com.albrodiaz.gestvet.ui.features.home.views.appointments.FormTextField
 import com.albrodiaz.gestvet.ui.theme.md_theme_light_primaryContainer
 
 @Composable
@@ -92,7 +95,11 @@ fun AddPetForm(addPetViewModel: AddPetViewModel, onSave: ()-> Unit, onDelete: ()
                 text = birthDate,
                 textChange = { setBirthDate(it) },
                 placeholder = "Fecha de nacimiento",
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                readOnly = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                trailingIcon = { IconButton(onClick = {  }) {
+                    Icon(imageVector = Icons.Outlined.DateRange, contentDescription = null)
+                } }
             )
             FormTextField(
                 text = breed,

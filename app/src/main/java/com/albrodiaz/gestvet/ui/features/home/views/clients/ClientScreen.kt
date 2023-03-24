@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
+import com.albrodiaz.gestvet.ui.features.components.AnimatedAddFab
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientViewModel
-import com.albrodiaz.gestvet.ui.features.home.views.appointments.AnimatedAddFab
 
 @Composable
 fun ClientScreen(

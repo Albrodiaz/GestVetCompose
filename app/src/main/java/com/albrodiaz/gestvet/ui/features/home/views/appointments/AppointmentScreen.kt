@@ -12,6 +12,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
+import androidx.compose.material.SwipeableState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.*
@@ -20,15 +23,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
+import com.albrodiaz.gestvet.ui.features.components.AnimatedAddFab
+import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.theme.*
@@ -219,5 +227,44 @@ private fun ItemContent(appointment: AppointmentModel, modifier: Modifier) {
                     top.linkTo(pet.bottom)
                     start.linkTo(owner.start)
                 })
+    }
+}
+
+@Composable
+private fun DateTextField(text: String, modifier: Modifier) {
+    Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = modifier)
+}
+
+@Composable
+private fun AppointmentTextField(text: String, modifier: Modifier) {
+    Text(
+        text = text,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Medium,
+        modifier = modifier.padding(start = 6.dp)
+    )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun DeleteButton(
+    modifier: Modifier,
+    swipeableState: SwipeableState<Int>? = null,
+    onDeleteAppointment: () -> Unit
+) {
+    val density = LocalDensity.current
+    Box(modifier = modifier.fillMaxHeight()) {
+        AnimatedVisibility(
+            visible = (swipeableState?.targetValue == 1) && (swipeableState.progress.fraction > 0.5),
+            enter = fadeIn(animationSpec = tween(1500)) + slideInHorizontally { with(density) { 100.dp.roundToPx() } },
+            exit = fadeOut(animationSpec = tween(1500)) + slideOutHorizontally { with(density) { 80.dp.roundToPx() } }
+        ) {
+            FloatingActionButton(
+                onClick = { onDeleteAppointment() },
+                containerColor = md_theme_light_error
+            ) {
+                Icon(Icons.Filled.Delete, contentDescription = "", tint = Color.White)
+            }
+        }
     }
 }

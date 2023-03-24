@@ -33,9 +33,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
+import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
-import com.albrodiaz.gestvet.ui.features.home.views.appointments.ConfirmDeleteDialog
 import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable
