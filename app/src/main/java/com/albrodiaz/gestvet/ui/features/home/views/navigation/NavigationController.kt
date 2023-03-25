@@ -74,7 +74,9 @@ fun MainNavController(
             Routes.PetDetails.route,
             arguments = listOf(navArgument("petId") { type = NavType.LongType })
         ) {
-            PetDetailScreen()
+            PetDetailScreen {
+                navigationController.popBackStack()
+            }
         }
     }
 }

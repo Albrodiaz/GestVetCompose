@@ -1,8 +1,11 @@
 package com.albrodiaz.gestvet.ui.features.home.viewmodels.pets
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.albrodiaz.gestvet.data.network.PetService.Companion.PETS_TAG
+import com.albrodiaz.gestvet.domain.pets.AddPetUseCase
 import com.albrodiaz.gestvet.domain.pets.GetPetByIdUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailPetViewModel @Inject constructor(
     private val getPetByIdUseCase: GetPetByIdUseCase,
+    private val addPetUseCase: AddPetUseCase,
     state: SavedStateHandle
 ): ViewModel() {
 
@@ -33,6 +37,10 @@ class DetailPetViewModel @Inject constructor(
     fun setEdit(value: Boolean) {
         _editEnabled.value = value
     }
+
+    private var ownerId: Long? = null
+
+    private var petId: Long? = null
 
     private val _petName = MutableStateFlow("")
     val petName: StateFlow<String> get() = _petName
@@ -73,8 +81,39 @@ class DetailPetViewModel @Inject constructor(
     private fun setData() {
         viewModelScope.launch {
             selectedPet.collectLatest {
+                ownerId = it.owner
+                petId = it.id
                 _petName.value = it.name?:""
+                _petBirth.value = it.birthDate?:""
+                _petBreed.value = it.breed?:""
+                _petColor.value = it.color?:""
+                _petChip.value = "${it.chipNumber}"
+                _petPassport.value = "${it.passportNumeber}"
+                _petNeutered.value = if (it.neutered == true) "Si" else "No"
             }
+        }
+    }
+
+    fun updateData() {
+        val petModel = PetModel(
+            owner = ownerId,
+            id = petId,
+            name = petName.value,
+            birthDate = petBirth.value,
+            breed = petBreed.value,
+            color = petColor.value,
+            chipNumber = petChip.value.toLong(),
+            passportNumeber = petPassport.value.toLong(),
+            neutered = petNeutered.value == "Si"
+        )
+        try {
+
+
+            viewModelScope.launch {
+                addPetUseCase.invoke(petModel)
+            }
+        } catch (error: Throwable) {
+            Log.e(PETS_TAG, "Error al actualizar los datos: ${error.message}")
         }
     }
 }

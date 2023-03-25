@@ -18,14 +18,25 @@ import com.albrodiaz.gestvet.ui.features.components.DetailsTopBar
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.DetailPetViewModel
 
 @Composable
-fun PetDetailScreen(detailPetViewModel: DetailPetViewModel = hiltViewModel()) {
+fun PetDetailScreen(
+    detailPetViewModel: DetailPetViewModel = hiltViewModel(),
+    navigateBack: () -> Unit
+) {
     val editEnabled by detailPetViewModel.editEnabled.collectAsState()
     Column(Modifier.fillMaxSize()) {
         DetailsTopBar(
             title = stringResource(id = R.string.pet),
-            editEnabled = false,
-            onDelete = { /*TODO: Borrar con id por parámetro*/ },
-            onEdit = { detailPetViewModel.setEdit(!editEnabled) }) {
+            editEnabled = editEnabled,
+            onDelete = {
+                /*TODO: Borrar con id por parámetro*/
+                navigateBack()
+            },
+            onEdit = {
+                detailPetViewModel.setEdit(!editEnabled)
+                detailPetViewModel.updateData()
+            }
+        ) {
+            navigateBack()
         }
         Row(
             Modifier

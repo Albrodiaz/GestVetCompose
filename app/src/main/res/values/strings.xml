@@ -42,4 +42,6 @@
     <string name="addClient">Añadir cliente</string>
     <string name="optional">Opcional</string>
     <string name="monitoring">Seguimiento</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
 </resources>
