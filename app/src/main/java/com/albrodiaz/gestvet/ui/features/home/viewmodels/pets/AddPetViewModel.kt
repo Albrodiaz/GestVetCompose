@@ -77,6 +77,7 @@ class AddPetViewModel @Inject constructor(
                     name = name.value,
                     birthDate = birthDate.value,
                     breed = breed.value,
+                    color = color.value,
                     chipNumber = chipNumber.value.toLong(),
                     passportNumeber = passport.value.toLong(),
                     neutered = neutered.value

@@ -70,7 +70,7 @@ class DetailPetViewModel @Inject constructor(
         _petNeutered.value = neutered
     }
 
-    fun setData() {
+    private fun setData() {
         viewModelScope.launch {
             selectedPet.collectLatest {
                 _petName.value = it.name?:""

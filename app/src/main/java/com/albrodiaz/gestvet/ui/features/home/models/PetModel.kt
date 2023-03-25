@@ -6,6 +6,7 @@ data class PetModel(
     val name: String? = null,
     val birthDate: String? = null,
     val breed: String? = null,
+    val color: String? = null,
     val chipNumber: Long? = null,
     val passportNumeber: Long? = null,
     val neutered: Boolean? = null
