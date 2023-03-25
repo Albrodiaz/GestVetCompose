@@ -10,10 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AddAppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AppointmentScreen
-import com.albrodiaz.gestvet.ui.features.home.views.clients.AddClientScreen
-import com.albrodiaz.gestvet.ui.features.home.views.clients.AddPetScreen
-import com.albrodiaz.gestvet.ui.features.home.views.clients.ClientDetailScreen
-import com.albrodiaz.gestvet.ui.features.home.views.clients.ClientScreen
+import com.albrodiaz.gestvet.ui.features.home.views.clients.*
 import com.albrodiaz.gestvet.ui.features.home.views.searchscreen.SearchScreen
 
 @Composable
@@ -60,7 +57,8 @@ fun MainNavController(
             Routes.ClientDetails.route,
             arguments = listOf(navArgument("id") { type = NavType.LongType })
         ) {
-            ClientDetailScreen(onNavigateUp = { navigationController.popBackStack() }) {
+            ClientDetailScreen(onNavigateUp = { navigationController.popBackStack() },
+                navigateToDetails = { navigationController.navigate(Routes.PetDetails.createRoute(it)) }) {
                 navigationController.navigate(Routes.AddPet.createRoute(it))
             }
         }
@@ -71,6 +69,12 @@ fun MainNavController(
             AddPetScreen {
                 navigationController.popBackStack()
             }
+        }
+        composable(
+            Routes.PetDetails.route,
+            arguments = listOf(navArgument("petId") { type = NavType.LongType })
+        ) {
+            PetDetailScreen()
         }
     }
 }

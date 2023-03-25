@@ -27,6 +27,21 @@ class PetService @Inject constructor(private val firebaseClient: FirebaseClient)
         awaitClose { data.remove() }
     }
 
+    fun getPetById(petId: Long) = callbackFlow {
+        val data = firebaseClient.dataBase.collection(PETS_PATH).whereEqualTo("id", petId)
+            .addSnapshotListener { values, error ->
+                error?.let {
+                    Log.e(PETS_TAG, "Error al recuperar la mascota ${it.message}")
+                }
+                values?.let { snapshot ->
+                    snapshot.map {
+                        trySend(it)
+                    }
+                }
+            }
+        awaitClose { data.remove() }
+    }
+
     suspend fun addPet(petModel: PetModel) {
         firebaseClient.dataBase.collection(PETS_PATH).document("${petModel.id}")
             .set(petModel).await()

@@ -33,6 +33,7 @@ import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsVi
 fun ClientDetailScreen(
     clientsDetailsViewModel: ClientDetailsViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit,
+    navigateToDetails: (Long) -> Unit,
     onCreatePet: (Long) -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -75,7 +76,7 @@ fun ClientDetailScreen(
         }
         SenioritySection(seniorityText = seniorityText)
         Divider(modifier = Modifier.padding(horizontal = 18.dp))
-        PetSection(pets = pets) {
+        PetSection(pets = pets, navigateToDetails = { navigateToDetails(it) }) {
             onCreatePet(clientsDetailsViewModel.ownerId ?: 0L)
         }
     }
@@ -175,7 +176,11 @@ fun SenioritySection(seniorityText: Long) {
 }
 
 @Composable
-private fun PetSection(pets: List<PetModel>, onNavigate: () -> Unit) {
+private fun PetSection(
+    pets: List<PetModel>,
+    navigateToDetails: (Long) -> Unit,
+    onNavigate: () -> Unit
+) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -204,7 +209,8 @@ private fun PetSection(pets: List<PetModel>, onNavigate: () -> Unit) {
                 ListItem(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 2.dp),
+                        .padding(vertical = 2.dp)
+                        .clickable { navigateToDetails(it.id!!) },
                     shadowElevation = 2.dp,
                     supportingContent = { Text(text = "${it.breed}") },
                     headlineContent = { Text(text = "${it.name}") }

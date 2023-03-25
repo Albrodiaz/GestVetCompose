@@ -4,25 +4,28 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.components.DetailsTextfield
 import com.albrodiaz.gestvet.ui.features.components.DetailsTopBar
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.DetailPetViewModel
 
-@Preview
 @Composable
-fun PetDetailScreen() {
+fun PetDetailScreen(detailPetViewModel: DetailPetViewModel = hiltViewModel()) {
+    val editEnabled by detailPetViewModel.editEnabled.collectAsState()
     Column(Modifier.fillMaxSize()) {
         DetailsTopBar(
             title = stringResource(id = R.string.pet),
             editEnabled = false,
             onDelete = { /*TODO: Borrar con id por parámetro*/ },
-            onEdit = { /*TODO: igual que con clientes*/ }) {
+            onEdit = { detailPetViewModel.setEdit(!editEnabled) }) {
         }
         Row(
             Modifier
@@ -30,7 +33,7 @@ fun PetDetailScreen() {
                 .padding(top = 12.dp, bottom = 12.dp)
         ) {
             PetDetailSection()
-            PetTextFieldSection()
+            PetTextFieldSection(detailPetViewModel)
         }
         Divider(
             Modifier
@@ -39,7 +42,7 @@ fun PetDetailScreen() {
         )
         MonitoringText(modifier = Modifier.fillMaxWidth())
         /*TODO: Lista con seguimiento de la mascota*/
-        
+
     }
 }
 
@@ -57,20 +60,51 @@ fun PetDetailSection() {
 }
 
 @Composable
-fun PetTextFieldSection() {
-    /*TODO: Completar con stateflows*/
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(end = 12.dp)
-    ) {
-        DetailsTextfield(text = "Marley", valueChange = { })
-        DetailsTextfield(text = "31/08/2023", valueChange = { })
-        DetailsTextfield(text = "Beagle", valueChange = { })
-        DetailsTextfield(text = "Marrón, blanco y negro", valueChange = { })
-        DetailsTextfield(text = "123456789999", valueChange = { })
-        DetailsTextfield(text = "234566556754754", valueChange = { })
-        DetailsTextfield(text = "Si", valueChange = { })
+fun PetTextFieldSection(detailPetViewModel: DetailPetViewModel) {
+    detailPetViewModel.apply {
+        val editEnabled by editEnabled.collectAsState()
+        val petName by petName.collectAsState()
+        val petBirth by petBirth.collectAsState()
+        val petBreed by petBreed.collectAsState()
+        val petColor by petColor.collectAsState()
+        val petChip by petChip.collectAsState()
+        val petPassport by petPassport.collectAsState()
+        val petNeutered by petNeutered.collectAsState()
+
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(end = 12.dp)
+        ) {
+            DetailsTextfield(
+                text = petName,
+                enabled = editEnabled,
+                valueChange = { setPetName(it) })
+            DetailsTextfield(
+                text = petBirth,
+                enabled = editEnabled,
+                valueChange = { setPetBirth(it) })
+            DetailsTextfield(
+                text = petBreed,
+                enabled = editEnabled,
+                valueChange = { setPetBreed(it) })
+            DetailsTextfield(
+                text = petColor,
+                enabled = editEnabled,
+                valueChange = { setPetColor(it) })
+            DetailsTextfield(
+                text = petChip,
+                enabled = editEnabled,
+                valueChange = { setPetChip(it) })
+            DetailsTextfield(
+                text = petPassport,
+                enabled = editEnabled,
+                valueChange = { setPetPassport(it) })
+            DetailsTextfield(
+                text = petNeutered,
+                enabled = editEnabled,
+                valueChange = { setPetNeutered(it) })
+        }
     }
 }
 
