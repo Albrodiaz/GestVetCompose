@@ -1,7 +1,9 @@
 package com.albrodiaz.gestvet.ui.features.home.views.clients
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -13,15 +15,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.core.states.rememberCustomDatePickerState
+import com.albrodiaz.gestvet.ui.features.components.AddTopBar
 import com.albrodiaz.gestvet.ui.features.components.DateTimeDialog
 import com.albrodiaz.gestvet.ui.features.components.FormTextField
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.AddPetViewModel
@@ -29,7 +30,13 @@ import com.albrodiaz.gestvet.ui.theme.md_theme_light_primaryContainer
 
 @Composable
 fun AddPetScreen(addPetViewModel: AddPetViewModel = hiltViewModel(), onClose: () -> Unit) {
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         AddPetHeader(onClose = { onClose() })
         AddPetForm(
             addPetViewModel = addPetViewModel,
@@ -43,34 +50,8 @@ fun AddPetScreen(addPetViewModel: AddPetViewModel = hiltViewModel(), onClose: ()
 
 @Composable
 private fun AddPetHeader(onClose: () -> Unit) {
-    ConstraintLayout(
-        Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp)
-    ) {
-        val (title, close) = createRefs()
-        Text(
-            text = stringResource(id = R.string.addPet),
-            fontWeight = FontWeight.Bold,
-            fontSize = 32.sp,
-            modifier = Modifier
-                .padding(horizontal = 18.dp, vertical = 12.dp)
-                .constrainAs(title) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                })
-        IconButton(
-            onClick = { onClose() },
-            modifier = Modifier.constrainAs(close) {
-                end.linkTo(parent.end)
-                top.linkTo(title.top)
-                bottom.linkTo(title.bottom)
-            }) {
-            Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = ""
-            )
-        }
+    AddTopBar(title = stringResource(id = R.string.addPet)) {
+        onClose()
     }
 }
 
@@ -166,6 +147,7 @@ fun AddPetForm(
             ) {
                 Button(onClick = { onSave() }) {
                     Text(text = stringResource(id = R.string.save))
+                    /*TODO: gestionar el activado del botón*/
                 }
             }
         }
@@ -176,7 +158,7 @@ fun AddPetForm(
 private fun NeuteredSwitch(neutered: Boolean, onCheckedChange: (Boolean) -> Unit) {
     val icon: (@Composable () -> Unit) = if (neutered) {
         {
-            Icon(imageVector = Icons.Filled.Check,contentDescription = null)
+            Icon(imageVector = Icons.Filled.Check, contentDescription = null)
         }
     } else {
         {
