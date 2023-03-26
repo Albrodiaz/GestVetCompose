@@ -232,7 +232,8 @@ private fun ClientDetailText(text: String, modifier: Modifier = Modifier) {
     ) {
         Text(
             text = text,
-            modifier = modifier.padding(vertical = 12.dp, horizontal = 6.dp)
+            modifier = modifier.padding(vertical = 12.dp, horizontal = 4.dp),
+            maxLines = 1
         )
     }
 }

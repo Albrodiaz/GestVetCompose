@@ -173,7 +173,8 @@ private fun PetDetailText(text: String, modifier: Modifier = Modifier) {
     ) {
         Text(
             text = text,
-            modifier = modifier.padding(horizontal = 12.dp)
+            modifier = modifier.padding(horizontal = 12.dp),
+            maxLines = 1
         )
     }
 }
