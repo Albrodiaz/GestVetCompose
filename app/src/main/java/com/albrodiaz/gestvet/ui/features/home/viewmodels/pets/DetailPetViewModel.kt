@@ -110,8 +110,8 @@ class DetailPetViewModel @Inject constructor(
             birthDate = petBirth.value,
             breed = petBreed.value,
             color = petColor.value,
-            chipNumber = petChip.value.toLong(),
-            passportNumeber = petPassport.value.toLong(),
+            chipNumber = petChip.value,
+            passportNumeber = petPassport.value,
             neutered = petNeutered.value
         )
         try {

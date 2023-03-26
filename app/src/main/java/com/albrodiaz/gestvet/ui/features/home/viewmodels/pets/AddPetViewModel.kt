@@ -91,8 +91,8 @@ class AddPetViewModel @Inject constructor(
                     birthDate = birthDate.value,
                     breed = breed.value,
                     color = color.value,
-                    chipNumber = chipNumber.value.toLong(),
-                    passportNumeber = passport.value.toLong(),
+                    chipNumber = chipNumber.value,
+                    passportNumeber = passport.value,
                     neutered = neutered.value
                 )
                 addPetUseCase.invoke(pet)

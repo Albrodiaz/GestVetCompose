@@ -208,7 +208,7 @@ private fun PetSection(
                 .padding(bottom = 12.dp)
                 .height(250.dp)
         ) {
-            items(pets) {
+            items(pets, key = { it.id ?: 0L }) {
                 ListItem(
                     modifier = Modifier
                         .fillMaxWidth()
