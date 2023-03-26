@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.data.network.ClientService.Companion.CLIENTS_TAG
 import com.albrodiaz.gestvet.domain.clients.AddClientUseCase
 import com.albrodiaz.gestvet.domain.clients.DeleteClientUseCase
-import com.albrodiaz.gestvet.domain.clients.GetClientsUseCase
+import com.albrodiaz.gestvet.domain.clients.GetClientByIdUseCase
 import com.albrodiaz.gestvet.domain.pets.GetPetsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
@@ -20,8 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ClientDetailsViewModel @Inject constructor(
     private val state: SavedStateHandle,
-    private val getClientsUseCase: GetClientsUseCase,
     private val addClientUseCase: AddClientUseCase,
+    private val getClientByIdUseCase: GetClientByIdUseCase,
     private val deleteClientUseCase: DeleteClientUseCase,
     getPetsUseCase: GetPetsUseCase
 ) : ViewModel() {
@@ -29,7 +29,7 @@ class ClientDetailsViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val selectedClient: Flow<ClientsModel> =
         state.getStateFlow("id", 0L).flatMapLatest { id ->
-            getClientsUseCase.invoke(id).map {
+            getClientByIdUseCase.invoke(id).map {
                 it.toObject(ClientsModel::class.java)
             }
         }

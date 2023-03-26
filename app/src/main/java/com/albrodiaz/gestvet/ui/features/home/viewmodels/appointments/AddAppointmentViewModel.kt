@@ -6,6 +6,7 @@ import com.albrodiaz.gestvet.core.extensions.combine
 import com.albrodiaz.gestvet.core.extensions.dateToMillis
 import com.albrodiaz.gestvet.core.extensions.hourToMillis
 import com.albrodiaz.gestvet.domain.appointments.AddAppointmentUseCase
+import com.albrodiaz.gestvet.domain.appointments.GetAppointmentByIdUseCase
 import com.albrodiaz.gestvet.domain.appointments.GetAppointmentsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AddAppointmentViewModel @Inject constructor(
     private val addAppointmentUseCase: AddAppointmentUseCase,
-    getAppointmentsUseCase: GetAppointmentsUseCase,
+    private val getAppointmentsUseCase: GetAppointmentsUseCase,
+    private val getAppointmentByIdUseCase: GetAppointmentByIdUseCase,
     private val state: SavedStateHandle
 ) : ViewModel() {
 
@@ -30,7 +32,7 @@ class AddAppointmentViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val selectedAppt: Flow<AppointmentModel> =
         state.getStateFlow("id", 0L).flatMapLatest { id ->
-            getAppointmentsUseCase.invoke(id).map { it.toObject(AppointmentModel::class.java) }
+            getAppointmentByIdUseCase.invoke(id).map { it.toObject(AppointmentModel::class.java) }
         }
 
     init {
