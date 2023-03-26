@@ -72,6 +72,7 @@ fun AddPetForm(
         val color by color.collectAsState()
         val neutered by neutered.collectAsState()
         val showDatePicker by showDatePicker.collectAsState()
+        val buttonEnabled by buttonEnabled.collectAsState(false)
 
         DateTimeDialog(
             show = showDatePicker,
@@ -145,9 +146,8 @@ fun AddPetForm(
                     .padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(onClick = { onSave() }) {
+                Button(onClick = { onSave() }, enabled = buttonEnabled) {
                     Text(text = stringResource(id = R.string.save))
-                    /*TODO: gestionar el activado del botón*/
                 }
             }
         }

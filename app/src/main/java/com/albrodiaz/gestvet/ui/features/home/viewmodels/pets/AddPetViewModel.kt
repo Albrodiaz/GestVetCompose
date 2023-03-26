@@ -10,6 +10,7 @@ import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -67,6 +68,18 @@ class AddPetViewModel @Inject constructor(
     val neutered: StateFlow<Boolean> get() = _neutered
     fun setNeutered(value: Boolean) {
         _neutered.value = value
+    }
+
+    /*TODO: Preguntar a Paloma para validaciones*/
+    private val validData = name.combine(breed) { name, breed ->
+        return@combine name.length > 2 && breed.length > 3
+    }
+    private val validDocuments = chipNumber.combine(passport) { chip, passport ->
+        return@combine chip.length >= 10 && passport.length > 10
+    }
+
+    val buttonEnabled = validData.combine(validDocuments) { data, documents ->
+        return@combine data && documents
     }
 
     fun addPet() {
