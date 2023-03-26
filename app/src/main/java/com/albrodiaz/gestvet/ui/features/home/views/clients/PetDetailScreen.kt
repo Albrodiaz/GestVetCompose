@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
 import com.albrodiaz.gestvet.ui.features.components.DetailsTextfield
 import com.albrodiaz.gestvet.ui.features.components.DetailsTopBar
 import com.albrodiaz.gestvet.ui.features.components.savedToast
@@ -27,14 +28,24 @@ fun PetDetailScreen(
 ) {
     val context = LocalContext.current
     val isEditActive by detailPetViewModel.editEnabled.collectAsState()
+    val showConfirmDialog by detailPetViewModel.showDialog.collectAsState()
+
+    ConfirmDeleteDialog(
+        title = stringResource(id = R.string.confirmDelete),
+        text = stringResource(id = R.string.deleteDescription),
+        show = showConfirmDialog,
+        onDismiss = { detailPetViewModel.setShowDialog(false) },
+        onConfirm = {
+            detailPetViewModel.deletePet()
+            onNavigateBack()
+        }
+    )
+
     Column(Modifier.fillMaxSize()) {
         DetailsTopBar(
             title = stringResource(id = R.string.pet),
             editEnabled = isEditActive,
-            onDelete = {
-                /*TODO: Borrar mascota*/
-                onNavigateBack()
-            },
+            onDelete = { detailPetViewModel.setShowDialog(true) },
             onEdit = {
                 detailPetViewModel.setEdit(!isEditActive)
                 if (isEditActive) {
@@ -145,7 +156,10 @@ private fun DetailTextRow(
 private fun NeuteredRow(neutered: Boolean, enabled: Boolean, onCheckChange: (Boolean) -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         PetDetailText(text = stringResource(id = R.string.neutered))
-        NeuteredSwitch(neutered = neutered, enabled = enabled, onCheckedChange = { onCheckChange(it) })
+        NeuteredSwitch(
+            neutered = neutered,
+            enabled = enabled,
+            onCheckedChange = { onCheckChange(it) })
     }
 }
 

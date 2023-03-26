@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.data.network.PetService.Companion.PETS_TAG
 import com.albrodiaz.gestvet.domain.pets.AddPetUseCase
+import com.albrodiaz.gestvet.domain.pets.DeletePetUseCase
 import com.albrodiaz.gestvet.domain.pets.GetPetByIdUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class DetailPetViewModel @Inject constructor(
     private val getPetByIdUseCase: GetPetByIdUseCase,
     private val addPetUseCase: AddPetUseCase,
+    private val deletePetUseCase: DeletePetUseCase,
     state: SavedStateHandle
 ): ViewModel() {
 
@@ -30,6 +32,12 @@ class DetailPetViewModel @Inject constructor(
 
     init {
         setData()
+    }
+
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> get() = _showDialog
+    fun setShowDialog(show: Boolean) {
+        _showDialog.value = show
     }
 
     private val _editEnabled = MutableStateFlow(false)
@@ -112,6 +120,14 @@ class DetailPetViewModel @Inject constructor(
             }
         } catch (error: Throwable) {
             Log.e(PETS_TAG, "Error al actualizar los datos: ${error.message}")
+        }
+    }
+
+    fun deletePet() {
+        viewModelScope.launch {
+            petId?.let {
+                deletePetUseCase.invoke(it)
+            }
         }
     }
 }

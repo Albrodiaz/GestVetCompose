@@ -47,5 +47,10 @@ class PetService @Inject constructor(private val firebaseClient: FirebaseClient)
             .set(petModel).await()
     }
 
+    suspend fun deletePet(id: Long) {
+        firebaseClient.dataBase.collection(PETS_PATH).document("$id")
+            .delete().await()
+    }
+
 
 }
