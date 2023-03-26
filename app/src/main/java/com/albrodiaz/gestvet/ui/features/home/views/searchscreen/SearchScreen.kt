@@ -25,9 +25,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.core.extensions.searchBy
+import com.albrodiaz.gestvet.ui.features.components.EmptySearch
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.theme.*
@@ -36,35 +36,31 @@ import com.albrodiaz.gestvet.ui.theme.*
 fun SearchScreen(appointmentViewModel: AppointmentViewModel = hiltViewModel()) {
     var userText: String by remember { mutableStateOf("") }
     val appointments by appointmentViewModel.appointments.collectAsState(initial = emptyList())
-    /*
-    TODO:
-       crear switch para alternar entre citas y clientes o crear enum con tipo de item
-    */
-    ConstraintLayout(Modifier.fillMaxSize()) {
-        val filteredList = appointments.searchBy(userText)
-        val (searchBar, content) = createRefs()
+    val filteredList = appointments.searchBy(userText)
 
-        CustomSearchTextField(
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .constrainAs(searchBar) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
-                },
-            valueChange = { userText = it })
+    Column(Modifier.fillMaxSize()) {
 
-        LazyColumn(
-            Modifier
-                .fillMaxSize()
-                .padding(bottom = 60.dp)
-                .constrainAs(content) {
-                    top.linkTo(searchBar.bottom)
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
-                }) {
-            items(filteredList, key = { it.id ?: -1 }) {
-                ItemSearchScreen(appointment = it)
+        Row {
+            CustomSearchTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                valueChange = { userText = it }
+            )
+        }
+
+        if (filteredList.isEmpty()) {
+            EmptySearch()
+        } else {
+
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 60.dp)
+            ) {
+                items(filteredList, key = { it.id ?: -1 }) {
+                    ItemSearchScreen(appointment = it)
+                }
             }
         }
     }

@@ -24,12 +24,13 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.components.AnimatedAddFab
+import com.albrodiaz.gestvet.ui.features.components.EmptyContent
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientViewModel
 
 @Composable
 fun ClientScreen(
     clientViewModel: ClientViewModel,
-    navigateToCreate: ()-> Unit,
+    navigateToCreate: () -> Unit,
     navigateToDetails: (Long) -> Unit
 ) {
     val clients by clientViewModel.clients.collectAsState(initial = emptyList())
@@ -41,32 +42,39 @@ fun ClientScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ConstraintLayout(Modifier.fillMaxSize()) {
-            val (button) = createRefs()
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(clients, key = { it.id }) {
-                    ListItem(
-                        modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
-                        shadowElevation = 4.dp,
-                        supportingContent = { Text(text = it.lastname.toString()) },
-                        headlineContent = { Text(text = it.name.toString()) },
-                        leadingContent = {
-                            Icon(
-                                imageVector = Icons.Filled.AccountCircle,
-                                contentDescription = ""
-                            )
-                        },
-                        trailingContent = {
-                            IconButton(onClick = { navigateToDetails(it.id) }) {
+            val (button, emptyScreen) = createRefs()
+            if (clients.isEmpty()) {
+                EmptyContent()
+            } else {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize().constrainAs(emptyScreen) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+                ) {
+                    items(clients, key = { it.id }) {
+                        ListItem(
+                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                            shadowElevation = 4.dp,
+                            supportingContent = { Text(text = it.lastname.toString()) },
+                            headlineContent = { Text(text = it.name.toString()) },
+                            leadingContent = {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.ic_arrow_right),
+                                    imageVector = Icons.Filled.AccountCircle,
                                     contentDescription = ""
                                 )
+                            },
+                            trailingContent = {
+                                IconButton(onClick = { navigateToDetails(it.id) }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_arrow_right),
+                                        contentDescription = ""
+                                    )
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
             AnimatedAddFab(

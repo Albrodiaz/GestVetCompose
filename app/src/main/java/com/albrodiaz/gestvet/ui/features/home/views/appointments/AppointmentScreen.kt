@@ -37,6 +37,7 @@ import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
 import com.albrodiaz.gestvet.ui.features.components.AnimatedAddFab
 import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
+import com.albrodiaz.gestvet.ui.features.components.EmptyContent
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AppointmentViewModel
 import com.albrodiaz.gestvet.ui.theme.*
@@ -88,7 +89,7 @@ fun Appointments(
         val (addButton, emptyAppointments) = createRefs()
 
         if (appointments.isEmpty()) {
-            Text(text = "Nada por ahora...", modifier = Modifier.constrainAs(emptyAppointments) {
+            EmptyContent(modifier = Modifier.constrainAs(emptyAppointments) {
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom)
                 start.linkTo(parent.start)
