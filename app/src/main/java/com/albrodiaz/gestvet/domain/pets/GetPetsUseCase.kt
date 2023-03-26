@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class GetPetsUseCase @Inject constructor(private val petService: PetService) {
 
-    operator fun invoke(ownerId: Long) = petService.getPets(ownerId)
+    operator fun invoke(ownerId: Long) = petService.getPetsByOwner(ownerId)
 
 }
