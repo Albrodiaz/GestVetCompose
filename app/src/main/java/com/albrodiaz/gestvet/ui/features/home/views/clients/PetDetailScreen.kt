@@ -6,7 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -15,37 +17,34 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.components.DetailsTextfield
 import com.albrodiaz.gestvet.ui.features.components.DetailsTopBar
+import com.albrodiaz.gestvet.ui.features.components.savedToast
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.DetailPetViewModel
 
 @Composable
 fun PetDetailScreen(
     detailPetViewModel: DetailPetViewModel = hiltViewModel(),
-    navigateBack: () -> Unit
+    onNavigateBack: () -> Unit
 ) {
-    val editEnabled by detailPetViewModel.editEnabled.collectAsState()
+    val context = LocalContext.current
+    val isEditActive by detailPetViewModel.editEnabled.collectAsState()
     Column(Modifier.fillMaxSize()) {
         DetailsTopBar(
             title = stringResource(id = R.string.pet),
-            editEnabled = editEnabled,
+            editEnabled = isEditActive,
             onDelete = {
-                /*TODO: Borrar con id por parámetro*/
-                navigateBack()
+                /*TODO: Borrar mascota*/
+                onNavigateBack()
             },
             onEdit = {
-                detailPetViewModel.setEdit(!editEnabled)
-                detailPetViewModel.updateData()
-            }
-        ) {
-            navigateBack()
-        }
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp, bottom = 12.dp)
-        ) {
-            PetDetailSection()
-            PetTextFieldSection(detailPetViewModel)
-        }
+                detailPetViewModel.setEdit(!isEditActive)
+                if (isEditActive) {
+                    detailPetViewModel.updateData()
+                    savedToast(context)
+                }
+            },
+            onNavigateBack = { onNavigateBack() }
+        )
+        PetDetailSection(detailPetViewModel, enabled = isEditActive)
         Divider(
             Modifier
                 .fillMaxWidth()
@@ -58,76 +57,109 @@ fun PetDetailScreen(
 }
 
 @Composable
-fun PetDetailSection() {
-    Column(Modifier.fillMaxWidth(.4f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-        PetDetailText(text = stringResource(id = R.string.name))
-        PetDetailText(text = stringResource(id = R.string.birthDate))
-        PetDetailText(text = stringResource(id = R.string.breed))
-        PetDetailText(text = stringResource(id = R.string.color))
-        PetDetailText(text = stringResource(id = R.string.chipNumber))
-        PetDetailText(text = stringResource(id = R.string.passportNumber))
-        PetDetailText(text = stringResource(id = R.string.neutered))
-    }
-}
-
-@Composable
-fun PetTextFieldSection(detailPetViewModel: DetailPetViewModel) {
+fun PetDetailSection(detailPetViewModel: DetailPetViewModel, enabled: Boolean) {
     detailPetViewModel.apply {
-        val editEnabled by editEnabled.collectAsState()
-        val petName by petName.collectAsState()
-        val petBirth by petBirth.collectAsState()
-        val petBreed by petBreed.collectAsState()
-        val petColor by petColor.collectAsState()
-        val petChip by petChip.collectAsState()
-        val petPassport by petPassport.collectAsState()
-        val petNeutered by petNeutered.collectAsState()
+        val name by petName.collectAsState()
+        val birthDate by petBirth.collectAsState()
+        val breed by petBreed.collectAsState()
+        val color by petColor.collectAsState()
+        val chipNumber by petChip.collectAsState()
+        val passport by petPassport.collectAsState()
+        val neutered by petNeutered.collectAsState()
 
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(end = 12.dp)
+                .padding(horizontal = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(3.dp)
         ) {
-            DetailsTextfield(
-                text = petName,
-                enabled = editEnabled,
-                valueChange = { setPetName(it) })
-            DetailsTextfield(
-                text = petBirth,
-                enabled = editEnabled,
-                valueChange = { setPetBirth(it) })
-            DetailsTextfield(
-                text = petBreed,
-                enabled = editEnabled,
-                valueChange = { setPetBreed(it) })
-            DetailsTextfield(
-                text = petColor,
-                enabled = editEnabled,
-                valueChange = { setPetColor(it) })
-            DetailsTextfield(
-                text = petChip,
-                enabled = editEnabled,
-                valueChange = { setPetChip(it) })
-            DetailsTextfield(
-                text = petPassport,
-                enabled = editEnabled,
-                valueChange = { setPetPassport(it) })
-            DetailsTextfield(
-                text = petNeutered,
-                enabled = editEnabled,
-                valueChange = { setPetNeutered(it) })
+            DetailTextRow(
+                descriptionText = stringResource(id = R.string.name),
+                enabled = enabled,
+                text = name
+            ) {
+                setPetName(it)
+            }
+            DetailTextRow(
+                descriptionText = stringResource(id = R.string.birthDate),
+                enabled = enabled,
+                text = birthDate
+            ) {
+                setPetBirth(it)
+            }
+            DetailTextRow(
+                descriptionText = stringResource(id = R.string.breed),
+                enabled = enabled,
+                text = breed
+            ) {
+                setPetBreed(it)
+            }
+            DetailTextRow(
+                descriptionText = stringResource(id = R.string.color),
+                enabled = enabled,
+                text = color
+            ) {
+                setPetColor(it)
+            }
+            DetailTextRow(
+                descriptionText = stringResource(id = R.string.chipNumber),
+                enabled = enabled,
+                text = chipNumber
+            ) {
+                setPetChip(it)
+            }
+            DetailTextRow(
+                descriptionText = stringResource(id = R.string.passportNumber),
+                enabled = enabled,
+                text = passport
+            ) {
+                setPetPassport(it)
+            }
+            NeuteredRow(
+                neutered = neutered,
+                enabled = enabled,
+                onCheckChange = { setPetNeutered(it) })
         }
+    }
+}
+
+
+@Composable
+private fun DetailTextRow(
+    enabled: Boolean,
+    descriptionText: String,
+    text: String,
+    onValueChange: (String) -> Unit
+) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        PetDetailText(text = descriptionText)
+        DetailsTextfield(
+            text = text,
+            enabled = enabled,
+            valueChange = { onValueChange(it) }
+        )
+    }
+}
+
+@Composable
+private fun NeuteredRow(neutered: Boolean, enabled: Boolean, onCheckChange: (Boolean) -> Unit) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        PetDetailText(text = stringResource(id = R.string.neutered))
+        NeuteredSwitch(neutered = neutered, enabled = enabled, onCheckedChange = { onCheckChange(it) })
     }
 }
 
 @Composable
 private fun PetDetailText(text: String, modifier: Modifier = Modifier) {
-    Box(
+    Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(.4f)
+            .height(50.dp),
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = text,
-            modifier = modifier.padding(vertical = 12.dp, horizontal = 6.dp)
+            modifier = modifier.padding(horizontal = 12.dp)
         )
     }
 }

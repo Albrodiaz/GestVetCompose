@@ -72,9 +72,9 @@ class DetailPetViewModel @Inject constructor(
     fun setPetPassport(passport: String) {
         _petPassport.value = passport
     }
-    private val _petNeutered = MutableStateFlow("")
-    val petNeutered: StateFlow<String> get() = _petNeutered
-    fun setPetNeutered(neutered: String) {
+    private val _petNeutered = MutableStateFlow(false)
+    val petNeutered: StateFlow<Boolean> get() = _petNeutered
+    fun setPetNeutered(neutered: Boolean) {
         _petNeutered.value = neutered
     }
 
@@ -89,7 +89,7 @@ class DetailPetViewModel @Inject constructor(
                 _petColor.value = it.color?:""
                 _petChip.value = "${it.chipNumber}"
                 _petPassport.value = "${it.passportNumeber}"
-                _petNeutered.value = if (it.neutered == true) "Si" else "No"
+                _petNeutered.value = it.neutered?:false
             }
         }
     }
@@ -104,11 +104,9 @@ class DetailPetViewModel @Inject constructor(
             color = petColor.value,
             chipNumber = petChip.value.toLong(),
             passportNumeber = petPassport.value.toLong(),
-            neutered = petNeutered.value == "Si"
+            neutered = petNeutered.value
         )
         try {
-
-
             viewModelScope.launch {
                 addPetUseCase.invoke(petModel)
             }

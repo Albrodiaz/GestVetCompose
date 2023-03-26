@@ -155,7 +155,7 @@ fun AddPetForm(
 }
 
 @Composable
-private fun NeuteredSwitch(neutered: Boolean, onCheckedChange: (Boolean) -> Unit) {
+fun NeuteredSwitch(neutered: Boolean, enabled: Boolean = true, onCheckedChange: (Boolean) -> Unit) {
     val icon: (@Composable () -> Unit) = if (neutered) {
         {
             Icon(imageVector = Icons.Filled.Check, contentDescription = null)
@@ -166,6 +166,7 @@ private fun NeuteredSwitch(neutered: Boolean, onCheckedChange: (Boolean) -> Unit
         }
     }
     Switch(
+        enabled = enabled,
         checked = neutered,
         onCheckedChange = { onCheckedChange(it) },
         thumbContent = icon,

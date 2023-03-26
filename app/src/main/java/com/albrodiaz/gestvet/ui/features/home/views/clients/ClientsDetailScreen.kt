@@ -1,13 +1,16 @@
 package com.albrodiaz.gestvet.ui.features.home.views.clients
 
-import android.content.Context
-import android.widget.Toast
-import androidx.compose.foundation.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,9 +26,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
-import com.albrodiaz.gestvet.ui.features.components.DetailsTextfield
 import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
+import com.albrodiaz.gestvet.ui.features.components.DetailsTextfield
 import com.albrodiaz.gestvet.ui.features.components.DetailsTopBar
+import com.albrodiaz.gestvet.ui.features.components.savedToast
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
 
@@ -99,7 +103,7 @@ private fun ClientHeader(
 }
 
 @Composable
-fun DetailsDescriptionText() {
+private fun DetailsDescriptionText() {
     Column(Modifier.fillMaxWidth(.3f)) {
         ClientDetailText(text = stringResource(id = R.string.name))
         ClientDetailText(text = stringResource(id = R.string.lastName))
@@ -114,7 +118,6 @@ fun DetailsDescriptionText() {
 private fun ClientSection(
     clientsDetailsViewModel: ClientDetailsViewModel
 ) {
-    /*TODO: buscar forma de extraer estados*/
     clientsDetailsViewModel.apply {
         val nameText by name.collectAsState()
         val lastNameText by lastName.collectAsState()
@@ -160,11 +163,11 @@ private fun ClientSection(
 }
 
 @Composable
-fun SenioritySection(seniorityText: Long) {
+private fun SenioritySection(seniorityText: Long) {
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 18.dp),
+            .padding(horizontal = 18.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -232,8 +235,4 @@ private fun ClientDetailText(text: String, modifier: Modifier = Modifier) {
             modifier = modifier.padding(vertical = 12.dp, horizontal = 6.dp)
         )
     }
-}
-
-private fun savedToast(context: Context) {
-    Toast.makeText(context, R.string.savedChanges, Toast.LENGTH_SHORT).show()
 }
