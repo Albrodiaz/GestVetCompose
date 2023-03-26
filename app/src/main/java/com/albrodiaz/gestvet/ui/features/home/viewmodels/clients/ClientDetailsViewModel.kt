@@ -47,6 +47,12 @@ class ClientDetailsViewModel @Inject constructor(
         _showDialog.value = enabled
     }
 
+    private val _showWarning = MutableStateFlow(false)
+    val showWarning: StateFlow<Boolean> get() = _showWarning
+    fun setShowWarning(show: Boolean) {
+        _showWarning.value = show
+    }
+
     private val _name = MutableStateFlow("")
     val name: StateFlow<String> get() = _name
     fun setName(nameText: String) {

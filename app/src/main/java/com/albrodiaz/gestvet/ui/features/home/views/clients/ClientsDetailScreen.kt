@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -32,6 +33,8 @@ import com.albrodiaz.gestvet.ui.features.components.DetailsTopBar
 import com.albrodiaz.gestvet.ui.features.components.savedToast
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
+import com.albrodiaz.gestvet.ui.theme.md_theme_light_errorContainer
+import com.albrodiaz.gestvet.ui.theme.md_theme_light_onErrorContainer
 
 @Composable
 fun ClientDetailScreen(
@@ -45,6 +48,7 @@ fun ClientDetailScreen(
     val isEditActive by clientsDetailsViewModel.isEditActive.collectAsState()
     val seniorityText by clientsDetailsViewModel.clientSeniority.collectAsState()
     val showDeleteDialog by clientsDetailsViewModel.showDialog.collectAsState()
+    val showWarningDialog by clientsDetailsViewModel.showWarning.collectAsState()
     val pets by clientsDetailsViewModel.pets.collectAsState(emptyList())
 
     ConfirmDeleteDialog(
@@ -52,6 +56,16 @@ fun ClientDetailScreen(
         text = stringResource(id = R.string.deleteDescription),
         show = showDeleteDialog,
         onDismiss = { clientsDetailsViewModel.setShowDialog(false) }
+    ) {
+        clientsDetailsViewModel.setShowWarning(true)
+        clientsDetailsViewModel.setShowDialog(false)
+    }
+
+    WarningDeleteDialog(
+        title = stringResource(id = R.string.warning),
+        text = stringResource(id = R.string.deleteClientDesc),
+        show = showWarningDialog,
+        onDismiss = { clientsDetailsViewModel.setShowWarning(false) }
     ) {
         clientsDetailsViewModel.deleteClient()
         onNavigateUp()
@@ -235,5 +249,25 @@ private fun ClientDetailText(text: String, modifier: Modifier = Modifier) {
             modifier = modifier.padding(vertical = 12.dp, horizontal = 4.dp),
             maxLines = 1
         )
+    }
+}
+
+@Composable
+private fun WarningDeleteDialog(
+    title: String,
+    text: String,
+    show: Boolean,
+    textColor: Color = md_theme_light_onErrorContainer,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    ConfirmDeleteDialog(
+        title = title,
+        text = text,
+        show = show,
+        textColor = textColor,
+        containerColor = md_theme_light_errorContainer,
+        onDismiss = { onDismiss() }) {
+        onConfirm()
     }
 }

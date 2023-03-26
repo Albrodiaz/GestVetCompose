@@ -44,4 +44,6 @@
     <string name="monitoring">Seguimiento</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
+    <string name="warning">¡ATENCIÓN!</string>
+    <string name="deleteClientDesc">Al eliminar el cliente se eliminarán las mascotas y el seguimiento de las mismas</string>
 </resources>
