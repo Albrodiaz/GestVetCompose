@@ -63,6 +63,7 @@ fun MainScreen() {
     }
 }
 
+/*TODO: Arreglar opción seleccionada por backstack entry*/
 @Composable
 fun MainBottomNav(
     navToHome: () -> Unit,

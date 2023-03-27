@@ -8,7 +8,7 @@ import com.albrodiaz.gestvet.data.network.ClientService.Companion.CLIENTS_TAG
 import com.albrodiaz.gestvet.domain.clients.AddClientUseCase
 import com.albrodiaz.gestvet.domain.clients.DeleteClientUseCase
 import com.albrodiaz.gestvet.domain.clients.GetClientByIdUseCase
-import com.albrodiaz.gestvet.domain.pets.GetPetsUseCase
+import com.albrodiaz.gestvet.domain.pets.GetPetsByOwnerUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +23,7 @@ class ClientDetailsViewModel @Inject constructor(
     private val addClientUseCase: AddClientUseCase,
     private val getClientByIdUseCase: GetClientByIdUseCase,
     private val deleteClientUseCase: DeleteClientUseCase,
-    getPetsUseCase: GetPetsUseCase
+    getPetsUseCase: GetPetsByOwnerUseCase
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)

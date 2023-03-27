@@ -14,6 +14,18 @@ class PetService @Inject constructor(private val firebaseClient: FirebaseClient)
         const val PETS_TAG = "PetsService"
     }
 
+    val pets = callbackFlow {
+        val data = firebaseClient.dataBase.collection(PETS_PATH).addSnapshotListener { value, error ->
+            error?.let {
+                Log.e(PETS_TAG, "Error al cargar las mascotas: ${it.message}")
+            }
+            value?.let {
+                trySend(it)
+            }
+        }
+        awaitClose { data.remove() }
+    }
+
     fun getPetsByOwner(ownerId: Long) = callbackFlow {
         val data = firebaseClient.dataBase.collection(PETS_PATH).whereEqualTo("owner", ownerId)
             .addSnapshotListener { values, error ->
