@@ -26,7 +26,6 @@ import com.albrodiaz.gestvet.ui.features.components.AddTopBar
 import com.albrodiaz.gestvet.ui.features.components.DateTimeDialog
 import com.albrodiaz.gestvet.ui.features.components.FormTextField
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.AddPetViewModel
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_primaryContainer
 
 @Composable
 fun AddPetScreen(addPetViewModel: AddPetViewModel = hiltViewModel(), onClose: () -> Unit) {
@@ -169,9 +168,6 @@ fun NeuteredSwitch(neutered: Boolean, enabled: Boolean = true, onCheckedChange: 
         enabled = enabled,
         checked = neutered,
         onCheckedChange = { onCheckedChange(it) },
-        thumbContent = icon,
-        colors = SwitchDefaults.colors(
-            checkedTrackColor = md_theme_light_primaryContainer
-        )
+        thumbContent = icon
     )
 }
