@@ -8,6 +8,7 @@ import com.albrodiaz.gestvet.data.network.ClientService.Companion.CLIENTS_TAG
 import com.albrodiaz.gestvet.domain.clients.AddClientUseCase
 import com.albrodiaz.gestvet.domain.clients.DeleteClientUseCase
 import com.albrodiaz.gestvet.domain.clients.GetClientByIdUseCase
+import com.albrodiaz.gestvet.domain.pets.DeletePetUseCase
 import com.albrodiaz.gestvet.domain.pets.GetPetsByOwnerUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
@@ -23,6 +24,7 @@ class ClientDetailsViewModel @Inject constructor(
     private val addClientUseCase: AddClientUseCase,
     private val getClientByIdUseCase: GetClientByIdUseCase,
     private val deleteClientUseCase: DeleteClientUseCase,
+    private val deletePetUseCase: DeletePetUseCase,
     getPetsUseCase: GetPetsByOwnerUseCase
 ) : ViewModel() {
 
@@ -134,6 +136,12 @@ class ClientDetailsViewModel @Inject constructor(
     fun deleteClient() {
         viewModelScope.launch {
             deleteClientUseCase.deleteClient(state.get<Long>("id")!!)
+            pets.collect { petList ->
+                val petOwner = petList.filter { it.owner == state["id"] }
+                petOwner.forEach {
+                    deletePetUseCase.invoke(it.id!!)
+                }
+            }
         }
     }
 }
