@@ -35,16 +35,29 @@ fun MainScreen() {
         else -> bottomNavState.value = false
     }
 
+    val selectedItem = when(navStackEntry?.destination?.route) {
+        Routes.Client.route -> 1
+        Routes.Search.route -> 2
+        else -> 0
+    }
+
     Scaffold(
-        bottomBar = { if (bottomNavState.value) MainBottomNav(
-            navToHome = { navController.navigate(Routes.Appointment.route) },
-            navToClients = { navController.navigate(Routes.Client.route){
-                popUpTo(Routes.Appointment.route)
-            } },
-            navToSearch = { navController.navigate(Routes.Search.route){
-                popUpTo(Routes.Appointment.route)
-            } }
-        ) },
+        bottomBar = {
+            if (bottomNavState.value) MainBottomNav(
+                selectedItem = selectedItem,
+                navToHome = { navController.navigate(Routes.Appointment.route) },
+                navToClients = {
+                    navController.navigate(Routes.Client.route) {
+                        popUpTo(Routes.Appointment.route)
+                    }
+                },
+                navToSearch = {
+                    navController.navigate(Routes.Search.route) {
+                        popUpTo(Routes.Appointment.route)
+                    }
+                }
+            )
+        },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) {
         Box(
@@ -63,42 +76,31 @@ fun MainScreen() {
     }
 }
 
-/*TODO: Arreglar opción seleccionada por backstack entry*/
 @Composable
-fun MainBottomNav(
+private fun MainBottomNav(
+    selectedItem: Int,
     navToHome: () -> Unit,
     navToClients: () -> Unit,
     navToSearch: () -> Unit
 ) {
-    var selectedItem by remember { mutableStateOf(0) }
     NavigationBar(Modifier.fillMaxWidth()) {
         NavigationBarItem(
             icon = { Icon(Icons.Filled.DateRange, contentDescription = "") },
             label = { Text(stringResource(id = R.string.appointments)) },
             selected = selectedItem == 0,
-            onClick = {
-                navToHome()
-                selectedItem = 0
-
-            }
+            onClick = { navToHome() }
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Person, contentDescription = "") },
             label = { Text(stringResource(id = R.string.clients)) },
-            selected = selectedItem == 2,
-            onClick = {
-                navToClients()
-                selectedItem = 2
-            }
+            selected = selectedItem == 1,
+            onClick = { navToClients() }
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Search, contentDescription = "") },
             label = { Text(stringResource(id = R.string.search)) },
-            selected = selectedItem == 3,
-            onClick = {
-                navToSearch()
-                selectedItem = 3
-            }
+            selected = selectedItem == 2,
+            onClick = { navToSearch() }
         )
     }
 }
