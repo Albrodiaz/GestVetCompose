@@ -33,11 +33,12 @@ import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.search.SearchViewModel
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.search.searchBy
 import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable
 fun SearchScreen(searchViewModel: SearchViewModel = hiltViewModel()) {
-    var userText: String by remember { mutableStateOf("") }
+    val userText by searchViewModel.userText.collectAsState()
     val appointments by searchViewModel.appointments.collectAsState(initial = emptyList())
     val clients by searchViewModel.clients.collectAsState(initial = emptyList())
     val pets by searchViewModel.pets.collectAsState(initial = emptyList())
@@ -48,10 +49,11 @@ fun SearchScreen(searchViewModel: SearchViewModel = hiltViewModel()) {
 
         Row {
             CustomSearchTextField(
+                value = userText,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
-                valueChange = { userText = it }
+                valueChange = { searchViewModel.setUserText(it) }
             )
         }
         if (filteredList.isEmpty()) {
@@ -72,22 +74,20 @@ fun SearchScreen(searchViewModel: SearchViewModel = hiltViewModel()) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun CustomSearchTextField(modifier: Modifier, valueChange: (String) -> Unit) {
+private fun CustomSearchTextField(value: String, modifier: Modifier, valueChange: (String) -> Unit) {
     val focus = LocalFocusManager.current
-    var searchText: String by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     BasicTextField(
-        value = searchText,
+        value = value,
         modifier = modifier
             .fillMaxWidth(.9f)
             .height(45.dp)
             .padding(horizontal = 16.dp)
             .onFocusChanged {
-                searchText = if (it.isFocused) "" else "Buscar"
+                if (it.isFocused) valueChange("") else valueChange("Buscar")
             },
         onValueChange = {
-            searchText = it
             valueChange(it)
         },
         singleLine = true,
@@ -182,26 +182,4 @@ private fun ItemSearchScreen(item: Any) {
             )
         }
     }
-}
-
-fun List<Any>.searchBy(text: String): List<Any> {
-    val filteredList = this.filter {
-        when (it) {
-            is AppointmentModel-> {
-                it.owner!!.lowercase().contains(text.lowercase()) ||
-                        it.pet!!.lowercase().contains(text.lowercase())
-            }
-            is ClientsModel -> {
-                it.name!!.lowercase().contains(text.lowercase()) ||
-                        it.lastname!!.lowercase().contains(text.lowercase())
-            }
-            is PetModel -> {
-                it.name!!.lowercase().contains(text.lowercase()) ||
-                        it.breed!!.lowercase().contains(text.lowercase())
-            }
-            else -> false
-        }
-
-    }
-    return if (text.isEmpty()) emptyList() else filteredList
 }

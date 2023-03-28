@@ -16,7 +16,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -33,8 +32,6 @@ import com.albrodiaz.gestvet.ui.features.components.DetailsTopBar
 import com.albrodiaz.gestvet.ui.features.components.savedToast
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_errorContainer
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_onErrorContainer
 
 @Composable
 fun ClientDetailScreen(
@@ -257,7 +254,6 @@ private fun WarningDeleteDialog(
     title: String,
     text: String,
     show: Boolean,
-    textColor: Color = md_theme_light_onErrorContainer,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -265,8 +261,6 @@ private fun WarningDeleteDialog(
         title = title,
         text = text,
         show = show,
-        textColor = textColor,
-        containerColor = md_theme_light_errorContainer,
         onDismiss = { onDismiss() }) {
         onConfirm()
     }

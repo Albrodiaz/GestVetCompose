@@ -8,16 +8,17 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class ClientService @Inject constructor(private val firebase: FirebaseClient) {
+class ClientService @Inject constructor(firebase: FirebaseClient) {
 
     companion object {
         const val CLIENTS_TAG = "clients"
         const val CLIENTS_PATH = "alrodiaz15@gmail.com/management/clients"
     }
 
-    val clients
-        get() = callbackFlow {
-            val data = firebase.dataBase.collection(CLIENTS_PATH)
+    private val clientReference = firebase.dataBase.collection(CLIENTS_PATH)
+
+    fun clients() = callbackFlow {
+            val data = clientReference
                 .orderBy("lastname", Query.Direction.ASCENDING)
                 .addSnapshotListener { values, error ->
                     error?.let {
@@ -32,7 +33,7 @@ class ClientService @Inject constructor(private val firebase: FirebaseClient) {
         }
 
     fun getClientById(id: Long) = callbackFlow {
-        val data = firebase.dataBase.collection(CLIENTS_PATH).whereEqualTo("id", id)
+        val data = clientReference.whereEqualTo("id", id)
             .addSnapshotListener { values, error ->
                 error?.let {
                     Log.e(CLIENTS_TAG, "Error al recuperar el cliente: ${it.message}")
@@ -47,12 +48,12 @@ class ClientService @Inject constructor(private val firebase: FirebaseClient) {
     }
 
     suspend fun addClient(clientsModel: ClientsModel) {
-        firebase.dataBase.collection(CLIENTS_PATH).document("${clientsModel.id}")
+        clientReference.document("${clientsModel.id}")
             .set(clientsModel).await()
     }
 
     suspend fun deleteClient(id: Long) {
-        firebase.dataBase.collection(CLIENTS_PATH).document("$id")
+        clientReference.document("$id")
             .delete()
             .addOnSuccessListener {
                 Log.i(CLIENTS_TAG, "Cita guardada con éxito")

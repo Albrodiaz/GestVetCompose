@@ -7,15 +7,17 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class PetService @Inject constructor(private val firebaseClient: FirebaseClient) {
+class PetService @Inject constructor(firebaseClient: FirebaseClient) {
 
     companion object {
         const val PETS_PATH = "alrodiaz15@gmail.com/management/pets"
         const val PETS_TAG = "PetsService"
     }
 
-    val pets = callbackFlow {
-        val data = firebaseClient.dataBase.collection(PETS_PATH).addSnapshotListener { value, error ->
+    private val petReference = firebaseClient.dataBase.collection(PETS_PATH)
+
+    fun pets() = callbackFlow {
+        val data = petReference.addSnapshotListener { value, error ->
             error?.let {
                 Log.e(PETS_TAG, "Error al cargar las mascotas: ${it.message}")
             }
@@ -27,7 +29,7 @@ class PetService @Inject constructor(private val firebaseClient: FirebaseClient)
     }
 
     fun getPetsByOwner(ownerId: Long) = callbackFlow {
-        val data = firebaseClient.dataBase.collection(PETS_PATH).whereEqualTo("owner", ownerId)
+        val data = petReference.whereEqualTo("owner", ownerId)
             .addSnapshotListener { values, error ->
                 error?.let {
                     Log.e(PETS_TAG, "Error al recuperar las mascotas ${it.message}")
@@ -40,7 +42,7 @@ class PetService @Inject constructor(private val firebaseClient: FirebaseClient)
     }
 
     fun getPetById(petId: Long) = callbackFlow {
-        val data = firebaseClient.dataBase.collection(PETS_PATH).whereEqualTo("id", petId)
+        val data = petReference.whereEqualTo("id", petId)
             .addSnapshotListener { values, error ->
                 error?.let {
                     Log.e(PETS_TAG, "Error al recuperar la mascota ${it.message}")
@@ -55,12 +57,12 @@ class PetService @Inject constructor(private val firebaseClient: FirebaseClient)
     }
 
     suspend fun addPet(petModel: PetModel) {
-        firebaseClient.dataBase.collection(PETS_PATH).document("${petModel.id}")
+        petReference.document("${petModel.id}")
             .set(petModel).await()
     }
 
     suspend fun deletePet(id: Long) {
-        firebaseClient.dataBase.collection(PETS_PATH).document("$id")
+        petReference.document("$id")
             .delete().await()
     }
 

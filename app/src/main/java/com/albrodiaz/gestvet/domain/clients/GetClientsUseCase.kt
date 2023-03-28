@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetClientsUseCase @Inject constructor(private val clientService: ClientService) {
-    operator fun invoke(): Flow<QuerySnapshot> = clientService.clients
+    operator fun invoke(): Flow<QuerySnapshot> = clientService.clients()
 
 }

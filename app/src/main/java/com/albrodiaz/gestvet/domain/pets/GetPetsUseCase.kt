@@ -4,5 +4,5 @@ import com.albrodiaz.gestvet.data.network.PetService
 import javax.inject.Inject
 
 class GetPetsUseCase @Inject constructor(private val petService: PetService) {
-    operator fun invoke() = petService.pets
+    operator fun invoke() = petService.pets()
 }

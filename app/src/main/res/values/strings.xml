@@ -46,4 +46,7 @@
     <string name="no">No</string>
     <string name="warning">¡ATENCIÓN!</string>
     <string name="deleteClientDesc">Al eliminar el cliente se eliminarán las mascotas y el seguimiento de las mismas</string>
+    <string name="nothingToShow">Nada para mostrar</string>
+    <string name="writeSomething">Escribe algo…</string>
+    <string name="loadingData">Cargando datos</string>
 </resources>
