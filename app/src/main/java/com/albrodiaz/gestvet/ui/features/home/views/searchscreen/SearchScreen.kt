@@ -1,6 +1,7 @@
 package com.albrodiaz.gestvet.ui.features.home.views.searchscreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,7 +38,12 @@ import com.albrodiaz.gestvet.ui.features.home.viewmodels.search.searchBy
 import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable
-fun SearchScreen(searchViewModel: SearchViewModel = hiltViewModel()) {
+fun SearchScreen(
+    searchViewModel: SearchViewModel = hiltViewModel(),
+    navigateApptDetails: (Long) -> Unit,
+    navigateClientDetail: (Long) -> Unit,
+    navigatePetDetail: (Long) -> Unit
+) {
     val userText by searchViewModel.userText.collectAsState()
     val appointments by searchViewModel.appointments.collectAsState(initial = emptyList())
     val clients by searchViewModel.clients.collectAsState(initial = emptyList())
@@ -64,8 +70,13 @@ fun SearchScreen(searchViewModel: SearchViewModel = hiltViewModel()) {
                     .fillMaxSize()
                     .padding(bottom = 60.dp)
             ) {
-                items(filteredList) {
-                    ItemSearchScreen(it)
+                items(filteredList) { item ->
+                    ItemSearchScreen(
+                        item = item,
+                        navigateApptDetails = { navigateApptDetails(it) },
+                        navigateClientDetail = { navigateClientDetail(it) },
+                        navigatePetDetail = { navigatePetDetail(it) }
+                    )
                 }
             }
         }
@@ -74,7 +85,11 @@ fun SearchScreen(searchViewModel: SearchViewModel = hiltViewModel()) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun CustomSearchTextField(value: String, modifier: Modifier, valueChange: (String) -> Unit) {
+private fun CustomSearchTextField(
+    value: String,
+    modifier: Modifier,
+    valueChange: (String) -> Unit
+) {
     val focus = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -135,14 +150,20 @@ private fun CustomSearchTextField(value: String, modifier: Modifier, valueChange
 }
 
 @Composable
-private fun ItemSearchScreen(item: Any) {
+private fun ItemSearchScreen(
+    item: Any,
+    navigateApptDetails: (Long) -> Unit,
+    navigateClientDetail: (Long) -> Unit,
+    navigatePetDetail: (Long) -> Unit
+) {
     val color = if (isSystemInDarkTheme()) md_theme_dark_onSurface else md_theme_light_onSurface
     when (item) {
         is AppointmentModel -> {
             ListItem(
-                headlineContent = { Text(text = item.owner!!) },
-                supportingContent = { Text(text = item.pet!!) },
-                trailingContent = { Text(text = item.date!!) },
+                modifier = Modifier.clickable { navigateApptDetails(item.id ?: -1) },
+                headlineContent = { Text(text = item.owner.toString()) },
+                supportingContent = { Text(text = item.pet.toString()) },
+                trailingContent = { Text(text = item.date.toString()) },
                 leadingContent = {
                     Icon(
                         Icons.Filled.DateRange,
@@ -155,8 +176,9 @@ private fun ItemSearchScreen(item: Any) {
         }
         is ClientsModel -> {
             ListItem(
-                headlineContent = { Text(text = item.name!!) },
-                supportingContent = { Text(text = item.lastname!!) },
+                modifier = Modifier.clickable { navigateClientDetail(item.id) },
+                headlineContent = { Text(text = item.name.toString()) },
+                supportingContent = { Text(text = item.lastname.toString()) },
                 leadingContent = {
                     Icon(
                         Icons.Filled.Person,
@@ -169,8 +191,9 @@ private fun ItemSearchScreen(item: Any) {
         }
         is PetModel -> {
             ListItem(
-                headlineContent = { Text(text = item.name!!) },
-                supportingContent = { Text(text = item.breed!!) },
+                modifier = Modifier.clickable { navigatePetDetail(item.id ?: -1) },
+                headlineContent = { Text(text = item.name.toString()) },
+                supportingContent = { Text(text = item.breed.toString()) },
                 leadingContent = {
                     Icon(
                         Icons.Filled.Home,

@@ -35,7 +35,19 @@ fun MainNavController(
                 navigationController.navigate(Routes.ClientDetails.createRoute(it))
             }
         }
-        composable(Routes.Search.route) { SearchScreen() }
+        composable(Routes.Search.route) { _ ->
+            SearchScreen(
+                navigateApptDetails = {
+                    navigationController.navigate(Routes.AddAppointment.createRoute(it))
+                },
+                navigateClientDetail = {
+                    navigationController.navigate(Routes.ClientDetails.createRoute(it))
+                },
+                navigatePetDetail = {
+                    navigationController.navigate(Routes.PetDetails.createRoute(it))
+                }
+            )
+        }
         composable(
             Routes.AddAppointment.route,
             arguments = listOf(navArgument("id") { defaultValue = 1L })
