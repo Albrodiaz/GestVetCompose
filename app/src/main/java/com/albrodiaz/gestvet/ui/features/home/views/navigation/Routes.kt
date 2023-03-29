@@ -17,4 +17,7 @@ sealed class Routes(val route: String) {
     object PetDetails: Routes("petdetailscreen/{petId}") {
         fun createRoute(petId: Long) = "petdetailscreen/$petId"
     }
+    object LoginScreen: Routes("loginscreen")
+    object RegisterScreen: Routes("registerscreen")
+    object MainScreen: Routes("mainscreen")
 }

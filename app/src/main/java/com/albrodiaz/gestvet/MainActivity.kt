@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.albrodiaz.gestvet.ui.features.home.views.mainscreen.MainScreen
+import com.albrodiaz.gestvet.ui.features.login.view.HomeScreen
 import com.albrodiaz.gestvet.ui.theme.GestVetTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen()
+                    HomeScreen()
                 }
             }
         }

@@ -49,4 +49,6 @@
     <string name="nothingToShow">Nada para mostrar</string>
     <string name="writeSomething">Escribe algo…</string>
     <string name="loadingData">Cargando datos</string>
+    <string name="password">Contraseña</string>
+    <string name="login">Login</string>
 </resources>
