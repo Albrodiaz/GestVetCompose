@@ -13,7 +13,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.ListItem
@@ -26,9 +25,11 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.components.EmptySearch
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import com.albrodiaz.gestvet.ui.features.home.models.ClientsModel
@@ -196,7 +197,7 @@ private fun ItemSearchScreen(
                 supportingContent = { Text(text = item.breed.toString()) },
                 leadingContent = {
                     Icon(
-                        Icons.Filled.Home,
+                        painter = painterResource(id = R.drawable.ic_pets),
                         contentDescription = "",
                         tint = color
                     )
