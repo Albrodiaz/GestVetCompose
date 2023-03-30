@@ -14,13 +14,21 @@ import com.albrodiaz.gestvet.ui.features.login.view.LoginInputScreen
 import com.albrodiaz.gestvet.ui.features.login.view.RegisterScreen
 
 @Composable
-fun LoginNavHost(navController: NavController) {
+fun LoginNavHost(navController: NavController, showSnack: (String) -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         NavHost(
             navController = navController as NavHostController,
             startDestination = Routes.LoginScreen.route
         ) {
-            composable(Routes.LoginScreen.route) { LoginInputScreen() }
+            composable(Routes.LoginScreen.route) {
+                LoginInputScreen(
+                    showError = { showSnack(it) },
+                    navigate = {
+                        navController.navigate(Routes.MainScreen.route) {
+                            popUpTo(Routes.LoginScreen.route) { inclusive = true }
+                        }
+                    })
+            }
             composable(Routes.RegisterScreen.route) { RegisterScreen() }
             composable(Routes.MainScreen.route) { MainScreen() }
         }

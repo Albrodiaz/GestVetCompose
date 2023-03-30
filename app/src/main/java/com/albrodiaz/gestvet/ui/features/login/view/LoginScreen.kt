@@ -9,8 +9,10 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -27,11 +29,15 @@ import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.login.viewmodel.LoginViewModel
 import com.albrodiaz.gestvet.ui.theme.Shapes
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginInputScreen(loginViewModel: LoginViewModel = hiltViewModel()) {
+fun LoginInputScreen(loginViewModel: LoginViewModel = hiltViewModel(),showError: (String)-> Unit ,navigate: () -> Unit) {
     val userInput by loginViewModel.userInput.collectAsState()
     val password by loginViewModel.userPassword.collectAsState()
     val enabled by loginViewModel.enabled.collectAsState(false)
+    val errorText = stringResource(id = R.string.errorLogin)
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -39,15 +45,26 @@ fun LoginInputScreen(loginViewModel: LoginViewModel = hiltViewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        AppIcon()
-        AppTitle()
-        Spacer(modifier = Modifier.size(48.dp))
+        LoginHeader()
         UserTextField(value = userInput, valueChange = { loginViewModel.setUserInput(it) })
         UserPassword(value = password, valueChange = { loginViewModel.setUserPassword(it) })
         LoginButton(enabled = enabled) {
-            //Gestionar login en ViewModel
+            loginViewModel.login(
+                showError = {
+                    showError(errorText)
+                    keyboardController?.hide()
+                },
+                openHome = { navigate() }
+            )
         }
     }
+}
+
+@Composable
+fun LoginHeader() {
+    AppIcon()
+    AppTitle()
+    Spacer(modifier = Modifier.size(48.dp))
 }
 
 @Composable
