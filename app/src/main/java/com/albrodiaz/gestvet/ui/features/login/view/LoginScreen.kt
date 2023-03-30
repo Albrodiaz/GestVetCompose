@@ -1,6 +1,7 @@
 package com.albrodiaz.gestvet.ui.features.login.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -22,16 +23,22 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.login.viewmodel.LoginViewModel
 import com.albrodiaz.gestvet.ui.theme.Shapes
+import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginInputScreen(loginViewModel: LoginViewModel = hiltViewModel(),showError: (String)-> Unit ,navigate: () -> Unit) {
+fun LoginInputScreen(
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    showError: (String) -> Unit,
+    navigate: () -> Unit
+) {
     val userInput by loginViewModel.userInput.collectAsState()
     val password by loginViewModel.userPassword.collectAsState()
     val enabled by loginViewModel.enabled.collectAsState(false)
@@ -57,14 +64,26 @@ fun LoginInputScreen(loginViewModel: LoginViewModel = hiltViewModel(),showError:
                 openHome = { navigate() }
             )
         }
+        CreateAccountRow {
+            /*TODO: Navegar a registerScreen*/
+            showError("Acceso a registro")
+        }
     }
 }
 
+@Preview
 @Composable
 fun LoginHeader() {
-    AppIcon()
-    AppTitle()
-    Spacer(modifier = Modifier.size(48.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AppIcon()
+        AppTitle()
+    }
 }
 
 @Composable
@@ -72,7 +91,9 @@ fun AppIcon() {
     Image(
         painter = painterResource(id = R.drawable.ic_gestvet),
         contentDescription = "App Icon",
-        modifier = Modifier.size(100.dp)
+        modifier = Modifier
+            .size(100.dp)
+            .padding(24.dp)
     )
 }
 
@@ -82,7 +103,7 @@ fun AppTitle() {
         text = stringResource(id = R.string.app_name),
         style = MaterialTheme.typography.headlineLarge,
         fontWeight = FontWeight.Bold,
-        fontFamily = FontFamily.Default
+        fontFamily = FontFamily.Cursive
     )
 }
 
@@ -149,5 +170,17 @@ fun LoginButton(enabled: Boolean, doLogin: () -> Unit) {
                 fontSize = 16.sp
             )
         )
+    }
+}
+
+@Composable
+fun CreateAccountRow(navigateRegister: ()-> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "¿Aún no tienes una cuenta?")
+        Text(text = "Regístrate", fontWeight = FontWeight.Bold, color = md_theme_light_primary, modifier = Modifier.clickable { navigateRegister() })
     }
 }
