@@ -25,6 +25,7 @@ import com.albrodiaz.gestvet.ui.features.login.viewmodel.RegisterViewModel
 @Composable
 fun RegisterScreen(
     registerViewModel: RegisterViewModel = hiltViewModel(),
+    showResult: (String)-> Unit,
     navigateBack: () -> Unit
 ) {
     registerViewModel.apply {
@@ -77,7 +78,9 @@ fun RegisterScreen(
                 text = stringResource(id = R.string.createAccount),
                 enabled = btnEnabled
             ) {
-
+                registerViewModel.createUser {
+                    showResult(it)
+                }
             }
         }
     }

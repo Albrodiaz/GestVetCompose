@@ -30,7 +30,11 @@ fun LoginNavHost(navController: NavController, showSnack: (String) -> Unit) {
                         }
                     })
             }
-            composable(Routes.RegisterScreen.route) { RegisterScreen(navigateBack = { navController.popBackStack(route = Routes.LoginScreen.route, inclusive = false) }) }
+            composable(Routes.RegisterScreen.route) {
+                RegisterScreen(
+                    showResult = { message -> showSnack(message) },
+                    navigateBack = { navController.popBackStack(route = Routes.LoginScreen.route, inclusive = false) }
+                ) }
             composable(Routes.MainScreen.route) { MainScreen() }
         }
     }

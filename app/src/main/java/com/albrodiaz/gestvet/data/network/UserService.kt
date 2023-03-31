@@ -6,7 +6,11 @@ import javax.inject.Inject
 
 class UserService @Inject constructor(private val firebaseClient: FirebaseClient) {
 
-    suspend fun createUser(user: User) {
+    companion object {
+        const val USER_COLLECTION = "users"
+    }
+
+    suspend fun createUser(user: User) = runCatching {
 
         val registerUser = hashMapOf(
             "name" to user.name,
@@ -14,8 +18,9 @@ class UserService @Inject constructor(private val firebaseClient: FirebaseClient
             "id" to user.id
         )
 
-        firebaseClient.dataBase.collection("users/${user.id}")
-            .add(registerUser).await()
-    }
+        firebaseClient.dataBase.collection(USER_COLLECTION).document("${user.id}")
+            .set(registerUser)
+            .await()
+    }.isSuccess
 
 }

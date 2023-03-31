@@ -1,5 +1,6 @@
 package com.albrodiaz.gestvet.data.network
 
+import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -10,9 +11,9 @@ class AuthenticationService @Inject constructor(private val firebaseClient: Fire
             .addOnCompleteListener { onResult(it.exception) }.await()
     }
 
-    suspend fun createAccount(email: String, password: String) = runCatching {
-        firebaseClient.auth.createUserWithEmailAndPassword(email, password).await()
-    }.isSuccess
+    suspend fun createAccount(email: String, password: String): AuthResult? {
+        return firebaseClient.auth.createUserWithEmailAndPassword(email, password).await()
+    }
 }
 
 /* private val authentication = firebaseClient.auth

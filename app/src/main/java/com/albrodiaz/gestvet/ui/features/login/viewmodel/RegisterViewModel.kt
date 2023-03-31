@@ -1,16 +1,22 @@
 package com.albrodiaz.gestvet.ui.features.login.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
 import com.albrodiaz.gestvet.core.extensions.isValidPass
+import com.albrodiaz.gestvet.domain.authentication.CreateUserUseCase
+import com.albrodiaz.gestvet.ui.features.login.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor() : ViewModel() {
+class RegisterViewModel @Inject constructor(
+    private val createUserUseCase: CreateUserUseCase
+) : ViewModel() {
 
     private val _userName = MutableStateFlow("")
     val userName: StateFlow<String> get() = _userName
@@ -50,5 +56,22 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
 
     val enabled = validUserInfo.combine(validPassword) {user, pass ->
         return@combine user && pass
+    }
+
+    fun createUser(showMessage: (String)-> Unit) {
+        val createdUser = User(
+            name = userName.value,
+            password = password.value,
+            email = email.value
+        )
+        viewModelScope.launch {
+            val success = createUserUseCase.invoke(createdUser)
+
+            if (success) {
+                showMessage("Usuario creado correctamente")
+            } else {
+                showMessage("Error al crear usuario")
+            }
+        }
     }
 }
