@@ -26,6 +26,7 @@ import com.albrodiaz.gestvet.ui.features.components.AddTopBar
 import com.albrodiaz.gestvet.ui.features.components.DateTimeDialog
 import com.albrodiaz.gestvet.ui.features.components.FormTextField
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.AddPetViewModel
+import java.util.*
 
 @Composable
 fun AddPetScreen(addPetViewModel: AddPetViewModel = hiltViewModel(), onClose: () -> Unit) {
@@ -81,7 +82,7 @@ fun AddPetForm(
                 setShowDatePicker(false)
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(state = datePickerState, dateValidator = { it <= Date().time })
         }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

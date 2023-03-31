@@ -1,10 +1,11 @@
 package com.albrodiaz.gestvet.ui.features.login.viewmodel
 
 import android.util.Log
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.albrodiaz.gestvet.data.network.AuthenticationService
+import com.albrodiaz.gestvet.core.extensions.isValidEmail
+import com.albrodiaz.gestvet.core.extensions.isValidPass
+import com.albrodiaz.gestvet.domain.authentication.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authenticationService: AuthenticationService
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
     private val _userInput = MutableStateFlow("")
@@ -30,14 +31,13 @@ class LoginViewModel @Inject constructor(
     }
 
     val enabled = userInput.combine(userPassword) { input, password ->
-        return@combine Patterns.EMAIL_ADDRESS.matcher(input).matches()
-                && password.length > 8
+        return@combine input.isValidEmail() && password.isValidPass()
     }
 
     fun login(showError: ()-> Unit, openHome: () -> Unit) {
         viewModelScope.launch {
             try {
-                authenticationService.login(userInput.value, userPassword.value) {
+                loginUseCase.invoke(userInput.value, userPassword.value) {
                     if (it == null) {
                         openHome()
                     }

@@ -4,32 +4,26 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.ui.features.components.LoginButton
+import com.albrodiaz.gestvet.ui.features.components.UserPassword
+import com.albrodiaz.gestvet.ui.features.components.UserTextField
 import com.albrodiaz.gestvet.ui.features.login.viewmodel.LoginViewModel
-import com.albrodiaz.gestvet.ui.theme.Shapes
 import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -37,7 +31,8 @@ import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 fun LoginInputScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
     showError: (String) -> Unit,
-    navigate: () -> Unit
+    navigateRegister: () -> Unit,
+    navigateHome: () -> Unit
 ) {
     val userInput by loginViewModel.userInput.collectAsState()
     val password by loginViewModel.userPassword.collectAsState()
@@ -47,27 +42,30 @@ fun LoginInputScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         LoginHeader()
-        UserTextField(value = userInput, valueChange = { loginViewModel.setUserInput(it) })
+        UserTextField(
+            value = userInput,
+            placeholder = stringResource(id = R.string.email),
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                keyboardType = KeyboardType.Email
+            ),
+            valueChange = { loginViewModel.setUserInput(it) })
         UserPassword(value = password, valueChange = { loginViewModel.setUserPassword(it) })
-        LoginButton(enabled = enabled) {
+        LoginButton(enabled = enabled, text = stringResource(id = R.string.login)) {
             loginViewModel.login(
                 showError = {
                     showError(errorText)
                     keyboardController?.hide()
                 },
-                openHome = { navigate() }
+                openHome = { navigateHome() }
             )
         }
-        CreateAccountRow {
-            /*TODO: Navegar a registerScreen*/
-            showError("Acceso a registro")
-        }
+        CreateAccountRow { navigateRegister() }
     }
 }
 
@@ -107,80 +105,18 @@ fun AppTitle() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserTextField(value: String, valueChange: (String) -> Unit) {
-    TextField(
-        value = value,
-        onValueChange = valueChange,
-        placeholder = { Text(text = stringResource(id = R.string.email)) },
-        modifier = Modifier.fillMaxWidth(),
-        maxLines = 1,
-        singleLine = true,
-        shape = Shapes.medium,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Email,
-            imeAction = ImeAction.Next
-        ),
-        colors = TextFieldDefaults.textFieldColors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        )
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun UserPassword(value: String, valueChange: (String) -> Unit) {
-    var visible by remember { mutableStateOf(false) }
-    val icon = if (!visible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-
-    TextField(
-        value = value,
-        onValueChange = valueChange,
-        placeholder = { Text(text = stringResource(id = R.string.password)) },
-        modifier = Modifier.fillMaxWidth(),
-        maxLines = 1,
-        singleLine = true,
-        shape = Shapes.medium,
-        visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
-        trailingIcon = {
-            IconButton(onClick = { visible = !visible }) {
-                Icon(imageVector = icon, contentDescription = "Toggle password")
-            }
-        },
-        colors = TextFieldDefaults.textFieldColors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        )
-    )
-}
-
-@Composable
-fun LoginButton(enabled: Boolean, doLogin: () -> Unit) {
-    Button(
-        onClick = doLogin,
-        shape = Shapes.medium,
-        enabled = enabled
-    ) {
-        Text(
-            text = stringResource(id = R.string.login), style = TextStyle(
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 2.sp,
-                fontSize = 16.sp
-            )
-        )
-    }
-}
-
-@Composable
-fun CreateAccountRow(navigateRegister: ()-> Unit) {
+fun CreateAccountRow(navigateRegister: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "¿Aún no tienes una cuenta?")
-        Text(text = "Regístrate", fontWeight = FontWeight.Bold, color = md_theme_light_primary, modifier = Modifier.clickable { navigateRegister() })
+        Text(
+            text = "Regístrate",
+            fontWeight = FontWeight.Bold,
+            color = md_theme_light_primary,
+            modifier = Modifier.clickable { navigateRegister() })
     }
 }

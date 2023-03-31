@@ -22,14 +22,15 @@ fun LoginNavHost(navController: NavController, showSnack: (String) -> Unit) {
         ) {
             composable(Routes.LoginScreen.route) {
                 LoginInputScreen(
-                    showError = { showSnack(it) },
-                    navigate = {
+                    showError = { message -> showSnack(message) },
+                    navigateRegister = { navController.navigate(Routes.RegisterScreen.route) },
+                    navigateHome = {
                         navController.navigate(Routes.MainScreen.route) {
                             popUpTo(Routes.LoginScreen.route) { inclusive = true }
                         }
                     })
             }
-            composable(Routes.RegisterScreen.route) { RegisterScreen() }
+            composable(Routes.RegisterScreen.route) { RegisterScreen(navigateBack = { navController.popBackStack(route = Routes.LoginScreen.route, inclusive = false) }) }
             composable(Routes.MainScreen.route) { MainScreen() }
         }
     }

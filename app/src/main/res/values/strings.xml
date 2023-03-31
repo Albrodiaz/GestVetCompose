@@ -52,4 +52,12 @@
     <string name="password">Contraseña</string>
     <string name="login">Login</string>
     <string name="errorLogin">Usuario o contraseña incorrectos</string>
+    <string name="register">Registro</string>
+    <string name="toLogin">Navegar hacia login</string>
+    <string name="repeatPassword">Repita la contraseña</string>
+    <string name="fullName">Nombre completo</string>
+    <string name="createAccount">Registrarse</string>
+    <string name="equalPass">La contraseña debe coincidir</string>
+    <string name="passLength">8 – 16 caracteres</string>
+    <string name="invalidEmail">Email no válido</string>
 </resources>
