@@ -63,4 +63,5 @@
     <string name="createSuccess">Usuario creado con éxito</string>
     <string name="createFailure">Usuario ya registrado</string>
     <string name="settings">Ajustes</string>
+    <string name="logout">Cerrar sesión</string>
 </resources>
