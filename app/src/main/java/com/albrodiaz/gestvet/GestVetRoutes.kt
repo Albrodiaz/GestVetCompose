@@ -20,4 +20,6 @@ sealed class GestVetRoutes(val route: String) {
     object LoginScreen: GestVetRoutes("loginscreen")
     object RegisterScreen: GestVetRoutes("registerscreen")
     object MainScreen: GestVetRoutes("mainscreen")
+    object Settings: GestVetRoutes("settingscreen")
+    object Home: GestVetRoutes("homescreen")
 }

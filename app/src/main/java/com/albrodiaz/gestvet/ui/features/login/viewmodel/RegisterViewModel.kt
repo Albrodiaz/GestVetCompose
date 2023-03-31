@@ -54,24 +54,25 @@ class RegisterViewModel @Inject constructor(
         return@combine pass.length > 8 && repeat.length > 8 && pass != repeat
     }
 
-    val enabled = validUserInfo.combine(validPassword) {user, pass ->
+    val enabled = validUserInfo.combine(validPassword) { user, pass ->
         return@combine user && pass
     }
 
-    fun createUser(navigateUp: ()-> Unit, showMessage: (String)-> Unit) {
+    fun createUser(navigateUp: () -> Unit, onSuccess: () -> Unit, failure: ()-> Unit) {
         val createdUser = User(
             name = userName.value,
             password = password.value,
             email = email.value
         )
         viewModelScope.launch {
-            val success = createUserUseCase.invoke(createdUser)
-
-            if (success) {
-                showMessage("Usuario creado correctamente")
-                navigateUp()
-            } else {
-                showMessage("Error al crear usuario")
+            try {
+                val success = createUserUseCase.invoke(createdUser)
+                if (success) {
+                    onSuccess()
+                    navigateUp()
+                }
+            } catch (error: Throwable) {
+                failure()
             }
         }
     }

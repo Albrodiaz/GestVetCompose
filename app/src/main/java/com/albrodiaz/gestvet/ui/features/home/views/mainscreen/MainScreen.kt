@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -16,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.albrodiaz.gestvet.R
-import com.albrodiaz.gestvet.ui.features.home.views.navigation.MainNavController
+import com.albrodiaz.gestvet.ui.features.home.navigation.MainNavController
 import com.albrodiaz.gestvet.GestVetRoutes
 import kotlinx.coroutines.launch
 
@@ -28,16 +29,18 @@ fun MainScreen() {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+
     when (navStackEntry?.destination?.route) {
-        GestVetRoutes.Appointment.route, GestVetRoutes.Search.route, GestVetRoutes.Client.route -> {
+        GestVetRoutes.Appointment.route, GestVetRoutes.Search.route, GestVetRoutes.Client.route, GestVetRoutes.Settings.route -> {
             bottomNavState.value = true
         }
         else -> bottomNavState.value = false
     }
 
-    val selectedItem = when(navStackEntry?.destination?.route) {
+    val selectedItem = when (navStackEntry?.destination?.route) {
         GestVetRoutes.Client.route -> 1
         GestVetRoutes.Search.route -> 2
+        GestVetRoutes.Settings.route -> 3
         else -> 0
     }
 
@@ -53,6 +56,11 @@ fun MainScreen() {
                 },
                 navToSearch = {
                     navController.navigate(GestVetRoutes.Search.route) {
+                        popUpTo(GestVetRoutes.Appointment.route)
+                    }
+                },
+                navToSettings = {
+                    navController.navigate(GestVetRoutes.Settings.route) {
                         popUpTo(GestVetRoutes.Appointment.route)
                     }
                 }
@@ -80,27 +88,54 @@ fun MainScreen() {
 private fun MainBottomNav(
     selectedItem: Int,
     navToHome: () -> Unit,
+    navToSettings: () -> Unit,
     navToClients: () -> Unit,
     navToSearch: () -> Unit
 ) {
     NavigationBar(Modifier.fillMaxWidth()) {
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.DateRange, contentDescription = "") },
+            icon = {
+                Icon(
+                    Icons.Filled.DateRange,
+                    contentDescription = stringResource(id = R.string.appointments)
+                )
+            },
             label = { Text(stringResource(id = R.string.appointments)) },
             selected = selectedItem == 0,
             onClick = { navToHome() }
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Person, contentDescription = "") },
+            icon = {
+                Icon(
+                    Icons.Filled.Person,
+                    contentDescription = stringResource(id = R.string.clients)
+                )
+            },
             label = { Text(stringResource(id = R.string.clients)) },
             selected = selectedItem == 1,
             onClick = { navToClients() }
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Search, contentDescription = "") },
+            icon = {
+                Icon(
+                    Icons.Filled.Search,
+                    contentDescription = stringResource(id = R.string.search)
+                )
+            },
             label = { Text(stringResource(id = R.string.search)) },
             selected = selectedItem == 2,
             onClick = { navToSearch() }
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    Icons.Filled.Settings,
+                    contentDescription = stringResource(id = R.string.settings)
+                )
+            },
+            label = { Text(text = stringResource(id = R.string.settings)) },
+            selected = selectedItem == 3,
+            onClick = navToSettings
         )
     }
 }

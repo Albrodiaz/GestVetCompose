@@ -16,6 +16,10 @@ class AuthenticationService @Inject constructor(private val firebaseClient: Fire
     suspend fun createAccount(email: String, password: String): AuthResult? {
         return firebaseClient.auth.createUserWithEmailAndPassword(email, password).await()
     }
+
+    fun logOut() {
+        firebaseClient.auth.signOut()
+    }
 }
 
 /* private val authentication = firebaseClient.auth

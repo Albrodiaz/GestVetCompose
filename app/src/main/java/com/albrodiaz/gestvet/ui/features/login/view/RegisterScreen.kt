@@ -9,7 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -22,6 +24,7 @@ import com.albrodiaz.gestvet.ui.features.components.UserPassword
 import com.albrodiaz.gestvet.ui.features.components.UserTextField
 import com.albrodiaz.gestvet.ui.features.login.viewmodel.RegisterViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(
     registerViewModel: RegisterViewModel = hiltViewModel(),
@@ -36,6 +39,9 @@ fun RegisterScreen(
         val btnEnabled by enabled.collectAsState(false)
         val passError by passwordError.collectAsState(false)
         val emailError = email.length > 9 && !email.isValidEmail()
+        val keyboardManager = LocalSoftwareKeyboardController.current
+        val successText = stringResource(id = R.string.createSuccess)
+        val failureText = stringResource(id = R.string.createFailure)
 
         Column(
             Modifier.fillMaxSize(),
@@ -78,9 +84,12 @@ fun RegisterScreen(
                 text = stringResource(id = R.string.createAccount),
                 enabled = btnEnabled
             ) {
-                registerViewModel.createUser(navigateUp = navigateBack) {
-                    showResult(it)
-                }
+                keyboardManager?.hide()
+                registerViewModel.createUser(
+                    navigateUp = navigateBack,
+                    onSuccess = { showResult(successText) },
+                    failure = { showResult(failureText) }
+                )
             }
         }
     }

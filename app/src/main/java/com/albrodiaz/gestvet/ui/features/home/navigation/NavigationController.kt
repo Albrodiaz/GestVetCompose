@@ -1,4 +1,4 @@
-package com.albrodiaz.gestvet.ui.features.home.views.navigation
+package com.albrodiaz.gestvet.ui.features.home.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -13,6 +13,8 @@ import com.albrodiaz.gestvet.ui.features.home.views.appointments.AddAppointmentS
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.clients.*
 import com.albrodiaz.gestvet.ui.features.home.views.searchscreen.SearchScreen
+import com.albrodiaz.gestvet.ui.features.home.views.settingscreen.SettingScreen
+import com.albrodiaz.gestvet.ui.features.login.view.HomeScreen
 
 @Composable
 fun MainNavController(
@@ -71,7 +73,13 @@ fun MainNavController(
             arguments = listOf(navArgument("id") { type = NavType.LongType })
         ) {
             ClientDetailScreen(onNavigateUp = { navigationController.popBackStack() },
-                navigateToDetails = { navigationController.navigate(GestVetRoutes.PetDetails.createRoute(it)) }) {
+                navigateToDetails = {
+                    navigationController.navigate(
+                        GestVetRoutes.PetDetails.createRoute(
+                            it
+                        )
+                    )
+                }) {
                 navigationController.navigate(GestVetRoutes.AddPet.createRoute(it))
             }
         }
@@ -91,5 +99,13 @@ fun MainNavController(
                 navigationController.popBackStack()
             }
         }
+        composable(GestVetRoutes.Settings.route) {
+            SettingScreen {
+                navigationController.navigate(GestVetRoutes.Home.route) {
+                    popUpTo(GestVetRoutes.Appointment.route) { inclusive = true }
+                }
+            }
+        }
+        composable(GestVetRoutes.Home.route) { HomeScreen() }
     }
 }

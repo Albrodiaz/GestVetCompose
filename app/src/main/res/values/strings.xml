@@ -60,4 +60,7 @@
     <string name="equalPass">La contraseña debe coincidir</string>
     <string name="passLength">8 – 16 caracteres</string>
     <string name="invalidEmail">Email no válido</string>
+    <string name="createSuccess">Usuario creado con éxito</string>
+    <string name="createFailure">Usuario ya registrado</string>
+    <string name="settings">Ajustes</string>
 </resources>
