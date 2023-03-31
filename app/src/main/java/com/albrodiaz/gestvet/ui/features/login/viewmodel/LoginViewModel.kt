@@ -1,6 +1,5 @@
 package com.albrodiaz.gestvet.ui.features.login.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
@@ -34,7 +33,7 @@ class LoginViewModel @Inject constructor(
         return@combine input.isValidEmail() && password.isValidPass()
     }
 
-    fun login(showError: ()-> Unit, openHome: () -> Unit) {
+    fun login(showError: () -> Unit, openHome: () -> Unit) {
         viewModelScope.launch {
             try {
                 loginUseCase.invoke(userInput.value, userPassword.value) {
@@ -43,7 +42,6 @@ class LoginViewModel @Inject constructor(
                     }
                 }
             } catch (error: Throwable) {
-                Log.e("alberto", "${error.message}")
                 showError()
             }
         }

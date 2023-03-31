@@ -9,12 +9,13 @@ import javax.inject.Inject
 
 class PetService @Inject constructor(firebaseClient: FirebaseClient) {
 
+
+    private val currentUser = firebaseClient.auth.currentUser?.email
     companion object {
-        const val PETS_PATH = "alrodiaz15@gmail.com/management/pets"
         const val PETS_TAG = "PetsService"
     }
 
-    private val petReference = firebaseClient.dataBase.collection(PETS_PATH)
+    private val petReference = firebaseClient.dataBase.collection("$currentUser/management/pets")
 
     fun pets() = callbackFlow {
         val data = petReference.addSnapshotListener { value, error ->

@@ -11,12 +11,13 @@ import javax.inject.Inject
 
 class AppointmentsService @Inject constructor(firebase: FirebaseClient) {
 
+    private val currentUser = firebase.auth.currentUser?.email
+
     companion object {
         const val APPOINTMENT_TAG = "Appointments"
-        const val APPOINTMENTS_PATH = "alrodiaz15@gmail.com/management/appointments"
     }
 
-    private val appointmentReference = firebase.dataBase.collection(APPOINTMENTS_PATH)
+    private val appointmentReference = firebase.dataBase.collection("$currentUser/management/appointments")
     fun appointments() = callbackFlow {
             val data = appointmentReference.orderBy("dateInMillis")
                 .addSnapshotListener { values, error ->

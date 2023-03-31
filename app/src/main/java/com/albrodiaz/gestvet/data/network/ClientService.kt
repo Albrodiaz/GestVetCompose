@@ -10,12 +10,12 @@ import javax.inject.Inject
 
 class ClientService @Inject constructor(firebase: FirebaseClient) {
 
+    private val currentUser = firebase.auth.currentUser?.email
     companion object {
         const val CLIENTS_TAG = "clients"
-        const val CLIENTS_PATH = "alrodiaz15@gmail.com/management/clients"
     }
 
-    private val clientReference = firebase.dataBase.collection(CLIENTS_PATH)
+    private val clientReference = firebase.dataBase.collection("$currentUser/management/clients")
 
     fun clients() = callbackFlow {
             val data = clientReference
