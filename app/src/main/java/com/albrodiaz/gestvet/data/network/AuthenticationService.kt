@@ -5,10 +5,14 @@ import javax.inject.Inject
 
 class AuthenticationService @Inject constructor(private val firebaseClient: FirebaseClient) {
 
-    suspend fun login(email: String, password: String, onResult: (Throwable?)-> Unit) {
+    suspend fun login(email: String, password: String, onResult: (Throwable?) -> Unit) {
         firebaseClient.auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { onResult(it.exception) }.await()
     }
+
+    suspend fun createAccount(email: String, password: String) = runCatching {
+        firebaseClient.auth.createUserWithEmailAndPassword(email, password).await()
+    }.isSuccess
 }
 
 /* private val authentication = firebaseClient.auth
