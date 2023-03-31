@@ -6,9 +6,7 @@ import javax.inject.Inject
 
 class UserService @Inject constructor(private val firebaseClient: FirebaseClient) {
 
-    companion object {
-        const val USER_COLLECTION = "users"
-    }
+    private val currentUser = firebaseClient.auth.currentUser?.email
 
     suspend fun createUser(user: User) = runCatching {
 
@@ -18,7 +16,7 @@ class UserService @Inject constructor(private val firebaseClient: FirebaseClient
             "id" to user.id
         )
 
-        firebaseClient.dataBase.collection(USER_COLLECTION).document("${user.id}")
+        firebaseClient.dataBase.collection("$currentUser").document("settings")
             .set(registerUser)
             .await()
     }.isSuccess
