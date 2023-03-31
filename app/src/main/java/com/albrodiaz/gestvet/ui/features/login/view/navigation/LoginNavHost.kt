@@ -22,7 +22,7 @@ fun LoginNavHost(navController: NavController, showSnack: (String) -> Unit) {
         ) {
             composable(GestVetRoutes.LoginScreen.route) {
                 LoginInputScreen(
-                    showError = { message -> showSnack(message) },
+                    showMessage = { message -> showSnack(message) },
                     navigateRegister = { navController.navigate(GestVetRoutes.RegisterScreen.route) },
                     navigateHome = {
                         navController.navigate(GestVetRoutes.MainScreen.route) {

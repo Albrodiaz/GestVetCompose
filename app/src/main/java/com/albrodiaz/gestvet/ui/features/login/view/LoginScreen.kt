@@ -30,7 +30,7 @@ import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 @Composable
 fun LoginInputScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
-    showError: (String) -> Unit,
+    showMessage: (String) -> Unit,
     navigateRegister: () -> Unit,
     navigateHome: () -> Unit
 ) {
@@ -63,7 +63,7 @@ fun LoginInputScreen(
             LoginButton(enabled = enabled, text = stringResource(id = R.string.login)) {
                 loginViewModel.login(
                     showError = {
-                        showError(errorText)
+                        showMessage(errorText)
                         keyboardController?.hide()
                     },
                     openHome = { navigateHome() }
