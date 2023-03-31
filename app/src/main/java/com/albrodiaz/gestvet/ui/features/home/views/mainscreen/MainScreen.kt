@@ -17,7 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.home.views.navigation.MainNavController
-import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
+import com.albrodiaz.gestvet.GestVetRoutes
 import kotlinx.coroutines.launch
 
 @Composable
@@ -29,15 +29,15 @@ fun MainScreen() {
     val snackbarHostState = remember { SnackbarHostState() }
 
     when (navStackEntry?.destination?.route) {
-        Routes.Appointment.route, Routes.Search.route, Routes.Client.route -> {
+        GestVetRoutes.Appointment.route, GestVetRoutes.Search.route, GestVetRoutes.Client.route -> {
             bottomNavState.value = true
         }
         else -> bottomNavState.value = false
     }
 
     val selectedItem = when(navStackEntry?.destination?.route) {
-        Routes.Client.route -> 1
-        Routes.Search.route -> 2
+        GestVetRoutes.Client.route -> 1
+        GestVetRoutes.Search.route -> 2
         else -> 0
     }
 
@@ -45,15 +45,15 @@ fun MainScreen() {
         bottomBar = {
             if (bottomNavState.value) MainBottomNav(
                 selectedItem = selectedItem,
-                navToHome = { navController.navigate(Routes.Appointment.route) },
+                navToHome = { navController.navigate(GestVetRoutes.Appointment.route) },
                 navToClients = {
-                    navController.navigate(Routes.Client.route) {
-                        popUpTo(Routes.Appointment.route)
+                    navController.navigate(GestVetRoutes.Client.route) {
+                        popUpTo(GestVetRoutes.Appointment.route)
                     }
                 },
                 navToSearch = {
-                    navController.navigate(Routes.Search.route) {
-                        popUpTo(Routes.Appointment.route)
+                    navController.navigate(GestVetRoutes.Search.route) {
+                        popUpTo(GestVetRoutes.Appointment.route)
                     }
                 }
             )

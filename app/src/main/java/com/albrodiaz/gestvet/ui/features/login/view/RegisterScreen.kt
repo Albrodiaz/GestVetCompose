@@ -78,7 +78,7 @@ fun RegisterScreen(
                 text = stringResource(id = R.string.createAccount),
                 enabled = btnEnabled
             ) {
-                registerViewModel.createUser {
+                registerViewModel.createUser(navigateUp = navigateBack) {
                     showResult(it)
                 }
             }

@@ -39,33 +39,38 @@ fun LoginInputScreen(
     val enabled by loginViewModel.enabled.collectAsState(false)
     val errorText = stringResource(id = R.string.errorLogin)
     val keyboardController = LocalSoftwareKeyboardController.current
+    val isUserLogged by loginViewModel.isUserLogged.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        LoginHeader()
-        UserTextField(
-            value = userInput,
-            placeholder = stringResource(id = R.string.email),
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                keyboardType = KeyboardType.Email
-            ),
-            valueChange = { loginViewModel.setUserInput(it) })
-        UserPassword(value = password, valueChange = { loginViewModel.setUserPassword(it) })
-        LoginButton(enabled = enabled, text = stringResource(id = R.string.login)) {
-            loginViewModel.login(
-                showError = {
-                    showError(errorText)
-                    keyboardController?.hide()
-                },
-                openHome = { navigateHome() }
-            )
+    if (isUserLogged) {
+        navigateHome()
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            LoginHeader()
+            UserTextField(
+                value = userInput,
+                placeholder = stringResource(id = R.string.email),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Email
+                ),
+                valueChange = { loginViewModel.setUserInput(it) })
+            UserPassword(value = password, valueChange = { loginViewModel.setUserPassword(it) })
+            LoginButton(enabled = enabled, text = stringResource(id = R.string.login)) {
+                loginViewModel.login(
+                    showError = {
+                        showError(errorText)
+                        keyboardController?.hide()
+                    },
+                    openHome = { navigateHome() }
+                )
+            }
+            CreateAccountRow { navigateRegister() }
         }
-        CreateAccountRow { navigateRegister() }
     }
 }
 

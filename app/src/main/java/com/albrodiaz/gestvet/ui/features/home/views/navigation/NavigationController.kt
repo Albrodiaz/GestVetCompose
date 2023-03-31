@@ -8,6 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.albrodiaz.gestvet.GestVetRoutes
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AddAppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.appointments.AppointmentScreen
 import com.albrodiaz.gestvet.ui.features.home.views.clients.*
@@ -20,36 +21,36 @@ fun MainNavController(
 ) {
     NavHost(
         navController = navigationController as NavHostController,
-        startDestination = Routes.Appointment.route
+        startDestination = GestVetRoutes.Appointment.route
     ) {
-        composable(Routes.Appointment.route) {
+        composable(GestVetRoutes.Appointment.route) {
             AppointmentScreen {
-                navigationController.navigate(Routes.AddAppointment.createRoute(it ?: 0L))
+                navigationController.navigate(GestVetRoutes.AddAppointment.createRoute(it ?: 0L))
             }
         }
-        composable(Routes.Client.route) {
+        composable(GestVetRoutes.Client.route) {
             ClientScreen(
                 clientViewModel = hiltViewModel(),
-                navigateToCreate = { navigationController.navigate(Routes.AddClient.route) }
+                navigateToCreate = { navigationController.navigate(GestVetRoutes.AddClient.route) }
             ) {
-                navigationController.navigate(Routes.ClientDetails.createRoute(it))
+                navigationController.navigate(GestVetRoutes.ClientDetails.createRoute(it))
             }
         }
-        composable(Routes.Search.route) { _ ->
+        composable(GestVetRoutes.Search.route) { _ ->
             SearchScreen(
                 navigateApptDetails = {
-                    navigationController.navigate(Routes.AddAppointment.createRoute(it))
+                    navigationController.navigate(GestVetRoutes.AddAppointment.createRoute(it))
                 },
                 navigateClientDetail = {
-                    navigationController.navigate(Routes.ClientDetails.createRoute(it))
+                    navigationController.navigate(GestVetRoutes.ClientDetails.createRoute(it))
                 },
                 navigatePetDetail = {
-                    navigationController.navigate(Routes.PetDetails.createRoute(it))
+                    navigationController.navigate(GestVetRoutes.PetDetails.createRoute(it))
                 }
             )
         }
         composable(
-            Routes.AddAppointment.route,
+            GestVetRoutes.AddAppointment.route,
             arguments = listOf(navArgument("id") { defaultValue = 1L })
         ) {
             AddAppointmentScreen(
@@ -60,22 +61,22 @@ fun MainNavController(
                 navigationController.popBackStack()
             }
         }
-        composable(Routes.AddClient.route) {
+        composable(GestVetRoutes.AddClient.route) {
             AddClientScreen(addClientViewModel = hiltViewModel()) {
                 navigationController.popBackStack()
             }
         }
         composable(
-            Routes.ClientDetails.route,
+            GestVetRoutes.ClientDetails.route,
             arguments = listOf(navArgument("id") { type = NavType.LongType })
         ) {
             ClientDetailScreen(onNavigateUp = { navigationController.popBackStack() },
-                navigateToDetails = { navigationController.navigate(Routes.PetDetails.createRoute(it)) }) {
-                navigationController.navigate(Routes.AddPet.createRoute(it))
+                navigateToDetails = { navigationController.navigate(GestVetRoutes.PetDetails.createRoute(it)) }) {
+                navigationController.navigate(GestVetRoutes.AddPet.createRoute(it))
             }
         }
         composable(
-            Routes.AddPet.route,
+            GestVetRoutes.AddPet.route,
             arguments = listOf(navArgument("ownerId") { type = NavType.LongType })
         ) {
             AddPetScreen {
@@ -83,7 +84,7 @@ fun MainNavController(
             }
         }
         composable(
-            Routes.PetDetails.route,
+            GestVetRoutes.PetDetails.route,
             arguments = listOf(navArgument("petId") { type = NavType.LongType })
         ) {
             PetDetailScreen {

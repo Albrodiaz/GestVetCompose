@@ -9,7 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.albrodiaz.gestvet.ui.features.home.views.mainscreen.MainScreen
-import com.albrodiaz.gestvet.ui.features.home.views.navigation.Routes
+import com.albrodiaz.gestvet.GestVetRoutes
 import com.albrodiaz.gestvet.ui.features.login.view.LoginInputScreen
 import com.albrodiaz.gestvet.ui.features.login.view.RegisterScreen
 
@@ -18,24 +18,24 @@ fun LoginNavHost(navController: NavController, showSnack: (String) -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         NavHost(
             navController = navController as NavHostController,
-            startDestination = Routes.LoginScreen.route
+            startDestination = GestVetRoutes.LoginScreen.route
         ) {
-            composable(Routes.LoginScreen.route) {
+            composable(GestVetRoutes.LoginScreen.route) {
                 LoginInputScreen(
                     showError = { message -> showSnack(message) },
-                    navigateRegister = { navController.navigate(Routes.RegisterScreen.route) },
+                    navigateRegister = { navController.navigate(GestVetRoutes.RegisterScreen.route) },
                     navigateHome = {
-                        navController.navigate(Routes.MainScreen.route) {
-                            popUpTo(Routes.LoginScreen.route) { inclusive = true }
+                        navController.navigate(GestVetRoutes.MainScreen.route) {
+                            popUpTo(GestVetRoutes.LoginScreen.route) { inclusive = true }
                         }
                     })
             }
-            composable(Routes.RegisterScreen.route) {
+            composable(GestVetRoutes.RegisterScreen.route) {
                 RegisterScreen(
                     showResult = { message -> showSnack(message) },
-                    navigateBack = { navController.popBackStack(route = Routes.LoginScreen.route, inclusive = false) }
+                    navigateBack = { navController.popBackStack(route = GestVetRoutes.LoginScreen.route, inclusive = false) }
                 ) }
-            composable(Routes.MainScreen.route) { MainScreen() }
+            composable(GestVetRoutes.MainScreen.route) { MainScreen() }
         }
     }
 }

@@ -58,7 +58,7 @@ class RegisterViewModel @Inject constructor(
         return@combine user && pass
     }
 
-    fun createUser(showMessage: (String)-> Unit) {
+    fun createUser(navigateUp: ()-> Unit, showMessage: (String)-> Unit) {
         val createdUser = User(
             name = userName.value,
             password = password.value,
@@ -69,6 +69,7 @@ class RegisterViewModel @Inject constructor(
 
             if (success) {
                 showMessage("Usuario creado correctamente")
+                navigateUp()
             } else {
                 showMessage("Error al crear usuario")
             }

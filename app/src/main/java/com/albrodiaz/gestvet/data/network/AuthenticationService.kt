@@ -6,6 +6,8 @@ import javax.inject.Inject
 
 class AuthenticationService @Inject constructor(private val firebaseClient: FirebaseClient) {
 
+    val hasUser: Boolean get() = firebaseClient.auth.currentUser != null
+
     suspend fun login(email: String, password: String, onResult: (Throwable?) -> Unit) {
         firebaseClient.auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { onResult(it.exception) }.await()
