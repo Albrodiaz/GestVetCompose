@@ -75,9 +75,7 @@ fun MainNavController(
             ClientDetailScreen(onNavigateUp = { navigationController.popBackStack() },
                 navigateToDetails = {
                     navigationController.navigate(
-                        GestVetRoutes.PetDetails.createRoute(
-                            it
-                        )
+                        GestVetRoutes.PetDetails.createRoute(it)
                     )
                 }) {
                 navigationController.navigate(GestVetRoutes.AddPet.createRoute(it))
