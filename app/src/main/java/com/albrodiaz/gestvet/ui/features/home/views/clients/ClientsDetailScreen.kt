@@ -5,12 +5,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -217,15 +215,12 @@ private fun PetSection(
                 .height(250.dp)
         ) {
             items(pets, key = { it.id ?: 0L }) {
-                ListItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 2.dp)
-                        .clickable { navigateToDetails(it.id!!) },
-                    shadowElevation = 2.dp,
-                    supportingContent = { Text(text = "${it.breed}") },
-                    headlineContent = { Text(text = "${it.name}") }
-                )
+                ItemPet(
+                    headlineText = it.name.toString(),
+                    supportingText = it.breed.toString()
+                ) {
+                    navigateToDetails(it.id ?: -1)
+                }
             }
         }
     }
@@ -260,5 +255,24 @@ private fun WarningDeleteDialog(
         show = show,
         onDismiss = { onDismiss() }) {
         onConfirm()
+    }
+}
+
+@Composable
+fun ItemPet(
+    headlineText: String,
+    supportingText: String,
+    navigateToDetails: () -> Unit
+) {
+    Card(
+        modifier = Modifier.padding(6.dp),
+        shape = RoundedCornerShape(6.dp),
+        elevation = CardDefaults.cardElevation(3.dp)
+    ) {
+        ListItem(
+            modifier = Modifier.clickable { navigateToDetails() },
+            headlineContent = { Text(text = headlineText) },
+            supportingContent = { Text(text = supportingText) }
+        )
     }
 }
