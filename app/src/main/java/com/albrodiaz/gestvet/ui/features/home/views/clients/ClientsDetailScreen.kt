@@ -35,7 +35,6 @@ fun ClientDetailScreen(
     navigateToDetails: (Long) -> Unit,
     onCreatePet: (Long) -> Unit
 ) {
-    val scrollState = rememberScrollState()
     val context = LocalContext.current
     val isEditActive by clientsDetailsViewModel.isEditActive.collectAsState()
     val seniorityText by clientsDetailsViewModel.clientSeniority.collectAsState()
@@ -66,7 +65,7 @@ fun ClientDetailScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
+            .verticalScroll(rememberScrollState())
     ) {
         ClientHeader(
             onClose = { onNavigateUp() },
@@ -224,12 +223,12 @@ private fun PetSection(
 private fun ClientDetailText(text: String, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .fillMaxWidth(.35f)
+            .fillMaxWidth(.3f)
     ) {
         Text(
             text = text,
             modifier = modifier.padding(vertical = 12.dp, horizontal = 4.dp),
-            maxLines = 1
+            fontSize = 14.sp
         )
     }
 }

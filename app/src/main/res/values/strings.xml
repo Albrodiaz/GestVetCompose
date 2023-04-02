@@ -32,7 +32,7 @@
     <string name="confirmDelete">¿Desea eliminar?</string>
     <string name="confirmDeleteClient">¿Eliminar cliente?</string>
     <string name="addPet">Añadir mascota</string>
-    <string name="birthDate">Nacimiento</string>
+    <string name="birthDate">Fecha nacimiento</string>
     <string name="breed">Raza</string>
     <string name="chipNumber">Microchip</string>
     <string name="passportNumber">Pasaporte</string>

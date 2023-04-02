@@ -169,6 +169,7 @@ private fun PetDetailText(text: String, modifier: Modifier = Modifier) {
         Text(
             text = text,
             modifier = modifier.padding(vertical = 12.dp, horizontal = 4.dp),
+            fontSize = 14.sp,
             maxLines = 1
         )
     }
