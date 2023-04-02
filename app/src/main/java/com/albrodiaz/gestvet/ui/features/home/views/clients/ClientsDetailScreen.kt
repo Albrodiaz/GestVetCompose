@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -203,11 +202,9 @@ private fun PetSection(
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 text = stringResource(id = R.string.pets),
-                modifier = Modifier.padding(vertical = 12.dp, horizontal = 6.dp),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                modifier = Modifier.padding(9.dp),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
             )
             TextButton(onClick = { onNavigate() }) {
                 Text(text = stringResource(id = R.string.add))

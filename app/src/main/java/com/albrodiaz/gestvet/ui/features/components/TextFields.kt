@@ -8,18 +8,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -108,4 +114,49 @@ fun DetailsTextfield(
             }
         }
     )
+}
+
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun ElevatedTextField(
+    value: String,
+    valueChange: (String) -> Unit
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val localFocus = LocalFocusManager.current
+
+    Surface(
+        shadowElevation = 6.dp, modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp, horizontal = 16.dp),
+        shape = Shapes.large
+    ) {
+        TextField(
+            value = value,
+            onValueChange = { valueChange(it) },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(text = stringResource(id = R.string.search)) },
+            maxLines = 1,
+            singleLine = true,
+            trailingIcon = {
+                IconButton(onClick = {
+                    keyboardController?.hide()
+                    localFocus.clearFocus(true)
+                }
+                ) {
+                    Icon(Icons.Filled.Check, contentDescription = null)
+                }
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            ),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(onDone = {
+                localFocus.clearFocus(true)
+            })
+        )
+    }
 }
