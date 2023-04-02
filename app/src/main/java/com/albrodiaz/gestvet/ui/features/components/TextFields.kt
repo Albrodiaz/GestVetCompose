@@ -1,23 +1,18 @@
 package com.albrodiaz.gestvet.ui.features.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -66,56 +61,6 @@ fun FormTextField(
     )
 }
 
-@Composable
-fun DetailsTextfield(
-    text: String,
-    modifier: Modifier = Modifier,
-    valueChange: (String) -> Unit,
-    enabled: Boolean = false,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
-) {
-    BasicTextField(
-        value = text,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(45.dp),
-        onValueChange = { valueChange(it) },
-        singleLine = true,
-        enabled = enabled,
-        maxLines = 1,
-        textStyle = TextStyle(
-            color = if (isSystemInDarkTheme()) md_theme_dark_onSurface else md_theme_light_onSurface
-        ),
-        keyboardOptions = keyboardOptions,
-        cursorBrush = SolidColor(md_theme_light_surfaceTint),
-        visualTransformation = VisualTransformation.None,
-        decorationBox = { innerTextField ->
-            Row(
-                Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 8.dp)
-                    .background(if (isSystemInDarkTheme()) md_theme_dark_surfaceVariant else md_theme_light_surfaceVariant)
-                    .border(
-                        width = .4.dp,
-                        shape = RoundedCornerShape(4.dp),
-                        color = Color.LightGray
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    innerTextField()
-                }
-            }
-        }
-    )
-}
-
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ElevatedTextField(
@@ -157,6 +102,45 @@ fun ElevatedTextField(
             keyboardActions = KeyboardActions(onDone = {
                 localFocus.clearFocus(true)
             })
+        )
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SmallTextField(
+    value: String,
+    valueChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    enabled: Boolean
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val textColor = if (isSystemInDarkTheme()) md_theme_dark_onSurface else md_theme_light_onSurface
+    BasicTextField(
+        value = value,
+        onValueChange = { valueChange(it) },
+        enabled = enabled,
+        textStyle = TextStyle(
+            color = textColor
+        ),
+        keyboardOptions = keyboardOptions,
+        modifier = Modifier.fillMaxWidth(),
+    ) { innerTextField ->
+        TextFieldDefaults.TextFieldDecorationBox(
+            value = value,
+            innerTextField = innerTextField,
+            enabled = enabled,
+            singleLine = true,
+            shape = Shapes.large,
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
+            visualTransformation = VisualTransformation.None,
+            interactionSource = interactionSource,
+            contentPadding = TextFieldDefaults.textFieldWithLabelPadding(top = 6.dp, bottom = 6.dp)
         )
     }
 }

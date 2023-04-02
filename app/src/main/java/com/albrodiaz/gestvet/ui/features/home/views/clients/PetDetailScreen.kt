@@ -15,10 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
-import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
-import com.albrodiaz.gestvet.ui.features.components.DetailsTextfield
-import com.albrodiaz.gestvet.ui.features.components.DetailsTopBar
-import com.albrodiaz.gestvet.ui.features.components.savedToast
+import com.albrodiaz.gestvet.ui.features.components.*
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.DetailPetViewModel
 
 @Composable
@@ -144,8 +141,8 @@ private fun DetailTextRow(
 ) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         PetDetailText(text = descriptionText)
-        DetailsTextfield(
-            text = text,
+        SmallTextField(
+            value = text,
             enabled = enabled,
             valueChange = { onValueChange(it) }
         )
@@ -166,14 +163,12 @@ private fun NeuteredRow(neutered: Boolean, enabled: Boolean, onCheckChange: (Boo
 @Composable
 private fun PetDetailText(text: String, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
-            .fillMaxWidth(.4f)
-            .height(50.dp),
+        modifier = modifier.fillMaxWidth(.4f),
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = text,
-            modifier = modifier.padding(horizontal = 12.dp),
+            modifier = modifier.padding(vertical = 12.dp, horizontal = 4.dp),
             maxLines = 1
         )
     }

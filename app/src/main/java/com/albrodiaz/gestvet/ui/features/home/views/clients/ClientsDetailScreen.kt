@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -17,15 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
-import com.albrodiaz.gestvet.ui.features.components.DetailsTextfield
 import com.albrodiaz.gestvet.ui.features.components.DetailsTopBar
+import com.albrodiaz.gestvet.ui.features.components.SmallTextField
 import com.albrodiaz.gestvet.ui.features.components.savedToast
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
@@ -82,10 +80,7 @@ fun ClientDetailScreen(
             onDelete = { clientsDetailsViewModel.setShowDialog(true) },
             enabled = isEditActive
         )
-        Row(Modifier.fillMaxWidth()) {
-            DetailsDescriptionText()
-            ClientSection(clientsDetailsViewModel = clientsDetailsViewModel)
-        }
+        ClientSection(clientsDetailsViewModel = clientsDetailsViewModel)
         SenioritySection(seniorityText = seniorityText)
         Divider(modifier = Modifier.padding(horizontal = 18.dp))
         PetSection(pets = pets, navigateToDetails = { navigateToDetails(it) }) {
@@ -110,17 +105,6 @@ private fun ClientHeader(
     )
 }
 
-@Composable
-private fun DetailsDescriptionText() {
-    Column(Modifier.fillMaxWidth(.3f)) {
-        ClientDetailText(text = stringResource(id = R.string.name))
-        ClientDetailText(text = stringResource(id = R.string.lastName))
-        ClientDetailText(text = stringResource(id = R.string.address))
-        ClientDetailText(text = stringResource(id = R.string.email))
-        ClientDetailText(text = stringResource(id = R.string.phone))
-        ClientDetailText(text = stringResource(id = R.string.id))
-    }
-}
 
 @Composable
 private fun ClientSection(
@@ -140,31 +124,41 @@ private fun ClientSection(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            DetailsTextfield(
+            ClientDetailRow(
+                enabled = isEditActive,
+                descriptionText = stringResource(id = R.string.name),
                 text = nameText,
+                onValueChange = { clientsDetailsViewModel.setName(it) }
+            )
+            ClientDetailRow(
                 enabled = isEditActive,
-                valueChange = { setName(it) })
-            DetailsTextfield(
+                descriptionText = stringResource(id = R.string.lastName),
                 text = lastNameText,
+                onValueChange = { clientsDetailsViewModel.setLastName(it) }
+            )
+            ClientDetailRow(
                 enabled = isEditActive,
-                valueChange = { setLastName(it) })
-            DetailsTextfield(
+                descriptionText = stringResource(id = R.string.address),
                 text = addressText,
+                onValueChange = { clientsDetailsViewModel.setAddress(it) }
+            )
+            ClientDetailRow(
                 enabled = isEditActive,
-                valueChange = { setAddress(it) })
-            DetailsTextfield(
+                descriptionText = stringResource(id = R.string.email),
                 text = emailText,
+                onValueChange = { clientsDetailsViewModel.setEmail(it) }
+            )
+            ClientDetailRow(
                 enabled = isEditActive,
-                valueChange = { setEmail(it) })
-            DetailsTextfield(
+                descriptionText = stringResource(id = R.string.phone),
                 text = phoneText,
+                onValueChange = { clientsDetailsViewModel.setPhone(it) }
+            )
+            ClientDetailRow(
                 enabled = isEditActive,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                valueChange = { setPhone(it) })
-            DetailsTextfield(
+                descriptionText = stringResource(id = R.string.id),
                 text = clientIdText,
-                enabled = isEditActive,
-                valueChange = { setClientId(it) }
+                onValueChange = { clientsDetailsViewModel.setClientId(it) }
             )
         }
     }
@@ -175,7 +169,7 @@ private fun SenioritySection(seniorityText: Long) {
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 18.dp, vertical = 12.dp),
+            .padding(horizontal = 18.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -230,8 +224,7 @@ private fun PetSection(
 private fun ClientDetailText(text: String, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
+            .fillMaxWidth(.35f)
     ) {
         Text(
             text = text,
@@ -259,7 +252,7 @@ private fun WarningDeleteDialog(
 }
 
 @Composable
-fun ItemPet(
+private fun ItemPet(
     headlineText: String,
     supportingText: String,
     navigateToDetails: () -> Unit
@@ -274,5 +267,18 @@ fun ItemPet(
             headlineContent = { Text(text = headlineText) },
             supportingContent = { Text(text = supportingText) }
         )
+    }
+}
+
+@Composable
+private fun ClientDetailRow(
+    enabled: Boolean,
+    descriptionText: String,
+    text: String,
+    onValueChange: (String) -> Unit
+) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        ClientDetailText(text = descriptionText)
+        SmallTextField(value = text, valueChange = { onValueChange(it) }, enabled = enabled)
     }
 }
