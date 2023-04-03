@@ -2,8 +2,9 @@ package com.albrodiaz.gestvet.ui.features.home.views.clients
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -65,6 +66,7 @@ fun ClientDetailScreen(
     Column(
         Modifier
             .fillMaxSize()
+            .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
         ClientHeader(
@@ -81,7 +83,7 @@ fun ClientDetailScreen(
         )
         ClientSection(clientsDetailsViewModel = clientsDetailsViewModel)
         SenioritySection(seniorityText = seniorityText)
-        Divider(modifier = Modifier.padding(horizontal = 18.dp))
+        Divider()
         PetSection(pets = pets, navigateToDetails = { navigateToDetails(it) }) {
             onCreatePet(clientsDetailsViewModel.ownerId ?: 0L)
         }
@@ -119,9 +121,7 @@ private fun ClientSection(
         val isEditActive by isEditActive.collectAsState()
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
             ClientDetailRow(
                 enabled = isEditActive,
@@ -168,7 +168,7 @@ private fun SenioritySection(seniorityText: Long) {
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 18.dp, vertical = 16.dp),
+            .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -188,12 +188,11 @@ private fun PetSection(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 text = stringResource(id = R.string.pets),
-                modifier = Modifier.padding(9.dp),
+                modifier = Modifier.padding(vertical = 8.dp),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -202,10 +201,10 @@ private fun PetSection(
             }
         }
 
-        LazyColumn(
+        LazyVerticalGrid(
             modifier = Modifier
-                .padding(bottom = 12.dp)
-                .height(250.dp)
+                .height(250.dp),
+            columns = GridCells.Fixed(2)
         ) {
             items(pets, key = { it.id ?: 0L }) {
                 ItemPet(
@@ -227,7 +226,7 @@ private fun ClientDetailText(text: String, modifier: Modifier = Modifier) {
     ) {
         Text(
             text = text,
-            modifier = modifier.padding(vertical = 12.dp, horizontal = 4.dp),
+            modifier = modifier.padding(vertical = 12.dp),
             fontSize = 14.sp
         )
     }

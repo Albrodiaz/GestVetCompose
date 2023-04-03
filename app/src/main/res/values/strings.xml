@@ -64,4 +64,6 @@
     <string name="createFailure">Usuario ya registrado</string>
     <string name="settings">Ajustes</string>
     <string name="logout">Cerrar sesión</string>
+    <string name="deleteAccount">Eliminar cuenta</string>
+    <string name="newPass">Nueva contraseña</string>
 </resources>

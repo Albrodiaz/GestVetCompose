@@ -16,7 +16,7 @@ class UserService @Inject constructor(private val firebaseClient: FirebaseClient
             "id" to user.id
         )
 
-        firebaseClient.dataBase.collection("$currentUser").document("settings")
+        firebaseClient.dataBase.collection("${user.email}").document("settings")
             .set(registerUser)
             .await()
     }.isSuccess

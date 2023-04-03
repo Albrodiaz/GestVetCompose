@@ -20,6 +20,10 @@ class AuthenticationService @Inject constructor(private val firebaseClient: Fire
     fun logOut() {
         firebaseClient.auth.signOut()
     }
+
+    suspend fun deleteAccount() = runCatching {
+        firebaseClient.auth.currentUser?.delete()?.await()
+    }.isSuccess
 }
 
 /* private val authentication = firebaseClient.auth

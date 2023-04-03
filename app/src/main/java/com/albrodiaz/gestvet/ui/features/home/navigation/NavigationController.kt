@@ -98,7 +98,7 @@ fun MainNavController(
             }
         }
         composable(GestVetRoutes.Settings.route) {
-            SettingScreen {
+            SettingScreen(showSnackBar = { isDateAvailable(it) }) {
                 navigationController.navigate(GestVetRoutes.Home.route) {
                     popUpTo(GestVetRoutes.Appointment.route) { inclusive = true }
                 }
