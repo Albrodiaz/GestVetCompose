@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
 import com.albrodiaz.gestvet.core.extensions.isValidPass
-import com.albrodiaz.gestvet.domain.authentication.CurrentUserUseCase
+import com.albrodiaz.gestvet.data.network.AuthenticationService
 import com.albrodiaz.gestvet.domain.authentication.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,14 +16,14 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    currentUserUseCase: CurrentUserUseCase
+    authenticationService: AuthenticationService
 ) : ViewModel() {
 
     private val _isUserLogged = MutableStateFlow(false)
     val isUserLogged: StateFlow<Boolean> get() = _isUserLogged
 
     init {
-        _isUserLogged.value = currentUserUseCase.invoke()
+        _isUserLogged.value = authenticationService.hasUser
     }
 
     private val _userInput = MutableStateFlow("")

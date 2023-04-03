@@ -24,6 +24,10 @@ class AuthenticationService @Inject constructor(private val firebaseClient: Fire
     suspend fun deleteAccount() = runCatching {
         firebaseClient.auth.currentUser?.delete()?.await()
     }.isSuccess
+
+    suspend fun recoverPassword(email: String) = runCatching {
+        firebaseClient.auth.sendPasswordResetEmail(email).await()
+    }.isSuccess
 }
 
 /* private val authentication = firebaseClient.auth

@@ -4,6 +4,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,15 +43,26 @@ private fun SettingsItems(
     showMessage: (String) -> Unit,
     navigate: () -> Unit
 ) {
+    val currentUser by settingsViewModel.currentUser.collectAsState()
+    val successDeleteText = stringResource(id = R.string.deleteSuccess)
+    val failureDeleteText = stringResource(id = R.string.deleteFailure)
+    val emailSent = stringResource(id = R.string.successSent)
+    val emailNotSent = stringResource(id = R.string.failureSent)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        SmallTextField(value = "Nombre completo usuario", valueChange = {}, enabled = false)
-        SmallTextField(value = "Email usuario", valueChange = {}, enabled = false)
-        RecoverPassword()
+        SmallTextField(value = currentUser.name?:"", valueChange = {}, enabled = false)
+        SmallTextField(value = currentUser.email?:"", valueChange = {}, enabled = false)
+        RecoverPassword {
+            settingsViewModel.sendRecoveryEmail(
+                successSent = { showMessage(emailSent) },
+                failureSent = { showMessage(emailNotSent) }
+            )
+        }
         Spacer(modifier = Modifier.fillMaxHeight(.9f))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             LogOutButton {
@@ -59,10 +72,10 @@ private fun SettingsItems(
             DeleteAccountButton {
                 settingsViewModel.deleteAccount(
                     successDelete = {
-                        showMessage("Usuario borrado con éxito")
+                        showMessage(successDeleteText)
                         navigate()
                     },
-                    failureDelete = { showMessage("Error al eliminar el usuario") }
+                    failureDelete = { showMessage(failureDeleteText) }
                 )
             }
         }
@@ -100,8 +113,8 @@ private fun DeleteAccountButton(onDelete: () -> Unit) {
 }
 
 @Composable
-fun RecoverPassword() {
-    TextButton(onClick = { /*Solicitar nueva contraseña*/ }) {
+fun RecoverPassword(recoveryEmail: ()-> Unit) {
+    TextButton(onClick = { recoveryEmail() }) {
         Text(text = stringResource(id = R.string.newPass))
     }
 }

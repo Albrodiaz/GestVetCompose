@@ -66,4 +66,8 @@
     <string name="logout">Cerrar sesión</string>
     <string name="deleteAccount">Eliminar cuenta</string>
     <string name="newPass">Nueva contraseña</string>
+    <string name="deleteSuccess">Usuario borrado con éxito</string>
+    <string name="deleteFailure">Error al borrar usuario</string>
+    <string name="successSent">Email enviado</string>
+    <string name="failureSent">Error al enviar</string>
 </resources>
