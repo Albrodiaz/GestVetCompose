@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    authenticationService: AuthenticationService
+    private val authenticationService: AuthenticationService
 ) : ViewModel() {
 
     private val _isUserLogged = MutableStateFlow(false)
@@ -24,6 +24,18 @@ class LoginViewModel @Inject constructor(
 
     init {
         _isUserLogged.value = authenticationService.hasUser
+    }
+
+    private val _resetEmail = MutableStateFlow("")
+    val resetEmail: StateFlow<String> get() = _resetEmail
+    fun setResetEmail(email: String) {
+        _resetEmail.value = email
+    }
+
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> get() = _showDialog
+    fun setShowDialog(value: Boolean) {
+        _showDialog.value = value
     }
 
     private val _userInput = MutableStateFlow("")
@@ -52,6 +64,17 @@ class LoginViewModel @Inject constructor(
                 }
             } catch (error: Throwable) {
                 showError()
+            }
+        }
+    }
+
+    fun recoverPassword(email: String, resetResult: (String)-> Unit) {
+        viewModelScope.launch {
+            val emailSent = authenticationService.recoverPassword(email)
+            if (emailSent) {
+                resetResult("Email enviado")
+            } else {
+                resetResult("Error al enviar el email")
             }
         }
     }

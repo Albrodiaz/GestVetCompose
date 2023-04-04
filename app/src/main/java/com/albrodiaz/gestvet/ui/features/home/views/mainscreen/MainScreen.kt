@@ -74,7 +74,12 @@ fun MainScreen() {
                 .padding(bottom = it.calculateBottomPadding())
         ) {
             MainNavController(
-                navigationController = navController
+                navigationController = navController,
+                showMessage = { message ->
+                    scope.launch {
+                        snackbarHostState.showSnackbar(message = message)
+                    }
+                }
             ) { available ->
                 scope.launch {
                     snackbarHostState.showSnackbar(message = available, actionLabel = "OK")

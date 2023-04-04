@@ -70,4 +70,8 @@
     <string name="deleteFailure">Error al borrar usuario</string>
     <string name="successSent">Email enviado</string>
     <string name="failureSent">Error al enviar</string>
+    <string name="send">Enviar</string>
+    <string name="noAccountYet">¿Aún no tienes cuenta?</string>
+    <string name="doRegister">Regístrate</string>
+    <string name="recoverPassword">Recuperar contraseña</string>
 </resources>

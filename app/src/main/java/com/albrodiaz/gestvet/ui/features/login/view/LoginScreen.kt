@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -24,6 +25,7 @@ import com.albrodiaz.gestvet.ui.features.components.LoginButton
 import com.albrodiaz.gestvet.ui.features.components.UserPassword
 import com.albrodiaz.gestvet.ui.features.components.UserTextField
 import com.albrodiaz.gestvet.ui.features.login.viewmodel.LoginViewModel
+import com.albrodiaz.gestvet.ui.theme.Shapes
 import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -40,6 +42,10 @@ fun LoginInputScreen(
     val errorText = stringResource(id = R.string.errorLogin)
     val keyboardController = LocalSoftwareKeyboardController.current
     val isUserLogged by loginViewModel.isUserLogged.collectAsState()
+
+    ResetPassDialog(loginViewModel = loginViewModel) {
+        showMessage(it)
+    }
 
     if (isUserLogged) {
         navigateHome()
@@ -69,7 +75,51 @@ fun LoginInputScreen(
                     openHome = { navigateHome() }
                 )
             }
-            CreateAccountRow { navigateRegister() }
+            CreateAccountRow(showDialog = { loginViewModel.setShowDialog(true) }) { navigateRegister() }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ResetPassDialog(
+    loginViewModel: LoginViewModel,
+    resetMessage: (String) -> Unit
+) {
+    val resetEmail by loginViewModel.resetEmail.collectAsState()
+    val show by loginViewModel.showDialog.collectAsState()
+    if (show) {
+        AlertDialog(onDismissRequest = { loginViewModel.setShowDialog(false) }) {
+            Surface(modifier = Modifier.wrapContentSize(), shape = Shapes.medium) {
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.recoverPassword),
+                        fontWeight = FontWeight.SemiBold,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    TextField(
+                        shape = Shapes.medium,
+                        value = resetEmail,
+                        placeholder = { Text(text = stringResource(id = R.string.email)) },
+                        onValueChange = { loginViewModel.setResetEmail(it) },
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        )
+                    )
+                    TextButton(shape = Shapes.medium, onClick = {
+                        loginViewModel.recoverPassword(resetEmail) {
+                            resetMessage(it)
+                        }
+                    }) {
+                        Text(text = stringResource(id = R.string.send))
+                    }
+                }
+            }
         }
     }
 }
@@ -111,17 +161,23 @@ fun AppTitle() {
 }
 
 @Composable
-fun CreateAccountRow(navigateRegister: () -> Unit) {
+fun CreateAccountRow(showDialog: () -> Unit, navigateRegister: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "¿Aún no tienes una cuenta?")
+        Text(text = stringResource(id = R.string.noAccountYet))
         Text(
-            text = "Regístrate",
+            text = stringResource(id = R.string.doRegister),
             fontWeight = FontWeight.Bold,
             color = md_theme_light_primary,
             modifier = Modifier.clickable { navigateRegister() })
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(
+            text = stringResource(id = R.string.recoverPassword),
+            fontWeight = FontWeight.Bold,
+            color = md_theme_light_primary,
+            modifier = Modifier.clickable { showDialog() })
     }
 }

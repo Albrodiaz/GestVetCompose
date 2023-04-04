@@ -19,6 +19,7 @@ import com.albrodiaz.gestvet.ui.features.login.view.HomeScreen
 @Composable
 fun MainNavController(
     navigationController: NavController,
+    showMessage: (String)-> Unit,
     isDateAvailable: (String) -> Unit
 ) {
     NavHost(
@@ -98,7 +99,7 @@ fun MainNavController(
             }
         }
         composable(GestVetRoutes.Settings.route) {
-            SettingScreen(showSnackBar = { isDateAvailable(it) }) {
+            SettingScreen(showSnackBar = { showMessage(it) }) {
                 navigationController.navigate(GestVetRoutes.Home.route) {
                     popUpTo(GestVetRoutes.Appointment.route) { inclusive = true }
                 }
