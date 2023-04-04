@@ -66,7 +66,6 @@ fun ClientDetailScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
         ClientHeader(
@@ -83,7 +82,7 @@ fun ClientDetailScreen(
         )
         ClientSection(clientsDetailsViewModel = clientsDetailsViewModel)
         SenioritySection(seniorityText = seniorityText)
-        Divider()
+        Divider(modifier = Modifier.padding(horizontal = 12.dp))
         PetSection(pets = pets, navigateToDetails = { navigateToDetails(it) }) {
             onCreatePet(clientsDetailsViewModel.ownerId ?: 0L)
         }
@@ -121,7 +120,7 @@ private fun ClientSection(
         val isEditActive by isEditActive.collectAsState()
 
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
         ) {
             ClientDetailRow(
                 enabled = isEditActive,
@@ -168,7 +167,7 @@ private fun SenioritySection(seniorityText: Long) {
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
+            .padding(vertical = 16.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -188,6 +187,7 @@ private fun PetSection(
     Column(
         Modifier
             .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(

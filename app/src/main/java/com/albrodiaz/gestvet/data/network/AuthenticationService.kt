@@ -29,20 +29,3 @@ class AuthenticationService @Inject constructor(private val firebaseClient: Fire
         firebaseClient.auth.sendPasswordResetEmail(email).await()
     }.isSuccess
 }
-
-/* private val authentication = firebaseClient.auth
-
-    val currentUserId: String
-        get() = authentication.currentUser?.uid.orEmpty()
-
-    val hasUser: Boolean
-        get() = authentication.currentUser != null
-
-    val currentUser
-        get() = callbackFlow {
-            val listener = FirebaseAuth.AuthStateListener { auth ->
-                this.trySend(auth.currentUser?.let { *//*User con datos o vacíos*//* })
-            }
-            authentication.addAuthStateListener(listener)
-            awaitClose { authentication.removeAuthStateListener(listener) }
-        }*/
