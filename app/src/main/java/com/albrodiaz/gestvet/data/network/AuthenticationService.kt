@@ -1,12 +1,29 @@
 package com.albrodiaz.gestvet.data.network
 
 import com.google.firebase.auth.AuthResult
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AuthenticationService @Inject constructor(private val firebaseClient: FirebaseClient) {
 
     val hasUser: Boolean get() = firebaseClient.auth.currentUser != null
+
+    val isEmailVerified = flow {
+        val verified = emailIsVerified()
+        emit(verified)
+        delay(1000)
+    }
+
+    private suspend fun emailIsVerified(): Boolean {
+        firebaseClient.auth.currentUser?.reload()?.await()
+        return firebaseClient.auth.currentUser?.isEmailVerified ?: false
+    }
+
+    suspend fun sendVerificationEmail() = runCatching {
+        firebaseClient.auth.currentUser?.sendEmailVerification()?.await()
+    }.isSuccess
 
     suspend fun login(email: String, password: String, onResult: (Throwable?) -> Unit) {
         firebaseClient.auth.signInWithEmailAndPassword(email, password)
