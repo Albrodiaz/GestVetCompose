@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
 import com.albrodiaz.gestvet.ui.features.components.SmallTextField
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.settings.SettingsViewModel
 import com.albrodiaz.gestvet.ui.theme.Shapes
@@ -44,10 +45,21 @@ private fun SettingsItems(
     navigate: () -> Unit
 ) {
     val currentUser by settingsViewModel.currentUser.collectAsState()
+    val showDialog by settingsViewModel.showDialog.collectAsState()
     val successDeleteText = stringResource(id = R.string.deleteSuccess)
     val failureDeleteText = stringResource(id = R.string.deleteFailure)
     val emailSent = stringResource(id = R.string.successSent)
     val emailNotSent = stringResource(id = R.string.failureSent)
+
+    DeleteAccountDialog(show = showDialog, dismiss = { settingsViewModel.setShowDialog(false) }) {
+        settingsViewModel.deleteAccount(
+            successDelete = {
+                showMessage(successDeleteText)
+                navigate()
+            },
+            failureDelete = { showMessage(failureDeleteText) }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -55,8 +67,8 @@ private fun SettingsItems(
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        SmallTextField(value = currentUser.name?:"", valueChange = {}, enabled = false)
-        SmallTextField(value = currentUser.email?:"", valueChange = {}, enabled = false)
+        SmallTextField(value = currentUser.name ?: "", valueChange = {}, enabled = false)
+        SmallTextField(value = currentUser.email ?: "", valueChange = {}, enabled = false)
         RecoverPassword {
             settingsViewModel.sendRecoveryEmail(
                 successSent = { showMessage(emailSent) },
@@ -69,17 +81,20 @@ private fun SettingsItems(
                 settingsViewModel.logOut()
                 navigate()
             }
-            DeleteAccountButton {
-                settingsViewModel.deleteAccount(
-                    successDelete = {
-                        showMessage(successDeleteText)
-                        navigate()
-                    },
-                    failureDelete = { showMessage(failureDeleteText) }
-                )
-            }
+            DeleteAccountButton { settingsViewModel.setShowDialog(true) }
         }
     }
+}
+
+@Composable
+fun DeleteAccountDialog(show: Boolean, dismiss: () -> Unit, confirm: () -> Unit) {
+    ConfirmDeleteDialog(
+        show = show,
+        title = "¡ATENCIÓN!",
+        text = "Se procederá a borrar el usuario y perderá el acceso a su cuenta y los datos asociados",
+        onDismiss = { dismiss() },
+        onConfirm = { confirm() }
+    )
 }
 
 @Composable
@@ -113,7 +128,7 @@ private fun DeleteAccountButton(onDelete: () -> Unit) {
 }
 
 @Composable
-fun RecoverPassword(recoveryEmail: ()-> Unit) {
+fun RecoverPassword(recoveryEmail: () -> Unit) {
     TextButton(onClick = { recoveryEmail() }) {
         Text(text = stringResource(id = R.string.newPass))
     }
