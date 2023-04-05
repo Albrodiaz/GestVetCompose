@@ -82,7 +82,7 @@ fun MainScreen() {
                 }
             ) { available ->
                 scope.launch {
-                    snackbarHostState.showSnackbar(message = available, actionLabel = "OK")
+                    snackbarHostState.showSnackbar(message = available)
                 }
             }
         }

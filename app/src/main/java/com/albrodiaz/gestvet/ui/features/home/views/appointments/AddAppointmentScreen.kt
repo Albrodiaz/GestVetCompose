@@ -1,6 +1,5 @@
 package com.albrodiaz.gestvet.ui.features.home.views.appointments
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,11 +10,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,24 +32,22 @@ import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AddAppoint
 @Composable
 fun AddAppointmentScreen(
     addAppointmentViewModel: AddAppointmentViewModel,
-    isDateAvailable: (String) -> Unit,
+    showMessage: (String) -> Unit,
     appointmentId: Long?,
     onNavigate: () -> Unit
 ) {
-    if (addAppointmentViewModel.isDateUnavailable.value == true) isDateAvailable(stringResource(id = R.string.unavailableDate))
-    val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.observeAsState(false)
-    val isAddedSuccess by addAppointmentViewModel.isAddedSuccess.observeAsState()
-    val showDatePicker by addAppointmentViewModel.showDatePicker.observeAsState(false)
-    val showTimePicker by addAppointmentViewModel.showTimePicker.observeAsState(false)
-    val ownerText by addAppointmentViewModel.ownerText.observeAsState("")
-    val petText by addAppointmentViewModel.petText.observeAsState("")
-    val dateText by addAppointmentViewModel.dateText.observeAsState("")
-    val hourText by addAppointmentViewModel.hourText.observeAsState("")
-    val subjectText by addAppointmentViewModel.subjectText.observeAsState("")
-    val detailText by addAppointmentViewModel.detailsText.observeAsState("")
+
+    val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.collectAsState(false)
+    val showDatePicker by addAppointmentViewModel.showDatePicker.collectAsState()
+    val showTimePicker by addAppointmentViewModel.showTimePicker.collectAsState()
+    val ownerText by addAppointmentViewModel.ownerText.collectAsState()
+    val petText by addAppointmentViewModel.petText.collectAsState()
+    val dateText by addAppointmentViewModel.dateText.collectAsState()
+    val hourText by addAppointmentViewModel.hourText.collectAsState()
+    val subjectText by addAppointmentViewModel.subjectText.collectAsState()
+    val detailText by addAppointmentViewModel.detailsText.collectAsState()
     val datePickerState = rememberCustomDatePickerState()
     val timePickerState = rememberTimePickerState()
-    val context = LocalContext.current
 
     DateTimeDialog(
         show = showDatePicker,
@@ -81,8 +77,10 @@ fun AddAppointmentScreen(
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (topBar, owner, pet, date, hour, subject, detail, saveButton) = createRefs()
         val keyboardController = LocalSoftwareKeyboardController.current
-        val title = if (appointmentId == 0L) stringResource(id = R.string.addTitle) else stringResource(
-                id = R.string.modifyAppt)
+        val title =
+            if (appointmentId == 0L) stringResource(id = R.string.addTitle) else stringResource(
+                id = R.string.modifyAppt
+            )
 
         AddTopBar(title = title, modifier = Modifier.constrainAs(topBar) {
             top.linkTo(parent.top)
@@ -135,7 +133,6 @@ fun AddAppointmentScreen(
             textChange = { addAppointmentViewModel.setDate(it) },
             trailingIcon = {
                 IconButton(onClick = {
-                    addAppointmentViewModel.cancelDateSnackbar()
                     addAppointmentViewModel.setShowDatePicker(true)
                 }) {
                     Icon(
@@ -160,7 +157,6 @@ fun AddAppointmentScreen(
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = {
-                    addAppointmentViewModel.cancelDateSnackbar()
                     addAppointmentViewModel.setShowTimePicker(true)
                 }) {
                     Icon(
@@ -207,14 +203,14 @@ fun AddAppointmentScreen(
         )
         Button(
             onClick = {
-                addAppointmentViewModel.saveAppointment()
-                isAddedSuccess?.let {
-                    if (it) onNavigate() else Toast.makeText(
-                        context,
-                        "Revise los datos",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                addAppointmentViewModel.saveAppointment(
+                    success = {
+                        showMessage("Cita guardada")
+                        onNavigate()
+                    },
+                    dateUnavailable = { showMessage("Fecha y hora no disponible") },
+                    onError = { showMessage("Error al guardar la cita") }
+                )
             },
             enabled = isButtonEnabled,
             modifier = Modifier

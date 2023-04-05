@@ -58,7 +58,7 @@ fun MainNavController(
         ) {
             AddAppointmentScreen(
                 addAppointmentViewModel = hiltViewModel(),
-                isDateAvailable = { available -> isDateAvailable(available) },
+                showMessage = { available -> isDateAvailable(available) },
                 appointmentId = it.arguments?.getLong("id"),
             ) {
                 navigationController.popBackStack()
