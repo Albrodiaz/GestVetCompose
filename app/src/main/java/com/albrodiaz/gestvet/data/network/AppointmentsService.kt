@@ -52,14 +52,14 @@ class AppointmentsService @Inject constructor(firebase: FirebaseClient) {
             .set(appointmentModel).await()
     }
 
-    suspend fun deleteAppointment(appointmentModel: AppointmentModel) {
-        appointmentReference.document("${appointmentModel.id}")
+    suspend fun deleteAppointment(id: Long) {
+        appointmentReference.document("$id")
             .delete()
-            .addOnSuccessListener { Log.i(APPOINTMENT_TAG, "Item ${appointmentModel.id} borrado") }
+            .addOnSuccessListener { Log.i(APPOINTMENT_TAG, "Item $id borrado") }
             .addOnCanceledListener {
                 Log.i(
                     APPOINTMENT_TAG,
-                    "Fallo al borrar el item ${appointmentModel.id}"
+                    "Fallo al borrar el item $id"
                 )
             }
             .await()

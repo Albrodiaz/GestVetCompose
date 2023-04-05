@@ -40,7 +40,4 @@ class UserService @Inject constructor(private val firebaseClient: FirebaseClient
             }
         awaitClose { data.remove() }
     }
-
-    /*TODO: Buscar forma de borrar datos de usuario (colección)*/
-
 }

@@ -56,7 +56,7 @@ class ClientService @Inject constructor(firebase: FirebaseClient) {
         clientReference.document("$id")
             .delete()
             .addOnSuccessListener {
-                Log.i(CLIENTS_TAG, "Cita guardada con éxito")
+                Log.i(CLIENTS_TAG, "Cita borrada con éxito")
             }
             .addOnCanceledListener {
                 Log.e(CLIENTS_TAG, "Error al borrar la cita")

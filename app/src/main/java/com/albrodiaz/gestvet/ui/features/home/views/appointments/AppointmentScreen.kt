@@ -61,7 +61,7 @@ fun AppointmentScreen(
     ) {
         appointmentViewModel.apply {
             selectedAppointment?.let {
-                deleteAppointment(it)
+                deleteAppointment(it.id?:-1)
             }
             showDeleteDialog(false)
         }

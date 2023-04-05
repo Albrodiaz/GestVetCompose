@@ -37,9 +37,9 @@ class AppointmentViewModel @Inject constructor(
         _selectedAppointment.value = appointment
     }
 
-    fun deleteAppointment(appointmentModel: AppointmentModel) {
+    fun deleteAppointment(id: Long) {
         viewModelScope.launch {
-            deleteAppointmentUseCase.invoke(appointmentModel)
+            deleteAppointmentUseCase.invoke(id)
         }
     }
 }
