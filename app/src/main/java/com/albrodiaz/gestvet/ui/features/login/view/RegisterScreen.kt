@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
+import com.albrodiaz.gestvet.ui.features.components.LoadingScreen
 import com.albrodiaz.gestvet.ui.features.components.LoginButton
 import com.albrodiaz.gestvet.ui.features.components.UserPassword
 import com.albrodiaz.gestvet.ui.features.components.UserTextField
@@ -28,7 +29,7 @@ import com.albrodiaz.gestvet.ui.features.login.viewmodel.RegisterViewModel
 @Composable
 fun RegisterScreen(
     registerViewModel: RegisterViewModel = hiltViewModel(),
-    showResult: (String)-> Unit,
+    showResult: (String) -> Unit,
     navigateBack: () -> Unit
 ) {
     registerViewModel.apply {
@@ -39,57 +40,72 @@ fun RegisterScreen(
         val btnEnabled by enabled.collectAsState(false)
         val passError by passwordError.collectAsState(false)
         val emailError = email.length > 9 && !email.isValidEmail()
+        val showVerify by showVerify.collectAsState()
         val keyboardManager = LocalSoftwareKeyboardController.current
         val successText = stringResource(id = R.string.createSuccess)
         val failureText = stringResource(id = R.string.createFailure)
 
-        Column(
-            Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            RegisterTopBar { navigateBack() }
-            UserTextField(
-                value = userName,
-                valueChange = { setUserName(it) },
-                placeholder = stringResource(id = R.string.fullName),
-                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words)
-            )
-            UserTextField(
-                value = email,
-                valueChange = { setEmail(it) },
-                placeholder = stringResource(id = R.string.email),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                isError = emailError,
-                supportingText = if (emailError) stringResource(id = R.string.invalidEmail) else ""
-            )
-            UserPassword(
-                value = password,
-                valueChange = { setPassword(it) },
-                isError = passError,
-                supportingText = if (passError) stringResource(id = R.string.equalPass) else stringResource(
-                    id = R.string.passLength
-                )
-            )
-            UserPassword(
-                value = repeatedPass,
-                valueChange = { setRepeatedPass(it) },
-                placeholder = stringResource(id = R.string.repeatPassword),
-                isError = passError,
-                supportingText = if (passError)
-                    stringResource(id = R.string.equalPass) else stringResource(id = R.string.passLength)
-            )
-            LoginButton(
-                modifier = Modifier.padding(vertical = 6.dp),
-                text = stringResource(id = R.string.createAccount),
-                enabled = btnEnabled
+        if (showVerify) {
+            Column(
+                Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                keyboardManager?.hide()
-                registerViewModel.createUser(
-                    navigateUp = navigateBack,
-                    onSuccess = { showResult(successText) },
-                    failure = { showResult(failureText) }
+                LoadingScreen(text = "Esperando verificación")
+                TextButton(onClick = { setShowVerify(false) }) {
+                    Text(text = "Cancelar")
+                }
+            }
+        } else {
+            Column(
+                Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                RegisterTopBar { navigateBack() }
+                UserTextField(
+                    value = userName,
+                    valueChange = { setUserName(it) },
+                    placeholder = stringResource(id = R.string.fullName),
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words)
                 )
+                UserTextField(
+                    value = email,
+                    valueChange = { setEmail(it) },
+                    placeholder = stringResource(id = R.string.email),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    isError = emailError,
+                    supportingText = if (emailError) stringResource(id = R.string.invalidEmail) else ""
+                )
+                UserPassword(
+                    value = password,
+                    valueChange = { setPassword(it) },
+                    isError = passError,
+                    supportingText = if (passError) stringResource(id = R.string.equalPass) else stringResource(
+                        id = R.string.passLength
+                    )
+                )
+                UserPassword(
+                    value = repeatedPass,
+                    valueChange = { setRepeatedPass(it) },
+                    placeholder = stringResource(id = R.string.repeatPassword),
+                    isError = passError,
+                    supportingText = if (passError)
+                        stringResource(id = R.string.equalPass) else stringResource(id = R.string.passLength)
+                )
+                LoginButton(
+                    modifier = Modifier.padding(vertical = 6.dp),
+                    text = stringResource(id = R.string.createAccount),
+                    enabled = btnEnabled
+                ) {
+                    keyboardManager?.hide()
+                    createUser(
+                        onSuccess = {
+                            showResult(successText)
+                            navigateBack()
+                        },
+                        failure = { showResult(failureText) })
+                }
             }
         }
     }

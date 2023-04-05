@@ -11,9 +11,11 @@ class AuthenticationService @Inject constructor(private val firebaseClient: Fire
     val hasUser: Boolean get() = firebaseClient.auth.currentUser != null
 
     val isEmailVerified = flow {
-        val verified = emailIsVerified()
-        emit(verified)
-        delay(1000)
+        while (true) {
+            val verified = emailIsVerified()
+            emit(verified)
+            delay(1000)
+        }
     }
 
     private suspend fun emailIsVerified(): Boolean {

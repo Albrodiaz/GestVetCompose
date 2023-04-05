@@ -50,14 +50,14 @@ fun EmptyContent(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LoadingScreen(modifier: Modifier = Modifier) {
+fun LoadingScreen(modifier: Modifier = Modifier, text: String = "") {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
         LottieAnimation(modifier = modifier.size(100.dp), composition = composition, iterations = LottieConstants.IterateForever)
-        Text(text = stringResource(id = R.string.loadingData), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
 }

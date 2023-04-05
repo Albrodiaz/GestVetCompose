@@ -75,8 +75,7 @@ private fun SettingsItems(
                 failureSent = { showMessage(emailNotSent) }
             )
         }
-        Spacer(modifier = Modifier.fillMaxHeight(.9f))
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
             LogOutButton {
                 settingsViewModel.logOut()
                 navigate()

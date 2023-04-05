@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
 import com.albrodiaz.gestvet.core.extensions.isValidPass
 import com.albrodiaz.gestvet.domain.authentication.CreateUserUseCase
+import com.albrodiaz.gestvet.domain.authentication.SendVerificationUseCase
+import com.albrodiaz.gestvet.domain.authentication.VerifyEmailUseCase
 import com.albrodiaz.gestvet.ui.features.login.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +17,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val createUserUseCase: CreateUserUseCase
+    private val createUserUseCase: CreateUserUseCase,
+    private val sendVerificationUseCase: SendVerificationUseCase,
+    private val verifyEmailUseCase: VerifyEmailUseCase
 ) : ViewModel() {
+
+    private val _showVerify = MutableStateFlow(false)
+    val showVerify: StateFlow<Boolean> get() = _showVerify
+    fun setShowVerify(value: Boolean) {
+        _showVerify.value = value
+    }
 
     private val _userName = MutableStateFlow("")
     val userName: StateFlow<String> get() = _userName
@@ -58,7 +68,15 @@ class RegisterViewModel @Inject constructor(
         return@combine user && pass
     }
 
-    fun createUser(navigateUp: () -> Unit, onSuccess: () -> Unit, failure: ()-> Unit) {
+    private fun sendVerification() {
+        viewModelScope.launch {
+            sendVerificationUseCase.invoke()
+        }
+    }
+
+    fun createUser(onSuccess: () -> Unit, failure: () -> Unit) {
+        _showVerify.value = true
+
         val createdUser = User(
             name = userName.value,
             password = password.value,
@@ -66,10 +84,12 @@ class RegisterViewModel @Inject constructor(
         )
         viewModelScope.launch {
             try {
-                val success = createUserUseCase.invoke(createdUser)
-                if (success) {
-                    onSuccess()
-                    navigateUp()
+                val successRegister = createUserUseCase.invoke(createdUser)
+                sendVerification()
+                verifyEmailUseCase.invoke().collect { verified ->
+                    if (successRegister && verified) {
+                        onSuccess()
+                    }
                 }
             } catch (error: Throwable) {
                 failure()
