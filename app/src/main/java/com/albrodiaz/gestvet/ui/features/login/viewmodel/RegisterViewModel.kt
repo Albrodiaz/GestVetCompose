@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
 import com.albrodiaz.gestvet.core.extensions.isValidPass
+import com.albrodiaz.gestvet.data.network.AuthenticationService
 import com.albrodiaz.gestvet.domain.authentication.CreateUserUseCase
 import com.albrodiaz.gestvet.domain.authentication.SendVerificationUseCase
 import com.albrodiaz.gestvet.domain.authentication.VerifyEmailUseCase
@@ -18,15 +19,13 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val createUserUseCase: CreateUserUseCase,
+    private val authenticationService: AuthenticationService,
     private val sendVerificationUseCase: SendVerificationUseCase,
     private val verifyEmailUseCase: VerifyEmailUseCase
 ) : ViewModel() {
 
     private val _showVerify = MutableStateFlow(false)
     val showVerify: StateFlow<Boolean> get() = _showVerify
-    fun setShowVerify(value: Boolean) {
-        _showVerify.value = value
-    }
 
     private val _userName = MutableStateFlow("")
     val userName: StateFlow<String> get() = _userName
@@ -74,7 +73,7 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-    fun createUser(onSuccess: () -> Unit, failure: () -> Unit) {
+    fun createUser(completed: () -> Unit, onSuccess: () -> Unit, failure: () -> Unit) {
         _showVerify.value = true
 
         val createdUser = User(
@@ -86,13 +85,20 @@ class RegisterViewModel @Inject constructor(
             try {
                 val successRegister = createUserUseCase.invoke(createdUser)
                 sendVerification()
-                verifyEmailUseCase.invoke().collect { verified ->
-                    if (successRegister && verified) {
-                        onSuccess()
-                    }
+                if (successRegister) {
+                    onSuccess()
                 }
             } catch (error: Throwable) {
                 failure()
+            }
+        }
+        viewModelScope.launch {
+            verifyEmailUseCase.invoke().collect { verified->
+                if (verified) {
+                    _showVerify.value = false
+                    authenticationService.logOut()
+                    completed()
+                }
             }
         }
     }

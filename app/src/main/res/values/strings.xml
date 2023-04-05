@@ -74,4 +74,6 @@
     <string name="noAccountYet">¿Aún no tienes cuenta?</string>
     <string name="doRegister">Regístrate</string>
     <string name="recoverPassword">Recuperar contraseña</string>
+    <string name="verifiedAccount">Cuenta verificada</string>
+    <string name="waitingVerified">Esperando verificación</string>
 </resources>

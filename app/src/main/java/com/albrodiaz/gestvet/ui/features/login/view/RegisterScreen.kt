@@ -44,6 +44,7 @@ fun RegisterScreen(
         val keyboardManager = LocalSoftwareKeyboardController.current
         val successText = stringResource(id = R.string.createSuccess)
         val failureText = stringResource(id = R.string.createFailure)
+        val verifiedAccountText = stringResource(id = R.string.verifiedAccount)
 
         if (showVerify) {
             Column(
@@ -51,10 +52,7 @@ fun RegisterScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                LoadingScreen(text = "Esperando verificación")
-                TextButton(onClick = { setShowVerify(false) }) {
-                    Text(text = "Cancelar")
-                }
+                LoadingScreen(text = stringResource(id = R.string.waitingVerified))
             }
         } else {
             Column(
@@ -100,11 +98,13 @@ fun RegisterScreen(
                 ) {
                     keyboardManager?.hide()
                     createUser(
-                        onSuccess = {
-                            showResult(successText)
-                            navigateBack()
-                        },
-                        failure = { showResult(failureText) })
+                        onSuccess = { showResult(successText) },
+                        failure = { showResult(failureText) },
+                        completed = { 
+                            showResult(verifiedAccountText)
+                            navigateBack() 
+                        }
+                    )
                 }
             }
         }

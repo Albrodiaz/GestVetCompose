@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.core.extensions.isValidEmail
 import com.albrodiaz.gestvet.ui.features.components.LoginButton
 import com.albrodiaz.gestvet.ui.features.components.UserPassword
 import com.albrodiaz.gestvet.ui.features.components.UserTextField
@@ -111,7 +112,7 @@ private fun ResetPassDialog(
                             unfocusedIndicatorColor = Color.Transparent
                         )
                     )
-                    TextButton(shape = Shapes.medium, onClick = {
+                    TextButton(shape = Shapes.medium, enabled = resetEmail.isValidEmail(), onClick = {
                         loginViewModel.recoverPassword(resetEmail) {
                             resetMessage(it)
                         }
