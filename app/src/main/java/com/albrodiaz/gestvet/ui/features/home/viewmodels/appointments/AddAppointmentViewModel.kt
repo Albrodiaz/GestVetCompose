@@ -23,7 +23,7 @@ class AddAppointmentViewModel @Inject constructor(
 
     private val appointmentId = state.getStateFlow("id", 0L)
 
-    private val dateList = MutableStateFlow<List<Long>>(emptyList())
+    private val dateList = mutableListOf<Long>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val selectedAppt: Flow<AppointmentModel> =
@@ -34,9 +34,12 @@ class AddAppointmentViewModel @Inject constructor(
     init {
         setData()
         viewModelScope.launch {
-            getAppointmentsUseCase.invoke().collect { appointments ->
-                dateList.value = appointments.toObjects(AppointmentModel::class.java).map {
-                    it.dateInMillis
+            selectedAppt.collect { selected ->
+                getAppointmentsUseCase.invoke().collect { appointments ->
+                    appointments.toObjects(AppointmentModel::class.java).map {
+                        dateList.add(it.dateInMillis)
+                        dateList.remove(selected.dateInMillis)
+                    }
                 }
             }
         }
@@ -131,7 +134,8 @@ class AddAppointmentViewModel @Inject constructor(
                 details = _detailsText.value,
                 id = if (appointmentId.value == 0L) System.currentTimeMillis() else appointmentId.value
             )
-            val isDateUnavailable = dateList.value.contains(dateText.value.dateToMillis()+hourText.value.hourToMillis())
+            val isDateUnavailable =
+                dateList.contains(dateText.value.dateToMillis() + hourText.value.hourToMillis())
 
             viewModelScope.launch {
                 if (isDateUnavailable) {
