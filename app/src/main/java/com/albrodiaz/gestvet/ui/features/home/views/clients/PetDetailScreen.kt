@@ -16,7 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.core.extensions.isValidDate
 import com.albrodiaz.gestvet.ui.features.components.*
+import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.ConsultationViewModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.DetailPetViewModel
 import com.albrodiaz.gestvet.ui.theme.Shapes
 
@@ -26,11 +28,8 @@ fun PetDetailScreen(
     onNavigateBack: () -> Unit
 ) {
     val context = LocalContext.current
-    val date by detailPetViewModel.consultationDate.collectAsState()
-    val details by detailPetViewModel.consultationDetail.collectAsState()
     val isEditActive by detailPetViewModel.editEnabled.collectAsState()
     val showConfirmDialog by detailPetViewModel.showDialog.collectAsState()
-    val showConsultationDialog by detailPetViewModel.showConsultationDialog.collectAsState()
 
     ConfirmDeleteDialog(
         title = stringResource(id = R.string.confirmDelete),
@@ -43,12 +42,7 @@ fun PetDetailScreen(
         }
     )
 
-    ConsultationDialog(
-        date = date,
-        details = details,
-        show = showConsultationDialog,
-        dateChange = { detailPetViewModel.setConsultDate(it) },
-        detailChange = { detailPetViewModel.setConsultDetail(it) }) {
+    ConsultationDialog(detailPetViewModel) {
         detailPetViewModel.setConsultationDialog(false)
     }
 
@@ -207,35 +201,36 @@ private fun PetDetailText(text: String, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConsultationDialog(
-    date: String,
-    details: String,
-    show: Boolean,
-    dateChange: (String) -> Unit,
-    detailChange: (String) -> Unit,
+    detailPetViewModel: DetailPetViewModel,
+    consultationViewModel: ConsultationViewModel = hiltViewModel(),
     onDismiss: () -> Unit
 ) {
 
+    val show by detailPetViewModel.showConsultationDialog.collectAsState()
+    val date by consultationViewModel.consultationDate.collectAsState()
+    val details by consultationViewModel.consultationDetail.collectAsState()
+
     if (show) {
         AlertDialog(onDismissRequest = onDismiss) {
-            Surface(shape = Shapes.medium, modifier = Modifier.wrapContentSize()) {
+            Card(shape = Shapes.large, modifier = Modifier.wrapContentSize()) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(12.dp)
                 ) {
-                    Text(text = "Añadir consulta", fontWeight = FontWeight.SemiBold, fontSize = 18.sp, modifier = Modifier.padding(12.dp))
+                    Text(text = stringResource(id = R.string.addConsultation), fontWeight = FontWeight.SemiBold, fontSize = 18.sp, modifier = Modifier.padding(12.dp))
                     FormTextField(
                         text = date,
-                        textChange = { dateChange(it) },
+                        textChange = { consultationViewModel.setConsultDate(it) },
                         placeholder = stringResource(id = R.string.date),
                         modifier = Modifier.fillMaxWidth(),
-                        readOnly = true,
-                        trailingIcon = { IconButton(onClick = {  }) {
+                        isError = !date.isValidDate(),
+                        trailingIcon = {
                             Icon(imageVector = Icons.Filled.DateRange, contentDescription = stringResource(id = R.string.date))
-                        } }
+                        }
                     )
                     FormTextField(
                         text = details,
-                        textChange = { detailChange(it) },
+                        textChange = { consultationViewModel.setConsultDetail(it) },
                         singleLine = false,
                         maxLines = 50,
                         placeholder = stringResource(id = R.string.nonOptionalDetail),
@@ -243,7 +238,7 @@ fun ConsultationDialog(
                             .fillMaxWidth()
                             .fillMaxHeight(.7f)
                     )
-                    TextButton(onClick = onDismiss) {
+                    TextButton(onClick = onDismiss, enabled = date.isValidDate() && details.length > 5) {
                         Text(text = stringResource(id = R.string.save))
                     }
                 }

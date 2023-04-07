@@ -78,4 +78,5 @@
     <string name="waitingVerified">Esperando verificación</string>
     <string name="nonOptionalDetail">Detalles</string>
     <string name="consultations">Consultas</string>
+    <string name="addConsultation">Añadir consulta</string>
 </resources>

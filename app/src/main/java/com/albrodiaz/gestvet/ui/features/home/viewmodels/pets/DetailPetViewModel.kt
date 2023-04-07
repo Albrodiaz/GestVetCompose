@@ -56,18 +56,6 @@ class DetailPetViewModel @Inject constructor(
 
     private var petId: Long? = null
 
-    private val _consultationDate = MutableStateFlow("")
-    val consultationDate: StateFlow<String> get() = _consultationDate
-    fun setConsultDate(date: String) {
-        _consultationDate.value = date
-    }
-
-    private val _consultationDetail = MutableStateFlow("")
-    val consultationDetail: StateFlow<String> get() = _consultationDetail
-    fun setConsultDetail(detail: String) {
-        _consultationDetail.value = detail
-    }
-
     private val _petName = MutableStateFlow("")
     val petName: StateFlow<String> get() = _petName
     fun setPetName(name: String) {
