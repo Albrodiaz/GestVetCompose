@@ -1,6 +1,8 @@
 package com.albrodiaz.gestvet.ui.features.home.views.clients
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
@@ -29,6 +31,7 @@ fun PetDetailScreen(
     val context = LocalContext.current
     val isEditActive by detailPetViewModel.editEnabled.collectAsState()
     val showConfirmDialog by detailPetViewModel.showDialog.collectAsState()
+    val consultations by detailPetViewModel.consultations.collectAsState()
 
     ConfirmDeleteDialog(
         title = stringResource(id = R.string.confirmDelete),
@@ -81,7 +84,20 @@ fun PetDetailScreen(
                 Text(text = stringResource(id = R.string.add))
             }
         }
-        /*TODO: Lista con seguimiento de la mascota, crear viewmodel para añadir y obtener consultas guardadas*/
+        LazyColumn {
+            items(consultations) {
+                Card(
+                    modifier = Modifier.padding(6.dp),
+                    shape = Shapes.medium,
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+                    ListItem(
+                        headlineContent = { Text(text = "${it.date}") },
+                        supportingContent = { Text(text = "${it.description}") }
+                    )
+                }
+            }
+        }
 
     }
 }

@@ -3,6 +3,7 @@ package com.albrodiaz.gestvet.data.network
 import android.util.Log
 import com.albrodiaz.gestvet.ui.features.home.models.ConsultationModel
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
@@ -54,6 +55,19 @@ class PetService @Inject constructor(firebaseClient: FirebaseClient) {
                     snapshot.map {
                         trySend(it)
                     }
+                }
+            }
+        awaitClose { data.remove() }
+    }
+
+    fun getConsultByPet(petId: Long) = callbackFlow {
+        val data = consultationRef.whereEqualTo("petId", petId).orderBy("id", Query.Direction.DESCENDING)
+            .addSnapshotListener { value, error ->
+                error?.let {
+                    Log.e(PETS_TAG, "Error al obtener las conusultas: ${it.message}")
+                }
+                value?.let {
+                    trySend(it)
                 }
             }
         awaitClose { data.remove() }
