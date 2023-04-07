@@ -1,6 +1,7 @@
 package com.albrodiaz.gestvet.data.network
 
 import android.util.Log
+import com.albrodiaz.gestvet.ui.features.home.models.ConsultationModel
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -16,6 +17,7 @@ class PetService @Inject constructor(firebaseClient: FirebaseClient) {
     }
 
     private val petReference = firebaseClient.dataBase.collection("$currentUser/management/pets")
+    private val consultationRef = firebaseClient.dataBase.collection("$currentUser/management/consultations")
 
     fun pets() = callbackFlow {
         val data = petReference.addSnapshotListener { value, error ->
@@ -65,6 +67,11 @@ class PetService @Inject constructor(firebaseClient: FirebaseClient) {
     suspend fun deletePet(id: Long) {
         petReference.document("$id")
             .delete().await()
+    }
+
+    suspend fun addConsultation(consultation: ConsultationModel) {
+        consultationRef.document("${consultation.id}")
+            .set(consultation).await()
     }
 
 

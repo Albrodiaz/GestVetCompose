@@ -5,9 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.data.network.PetService.Companion.PETS_TAG
+import com.albrodiaz.gestvet.domain.pets.AddConsultationUseCase
 import com.albrodiaz.gestvet.domain.pets.AddPetUseCase
 import com.albrodiaz.gestvet.domain.pets.DeletePetUseCase
 import com.albrodiaz.gestvet.domain.pets.GetPetByIdUseCase
+import com.albrodiaz.gestvet.ui.features.home.models.ConsultationModel
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,8 +22,9 @@ class DetailPetViewModel @Inject constructor(
     private val getPetByIdUseCase: GetPetByIdUseCase,
     private val addPetUseCase: AddPetUseCase,
     private val deletePetUseCase: DeletePetUseCase,
+    private val addConsultationUseCase: AddConsultationUseCase,
     state: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val selectedPet = state.getStateFlow("petId", 0L).flatMapLatest { id ->
@@ -56,36 +59,54 @@ class DetailPetViewModel @Inject constructor(
 
     private var petId: Long? = null
 
+    private val _consultationDate = MutableStateFlow("")
+    val consultationDate: StateFlow<String> get() = _consultationDate
+    fun setConsultDate(date: String) {
+        _consultationDate.value = date
+    }
+
+    private val _consultationDetail = MutableStateFlow("")
+    val consultationDetail: StateFlow<String> get() = _consultationDetail
+    fun setConsultDetail(detail: String) {
+        _consultationDetail.value = detail
+    }
+
     private val _petName = MutableStateFlow("")
     val petName: StateFlow<String> get() = _petName
     fun setPetName(name: String) {
         _petName.value = name
     }
+
     private val _petBirth = MutableStateFlow("")
     val petBirth: StateFlow<String> get() = _petBirth
     fun setPetBirth(date: String) {
         _petBirth.value = date
     }
+
     private val _petBreed = MutableStateFlow("")
     val petBreed: StateFlow<String> get() = _petBreed
     fun setPetBreed(breed: String) {
         _petBreed.value = breed
     }
+
     private val _petColor = MutableStateFlow("")
     val petColor: StateFlow<String> get() = _petColor
     fun setPetColor(color: String) {
         _petColor.value = color
     }
+
     private val _petChip = MutableStateFlow("")
     val petChip: StateFlow<String> get() = _petChip
     fun setPetChip(chip: String) {
         _petChip.value = chip
     }
+
     private val _petPassport = MutableStateFlow("")
     val petPassport: StateFlow<String> get() = _petPassport
     fun setPetPassport(passport: String) {
         _petPassport.value = passport
     }
+
     private val _petNeutered = MutableStateFlow(false)
     val petNeutered: StateFlow<Boolean> get() = _petNeutered
     fun setPetNeutered(neutered: Boolean) {
@@ -94,16 +115,16 @@ class DetailPetViewModel @Inject constructor(
 
     private fun setData() {
         viewModelScope.launch {
-            selectedPet.collectLatest {
+            selectedPet.collect {
                 ownerId = it.owner
                 petId = it.id
-                _petName.value = it.name?:""
-                _petBirth.value = it.birthDate?:""
-                _petBreed.value = it.breed?:""
-                _petColor.value = it.color?:""
+                _petName.value = it.name ?: ""
+                _petBirth.value = it.birthDate ?: ""
+                _petBreed.value = it.breed ?: ""
+                _petColor.value = it.color ?: ""
                 _petChip.value = "${it.chipNumber}"
                 _petPassport.value = "${it.passportNumeber}"
-                _petNeutered.value = it.neutered?:false
+                _petNeutered.value = it.neutered ?: false
             }
         }
     }
@@ -133,6 +154,21 @@ class DetailPetViewModel @Inject constructor(
         viewModelScope.launch {
             petId?.let {
                 deletePetUseCase.invoke(it)
+            }
+        }
+    }
+
+    fun addConsultation() {
+        val consultation = ConsultationModel(
+            petId = petId,
+            date = consultationDate.value,
+            description = consultationDetail.value
+        )
+        viewModelScope.launch {
+            try {
+                addConsultationUseCase.invoke(consultation)
+            } catch (error: Throwable) {
+                Log.e(PETS_TAG, "Error al guardar la consulta: ${error.message}")
             }
         }
     }

@@ -18,7 +18,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isValidDate
 import com.albrodiaz.gestvet.ui.features.components.*
-import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.ConsultationViewModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.DetailPetViewModel
 import com.albrodiaz.gestvet.ui.theme.Shapes
 
@@ -202,13 +201,12 @@ private fun PetDetailText(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun ConsultationDialog(
     detailPetViewModel: DetailPetViewModel,
-    consultationViewModel: ConsultationViewModel = hiltViewModel(),
     onDismiss: () -> Unit
 ) {
 
     val show by detailPetViewModel.showConsultationDialog.collectAsState()
-    val date by consultationViewModel.consultationDate.collectAsState()
-    val details by consultationViewModel.consultationDetail.collectAsState()
+    val date by detailPetViewModel.consultationDate.collectAsState()
+    val details by detailPetViewModel.consultationDetail.collectAsState()
 
     if (show) {
         AlertDialog(onDismissRequest = onDismiss) {
@@ -217,20 +215,28 @@ fun ConsultationDialog(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(12.dp)
                 ) {
-                    Text(text = stringResource(id = R.string.addConsultation), fontWeight = FontWeight.SemiBold, fontSize = 18.sp, modifier = Modifier.padding(12.dp))
+                    Text(
+                        text = stringResource(id = R.string.addConsultation),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(12.dp)
+                    )
                     FormTextField(
                         text = date,
-                        textChange = { consultationViewModel.setConsultDate(it) },
+                        textChange = { detailPetViewModel.setConsultDate(it) },
                         placeholder = stringResource(id = R.string.date),
                         modifier = Modifier.fillMaxWidth(),
-                        isError = !date.isValidDate(),
+                        isError = !date.isValidDate() && date.isNotEmpty(),
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.DateRange, contentDescription = stringResource(id = R.string.date))
+                            Icon(
+                                imageVector = Icons.Filled.DateRange,
+                                contentDescription = stringResource(id = R.string.date)
+                            )
                         }
                     )
                     FormTextField(
                         text = details,
-                        textChange = { consultationViewModel.setConsultDetail(it) },
+                        textChange = { detailPetViewModel.setConsultDetail(it) },
                         singleLine = false,
                         maxLines = 50,
                         placeholder = stringResource(id = R.string.nonOptionalDetail),
@@ -238,7 +244,10 @@ fun ConsultationDialog(
                             .fillMaxWidth()
                             .fillMaxHeight(.7f)
                     )
-                    TextButton(onClick = onDismiss, enabled = date.isValidDate() && details.length > 5) {
+                    TextButton(onClick = {
+                        detailPetViewModel.addConsultation()
+                        onDismiss()
+                    }, enabled = date.isValidDate() && details.length > 5) {
                         Text(text = stringResource(id = R.string.save))
                     }
                 }
