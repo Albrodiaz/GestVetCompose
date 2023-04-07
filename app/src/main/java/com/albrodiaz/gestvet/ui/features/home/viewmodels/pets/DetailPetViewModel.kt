@@ -40,6 +40,12 @@ class DetailPetViewModel @Inject constructor(
         _showDialog.value = show
     }
 
+    private val _showConsultationDialog = MutableStateFlow(false)
+    val showConsultationDialog: StateFlow<Boolean> get() = _showConsultationDialog
+    fun setConsultationDialog(value: Boolean) {
+        _showConsultationDialog.value = value
+    }
+
     private val _editEnabled = MutableStateFlow(false)
     val editEnabled: StateFlow<Boolean> get() = _editEnabled
     fun setEdit(value: Boolean) {
@@ -49,6 +55,18 @@ class DetailPetViewModel @Inject constructor(
     private var ownerId: Long? = null
 
     private var petId: Long? = null
+
+    private val _consultationDate = MutableStateFlow("")
+    val consultationDate: StateFlow<String> get() = _consultationDate
+    fun setConsultDate(date: String) {
+        _consultationDate.value = date
+    }
+
+    private val _consultationDetail = MutableStateFlow("")
+    val consultationDetail: StateFlow<String> get() = _consultationDetail
+    fun setConsultDetail(detail: String) {
+        _consultationDetail.value = detail
+    }
 
     private val _petName = MutableStateFlow("")
     val petName: StateFlow<String> get() = _petName

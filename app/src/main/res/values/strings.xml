@@ -76,4 +76,6 @@
     <string name="recoverPassword">Recuperar contraseña</string>
     <string name="verifiedAccount">Cuenta verificada</string>
     <string name="waitingVerified">Esperando verificación</string>
+    <string name="nonOptionalDetail">Detalles</string>
+    <string name="consultations">Consultas</string>
 </resources>

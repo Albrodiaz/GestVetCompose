@@ -1,8 +1,9 @@
 package com.albrodiaz.gestvet.ui.features.home.views.clients
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.features.components.*
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.DetailPetViewModel
+import com.albrodiaz.gestvet.ui.theme.Shapes
 
 @Composable
 fun PetDetailScreen(
@@ -24,8 +26,11 @@ fun PetDetailScreen(
     onNavigateBack: () -> Unit
 ) {
     val context = LocalContext.current
+    val date by detailPetViewModel.consultationDate.collectAsState()
+    val details by detailPetViewModel.consultationDetail.collectAsState()
     val isEditActive by detailPetViewModel.editEnabled.collectAsState()
     val showConfirmDialog by detailPetViewModel.showDialog.collectAsState()
+    val showConsultationDialog by detailPetViewModel.showConsultationDialog.collectAsState()
 
     ConfirmDeleteDialog(
         title = stringResource(id = R.string.confirmDelete),
@@ -37,6 +42,15 @@ fun PetDetailScreen(
             onNavigateBack()
         }
     )
+
+    ConsultationDialog(
+        date = date,
+        details = details,
+        show = showConsultationDialog,
+        dateChange = { detailPetViewModel.setConsultDate(it) },
+        detailChange = { detailPetViewModel.setConsultDetail(it) }) {
+        detailPetViewModel.setConsultationDialog(false)
+    }
 
     Column(Modifier.fillMaxSize()) {
         DetailsTopBar(
@@ -58,14 +72,29 @@ fun PetDetailScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
         )
-        MonitoringText(modifier = Modifier.fillMaxWidth())
-        /*TODO: Lista con seguimiento de la mascota*/
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(id = R.string.consultations),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            TextButton(onClick = { detailPetViewModel.setConsultationDialog(true) }) {
+                Text(text = stringResource(id = R.string.add))
+            }
+        }
+        /*TODO: Lista con seguimiento de la mascota, crear viewmodel para añadir y obtener consultas guardadas*/
 
     }
 }
 
 @Composable
-fun PetDetailSection(detailPetViewModel: DetailPetViewModel, enabled: Boolean) {
+private fun PetDetailSection(detailPetViewModel: DetailPetViewModel, enabled: Boolean) {
     detailPetViewModel.apply {
         val name by petName.collectAsState()
         val birthDate by petBirth.collectAsState()
@@ -175,12 +204,50 @@ private fun PetDetailText(text: String, modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MonitoringText(modifier: Modifier) {
-    Text(
-        text = stringResource(id = R.string.monitoring),
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Bold,
-        modifier = modifier.padding(9.dp)
-    )
+fun ConsultationDialog(
+    date: String,
+    details: String,
+    show: Boolean,
+    dateChange: (String) -> Unit,
+    detailChange: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+
+    if (show) {
+        AlertDialog(onDismissRequest = onDismiss) {
+            Surface(shape = Shapes.medium, modifier = Modifier.wrapContentSize()) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    Text(text = "Añadir consulta", fontWeight = FontWeight.SemiBold, fontSize = 18.sp, modifier = Modifier.padding(12.dp))
+                    FormTextField(
+                        text = date,
+                        textChange = { dateChange(it) },
+                        placeholder = stringResource(id = R.string.date),
+                        modifier = Modifier.fillMaxWidth(),
+                        readOnly = true,
+                        trailingIcon = { IconButton(onClick = {  }) {
+                            Icon(imageVector = Icons.Filled.DateRange, contentDescription = stringResource(id = R.string.date))
+                        } }
+                    )
+                    FormTextField(
+                        text = details,
+                        textChange = { detailChange(it) },
+                        singleLine = false,
+                        maxLines = 50,
+                        placeholder = stringResource(id = R.string.nonOptionalDetail),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(.7f)
+                    )
+                    TextButton(onClick = onDismiss) {
+                        Text(text = stringResource(id = R.string.save))
+                    }
+                }
+            }
+        }
+    }
 }
