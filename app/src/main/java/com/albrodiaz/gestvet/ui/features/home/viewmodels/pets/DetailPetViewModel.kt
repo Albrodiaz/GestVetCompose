@@ -5,10 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.albrodiaz.gestvet.data.network.PetService.Companion.PETS_TAG
-import com.albrodiaz.gestvet.domain.pets.AddConsultationUseCase
-import com.albrodiaz.gestvet.domain.pets.AddPetUseCase
-import com.albrodiaz.gestvet.domain.pets.DeletePetUseCase
-import com.albrodiaz.gestvet.domain.pets.GetPetByIdUseCase
+import com.albrodiaz.gestvet.domain.pets.*
 import com.albrodiaz.gestvet.ui.features.home.models.ConsultationModel
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,8 +20,11 @@ class DetailPetViewModel @Inject constructor(
     private val addPetUseCase: AddPetUseCase,
     private val deletePetUseCase: DeletePetUseCase,
     private val addConsultationUseCase: AddConsultationUseCase,
+    private val getConsultationsUseCase: GetConsultationsUseCase,
     state: SavedStateHandle
 ) : ViewModel() {
+
+    private val petId = state.getStateFlow("petId", 0L)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val selectedPet = state.getStateFlow("petId", 0L).flatMapLatest { id ->
@@ -35,6 +35,7 @@ class DetailPetViewModel @Inject constructor(
 
     init {
         setData()
+        setConsultations()
     }
 
     private val _showDialog = MutableStateFlow(false)
@@ -57,8 +58,6 @@ class DetailPetViewModel @Inject constructor(
 
     private var ownerId: Long? = null
 
-    private var petId: Long? = null
-
     private val _consultationDate = MutableStateFlow("")
     val consultationDate: StateFlow<String> get() = _consultationDate
     fun setConsultDate(date: String) {
@@ -70,6 +69,9 @@ class DetailPetViewModel @Inject constructor(
     fun setConsultDetail(detail: String) {
         _consultationDetail.value = detail
     }
+
+    private val _consultations = MutableStateFlow<List<ConsultationModel>>(emptyList())
+    val consultations: StateFlow<List<ConsultationModel>> get() = _consultations
 
     private val _petName = MutableStateFlow("")
     val petName: StateFlow<String> get() = _petName
@@ -117,7 +119,6 @@ class DetailPetViewModel @Inject constructor(
         viewModelScope.launch {
             selectedPet.collect {
                 ownerId = it.owner
-                petId = it.id
                 _petName.value = it.name ?: ""
                 _petBirth.value = it.birthDate ?: ""
                 _petBreed.value = it.breed ?: ""
@@ -129,10 +130,18 @@ class DetailPetViewModel @Inject constructor(
         }
     }
 
+    private fun setConsultations() {
+        viewModelScope.launch {
+            getConsultationsUseCase.invoke(petId.value).collect {
+                _consultations.value = it.toObjects(ConsultationModel::class.java)
+            }
+        }
+    }
+
     fun updateData() {
         val petModel = PetModel(
             owner = ownerId,
-            id = petId,
+            id = petId.value,
             name = petName.value,
             birthDate = petBirth.value,
             breed = petBreed.value,
@@ -152,15 +161,13 @@ class DetailPetViewModel @Inject constructor(
 
     fun deletePet() {
         viewModelScope.launch {
-            petId?.let {
-                deletePetUseCase.invoke(it)
-            }
+            deletePetUseCase.invoke(petId.value)
         }
     }
 
     fun addConsultation() {
         val consultation = ConsultationModel(
-            petId = petId,
+            petId = petId.value,
             date = consultationDate.value,
             description = consultationDetail.value
         )
