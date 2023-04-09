@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,12 +64,14 @@ fun PetDetailScreen(
             },
             onNavigateBack = { onNavigateBack() }
         )
-        PetDetailSection(detailPetViewModel, enabled = isEditActive)
-        Divider(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp)
-        )
+        Card(
+            modifier = Modifier.padding(12.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(4.dp),
+            shape = Shapes.large
+        ) {
+            PetDetailSection(detailPetViewModel, enabled = isEditActive)
+        }
         Row(
             Modifier
                 .fillMaxWidth()
@@ -89,30 +92,23 @@ fun PetDetailScreen(
         LazyColumn {
             items(consultations, key = { it.id ?: -1 }) {
                 var expanded by remember { mutableStateOf(false) }
-                Card(
-                    modifier = Modifier
-                        .padding(6.dp)
-                        .clickable { expanded = !expanded },
-                    shape = Shapes.medium,
-                    elevation = CardDefaults.cardElevation(2.dp)
-                ) {
-                    ConsultationItem(
-                        consultation = it,
-                        modifier = Modifier.clickable { expanded = !expanded },
-                        index = consultations.reversed().indexOf(it) + 1
-                    )
-                    AnimatedVisibility(visible = expanded) {
-                        Box(modifier = Modifier
+                ConsultationItem(
+                    consultation = it,
+                    modifier = Modifier.clickable { expanded = !expanded },
+                    index = consultations.reversed().indexOf(it) + 1
+                )
+                AnimatedVisibility(visible = expanded) {
+                    Box(
+                        modifier = Modifier
                             .wrapContentSize()
                             .padding(12.dp)
-                        ) {
-                            Text(text = "${it.description}")
-                        }
+                    ) {
+                        Text(text = "${it.description}")
                     }
                 }
+                Divider(modifier = Modifier.padding(horizontal = 2.dp))
             }
         }
-
     }
 }
 
@@ -150,7 +146,7 @@ private fun PetDetailSection(detailPetViewModel: DetailPetViewModel, enabled: Bo
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp),
+                .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             DetailTextRow(

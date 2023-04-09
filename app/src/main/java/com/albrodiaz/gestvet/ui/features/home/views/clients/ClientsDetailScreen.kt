@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +29,7 @@ import com.albrodiaz.gestvet.ui.features.components.SmallTextField
 import com.albrodiaz.gestvet.ui.features.components.savedToast
 import com.albrodiaz.gestvet.ui.features.home.models.PetModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.clients.ClientDetailsViewModel
+import com.albrodiaz.gestvet.ui.theme.Shapes
 
 @Composable
 fun ClientDetailScreen(
@@ -80,9 +82,15 @@ fun ClientDetailScreen(
             onDelete = { clientsDetailsViewModel.setShowDialog(true) },
             enabled = isEditActive
         )
-        ClientSection(clientsDetailsViewModel = clientsDetailsViewModel)
-        SenioritySection(seniorityText = seniorityText)
-        Divider(modifier = Modifier.padding(horizontal = 12.dp))
+        Card(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(4.dp),
+            shape = Shapes.large
+        ) {
+            ClientSection(clientsDetailsViewModel = clientsDetailsViewModel)
+            SenioritySection(seniorityText = seniorityText)
+        }
         PetSection(pets = pets, navigateToDetails = { navigateToDetails(it) }) {
             onCreatePet(clientsDetailsViewModel.ownerId ?: 0L)
         }
@@ -120,7 +128,9 @@ private fun ClientSection(
         val isEditActive by isEditActive.collectAsState()
 
         Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
             ClientDetailRow(
                 enabled = isEditActive,
@@ -187,7 +197,7 @@ private fun PetSection(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(16.dp)
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
