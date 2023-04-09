@@ -1,14 +1,14 @@
 package com.albrodiaz.gestvet.ui.features.home.views.clients
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isValidDate
 import com.albrodiaz.gestvet.ui.features.components.*
+import com.albrodiaz.gestvet.ui.features.home.models.ConsultationModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.DetailPetViewModel
 import com.albrodiaz.gestvet.ui.theme.Shapes
 
@@ -84,21 +85,54 @@ fun PetDetailScreen(
                 Text(text = stringResource(id = R.string.add))
             }
         }
+
         LazyColumn {
-            items(consultations) {
+            items(consultations, key = { it.id ?: -1 }) {
+                var expanded by remember { mutableStateOf(false) }
                 Card(
-                    modifier = Modifier.padding(6.dp),
+                    modifier = Modifier
+                        .padding(6.dp)
+                        .clickable { expanded = !expanded },
                     shape = Shapes.medium,
-                    elevation = CardDefaults.cardElevation(4.dp)
+                    elevation = CardDefaults.cardElevation(2.dp)
                 ) {
-                    ListItem(
-                        headlineContent = { Text(text = "${it.date}") },
-                        supportingContent = { Text(text = "${it.description}") }
+                    ConsultationItem(
+                        consultation = it,
+                        modifier = Modifier.clickable { expanded = !expanded },
+                        index = consultations.reversed().indexOf(it) + 1
                     )
+                    AnimatedVisibility(visible = expanded) {
+                        Box(modifier = Modifier
+                            .wrapContentSize()
+                            .padding(12.dp)
+                        ) {
+                            Text(text = "${it.description}")
+                        }
+                    }
                 }
             }
         }
 
+    }
+}
+
+@Composable
+fun ConsultationItem(
+    modifier: Modifier,
+    consultation: ConsultationModel,
+    index: Int
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight(.2f)
+            .padding(12.dp)
+    ) {
+        Text(text = "${consultation.date}")
+        Text(
+            text = "${stringResource(id = R.string.consultation)}: $index",
+            modifier = modifier.padding(vertical = 6.dp)
+        )
     }
 }
 

@@ -79,4 +79,5 @@
     <string name="nonOptionalDetail">Detalles</string>
     <string name="consultations">Consultas</string>
     <string name="addConsultation">Añadir consulta</string>
+    <string name="consultation">Consulta</string>
 </resources>

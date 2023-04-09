@@ -204,6 +204,7 @@ private fun PetSection(
         LazyVerticalGrid(
             modifier = Modifier
                 .height(250.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             columns = GridCells.Fixed(2)
         ) {
             items(pets, key = { it.id ?: 0L }) {
@@ -256,7 +257,7 @@ private fun ItemPet(
     navigateToDetails: () -> Unit
 ) {
     Card(
-        modifier = Modifier.padding(6.dp),
+        modifier = Modifier.padding(vertical = 6.dp),
         shape = RoundedCornerShape(6.dp),
         elevation = CardDefaults.cardElevation(3.dp)
     ) {
