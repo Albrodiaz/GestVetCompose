@@ -2,9 +2,8 @@ package com.albrodiaz.gestvet.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 
@@ -87,7 +86,7 @@ fun GestVetTheme(
     MaterialTheme(
         colorScheme = colors,
         content = content,
-        typography = typography,
+        typography = Typography, /*TODO: Buscar tipografía y aplicar y colores para cards de detalles*/
         shapes = Shapes
     )
 }

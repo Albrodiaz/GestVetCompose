@@ -147,6 +147,3 @@ private fun SettingsTopBar() {
         }
     )
 }
-
-
-/*TODO: Implementar borrado de cuenta y validación de registro por email*/

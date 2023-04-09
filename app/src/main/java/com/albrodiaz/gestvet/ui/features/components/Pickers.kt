@@ -51,8 +51,6 @@ fun AddDatePicker(datePickerState: DatePickerState) {
     )
 }
 
-/*  TODO: A la espera de versión estable de Timepicker Compose*/
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTimePicker(state: TimePickerState) {
