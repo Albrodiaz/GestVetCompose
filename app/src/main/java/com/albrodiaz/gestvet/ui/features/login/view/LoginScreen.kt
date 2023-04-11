@@ -1,6 +1,5 @@
 package com.albrodiaz.gestvet.ui.features.login.view
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,7 +10,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -23,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
 import com.albrodiaz.gestvet.ui.features.components.LoginButton
+import com.albrodiaz.gestvet.ui.features.components.LoginDog
 import com.albrodiaz.gestvet.ui.features.components.UserPassword
 import com.albrodiaz.gestvet.ui.features.components.UserTextField
 import com.albrodiaz.gestvet.ui.features.login.viewmodel.LoginViewModel
@@ -107,7 +106,7 @@ private fun ResetPassDialog(
                         value = resetEmail,
                         placeholder = { Text(text = stringResource(id = R.string.email)) },
                         onValueChange = { loginViewModel.setResetEmail(it) },
-                        colors = TextFieldDefaults.textFieldColors(
+                        colors = TextFieldDefaults.colors(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent
                         )
@@ -131,24 +130,13 @@ fun LoginHeader() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .wrapContentHeight()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AppIcon()
+        LoginDog()
         AppTitle()
     }
-}
-
-@Composable
-fun AppIcon() {
-    Image(
-        painter = painterResource(id = R.drawable.ic_gestvet),
-        contentDescription = "App Icon",
-        modifier = Modifier
-            .size(100.dp)
-            .padding(24.dp)
-    )
 }
 
 @Composable

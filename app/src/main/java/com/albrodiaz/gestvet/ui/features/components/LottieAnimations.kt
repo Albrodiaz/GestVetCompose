@@ -32,7 +32,11 @@ fun EmptySearch(modifier: Modifier = Modifier) {
             composition = composition,
             iterations = LottieConstants.IterateForever
         )
-        Text(text = stringResource(id = R.string.writeSomething), fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = stringResource(id = R.string.writeSomething),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
@@ -44,8 +48,16 @@ fun EmptyContent(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.empty_items))
-        LottieAnimation(modifier = modifier.size(200.dp), composition = composition, iterations = LottieConstants.IterateForever)
-        Text(text = stringResource(id = R.string.nothingToShow), fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        LottieAnimation(
+            modifier = modifier.size(200.dp),
+            composition = composition,
+            iterations = LottieConstants.IterateForever
+        )
+        Text(
+            text = stringResource(id = R.string.nothingToShow),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
@@ -57,7 +69,21 @@ fun LoadingScreen(modifier: Modifier = Modifier, text: String = "") {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
-        LottieAnimation(modifier = modifier.size(100.dp), composition = composition, iterations = LottieConstants.IterateForever)
+        LottieAnimation(
+            modifier = modifier.size(100.dp),
+            composition = composition,
+            iterations = LottieConstants.IterateForever
+        )
         Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
+}
+
+@Composable
+fun LoginDog() {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.dog_login))
+    LottieAnimation(
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
+        modifier = Modifier.size(150.dp)
+    )
 }
