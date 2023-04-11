@@ -206,6 +206,7 @@ fun AddAppointmentScreen(
         )
         Button(
             onClick = {
+                keyboardController?.hide()
                 addAppointmentViewModel.saveAppointment(
                     success = {
                         showMessage(savedAppt)
