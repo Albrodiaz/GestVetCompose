@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.data.network.PetService.Companion.PETS_TAG
 import com.albrodiaz.gestvet.domain.pets.*
 import com.albrodiaz.gestvet.ui.features.home.models.ConsultationModel
@@ -58,7 +59,7 @@ class DetailPetViewModel @Inject constructor(
 
     private var ownerId: Long? = null
 
-    private val _consultationDate = MutableStateFlow("")
+    private val _consultationDate = MutableStateFlow(System.currentTimeMillis().toDate())
     val consultationDate: StateFlow<String> get() = _consultationDate
     fun setConsultDate(date: String) {
         _consultationDate.value = date

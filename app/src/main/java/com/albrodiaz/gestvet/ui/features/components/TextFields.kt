@@ -20,10 +20,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.ui.theme.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormTextField(
     modifier: Modifier = Modifier,
@@ -52,7 +52,7 @@ fun FormTextField(
         isError = isError,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        colors = TextFieldDefaults.textFieldColors(
+        colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.LightGray,
             unfocusedIndicatorColor = Color.LightGray,
             cursorColor = md_theme_light_primary,
@@ -61,7 +61,7 @@ fun FormTextField(
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ElevatedTextField(
     value: String,
@@ -92,7 +92,7 @@ fun ElevatedTextField(
                     Icon(Icons.Filled.Check, contentDescription = null)
                 }
             },
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent
             ),
@@ -122,25 +122,30 @@ fun SmallTextField(
         onValueChange = { valueChange(it) },
         enabled = enabled,
         textStyle = TextStyle(
-            color = textColor
+            color = textColor,
+            fontFamily = Montserrat,
+            fontSize = 12.sp
         ),
         keyboardOptions = keyboardOptions,
         modifier = Modifier.fillMaxWidth(),
     ) { innerTextField ->
-        TextFieldDefaults.TextFieldDecorationBox(
+        TextFieldDefaults.DecorationBox(
             value = value,
             innerTextField = innerTextField,
             enabled = enabled,
             singleLine = true,
+            visualTransformation = VisualTransformation.None,
+            interactionSource = interactionSource,
             shape = Shapes.large,
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
             ),
-            visualTransformation = VisualTransformation.None,
-            interactionSource = interactionSource,
-            contentPadding = TextFieldDefaults.textFieldWithLabelPadding(top = 6.dp, bottom = 6.dp)
+            contentPadding = TextFieldDefaults.contentPaddingWithLabel(
+                top = 6.dp,
+                bottom = 6.dp,
+            ),
         )
     }
 }
