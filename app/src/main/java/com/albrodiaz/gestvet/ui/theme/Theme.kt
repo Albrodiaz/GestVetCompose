@@ -86,7 +86,7 @@ fun GestVetTheme(
     MaterialTheme(
         colorScheme = colors,
         content = content,
-        typography = Typography, /*TODO: Buscar tipografía y aplicar y colores para cards de detalles*/
+        typography = Typography,
         shapes = Shapes
     )
 }
