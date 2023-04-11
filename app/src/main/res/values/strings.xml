@@ -80,4 +80,6 @@
     <string name="consultations">Consultas</string>
     <string name="addConsultation">Añadir consulta</string>
     <string name="consultation">Consulta</string>
+    <string name="savedAppointment">Cita guardada</string>
+    <string name="appointmentError">Algo salió mal</string>
 </resources>

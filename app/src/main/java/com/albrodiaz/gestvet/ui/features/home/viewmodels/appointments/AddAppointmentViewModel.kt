@@ -34,12 +34,9 @@ class AddAppointmentViewModel @Inject constructor(
     init {
         setData()
         viewModelScope.launch {
-            selectedAppt.collect { selected ->
-                getAppointmentsUseCase.invoke().collect { appointments ->
-                    appointments.toObjects(AppointmentModel::class.java).map {
-                        dateList.add(it.dateInMillis)
-                        dateList.remove(selected.dateInMillis)
-                    }
+            getAppointmentsUseCase.invoke().collect { appointments ->
+                appointments.toObjects(AppointmentModel::class.java).map {
+                    dateList.add(it.dateInMillis)
                 }
             }
         }
@@ -138,7 +135,7 @@ class AddAppointmentViewModel @Inject constructor(
                 dateList.contains(dateText.value.dateToMillis() + hourText.value.hourToMillis())
 
             viewModelScope.launch {
-                if (isDateUnavailable) {
+                if (isDateUnavailable && appointmentId.value == 0L) {
                     dateUnavailable()
                 } else {
                     addAppointmentUseCase.invoke(appointment)

@@ -48,6 +48,9 @@ fun AddAppointmentScreen(
     val detailText by addAppointmentViewModel.detailsText.collectAsState()
     val datePickerState = rememberCustomDatePickerState()
     val timePickerState = rememberTimePickerState()
+    val unavailableDate = stringResource(id = R.string.unavailableDate)
+    val savedAppt = stringResource(id = R.string.savedAppointment)
+    val saveError = stringResource(id = R.string.appointmentError)
 
     DateTimeDialog(
         show = showDatePicker,
@@ -205,11 +208,11 @@ fun AddAppointmentScreen(
             onClick = {
                 addAppointmentViewModel.saveAppointment(
                     success = {
-                        showMessage("Cita guardada")
+                        showMessage(savedAppt)
                         onNavigate()
                     },
-                    dateUnavailable = { showMessage("Fecha y hora no disponible") },
-                    onError = { showMessage("Error al guardar la cita") }
+                    dateUnavailable = { showMessage(unavailableDate) },
+                    onError = { showMessage(saveError) }
                 )
             },
             enabled = isButtonEnabled,
