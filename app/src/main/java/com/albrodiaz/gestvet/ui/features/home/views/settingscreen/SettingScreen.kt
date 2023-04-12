@@ -75,7 +75,11 @@ private fun SettingsItems(
                 failureSent = { showMessage(emailNotSent) }
             )
         }
-        Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
+        Row(
+            Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
             LogOutButton {
                 settingsViewModel.logOut()
                 navigate()
@@ -89,17 +93,17 @@ private fun SettingsItems(
 fun DeleteAccountDialog(show: Boolean, dismiss: () -> Unit, confirm: () -> Unit) {
     ConfirmDeleteDialog(
         show = show,
-        title = "¡ATENCIÓN!",
-        text = "Se procederá a borrar el usuario y perderá el acceso a su cuenta y los datos asociados",
-        onDismiss = { dismiss() },
-        onConfirm = { confirm() }
+        title = stringResource(id = R.string.warning),
+        text = stringResource(id = R.string.continueDelete),
+        onDismiss = dismiss,
+        onConfirm = confirm
     )
 }
 
 @Composable
 private fun LogOutButton(onLogOut: () -> Unit) {
     OutlinedButton(
-        onClick = { onLogOut() },
+        onClick = onLogOut,
         colors = ButtonDefaults.buttonColors(
             contentColor = md_theme_light_primary,
             containerColor = Color.Transparent
@@ -114,7 +118,7 @@ private fun LogOutButton(onLogOut: () -> Unit) {
 @Composable
 private fun DeleteAccountButton(onDelete: () -> Unit) {
     OutlinedButton(
-        onClick = { onDelete() },
+        onClick = onDelete,
         colors = ButtonDefaults.buttonColors(
             contentColor = md_theme_light_error,
             containerColor = Color.Transparent
@@ -128,7 +132,7 @@ private fun DeleteAccountButton(onDelete: () -> Unit) {
 
 @Composable
 fun RecoverPassword(recoveryEmail: () -> Unit) {
-    TextButton(onClick = { recoveryEmail() }) {
+    TextButton(onClick = recoveryEmail) {
         Text(text = stringResource(id = R.string.newPass))
     }
 }

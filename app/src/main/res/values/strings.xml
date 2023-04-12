@@ -82,4 +82,5 @@
     <string name="consultation">Consulta</string>
     <string name="savedAppointment">Cita guardada</string>
     <string name="appointmentError">Algo salió mal</string>
+    <string name="continueDelete">Se procederá a borrar el usuario y perderá el acceso a su cuenta y los datos asociados</string>
 </resources>
