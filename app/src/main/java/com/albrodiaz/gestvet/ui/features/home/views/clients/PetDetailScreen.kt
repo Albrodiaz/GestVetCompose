@@ -95,9 +95,15 @@ fun PetDetailScreen(
                     Box(
                         modifier = Modifier
                             .wrapContentSize()
-                            .padding(12.dp)
+                            .padding(horizontal = 12.dp)
+                            .padding(bottom = 12.dp)
                     ) {
-                        Text(text = "${it.description}")
+                        SmallTextField(
+                            value = "${it.description}",
+                            valueChange = {},
+                            enabled = false,
+                            fontSize = 16.sp
+                        )
                     }
                 }
                 Divider(modifier = Modifier.padding(horizontal = 2.dp))

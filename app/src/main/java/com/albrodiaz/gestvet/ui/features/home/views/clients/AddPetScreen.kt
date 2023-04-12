@@ -89,7 +89,7 @@ fun AddPetForm(
             FormTextField(
                 text = name,
                 textChange = { setName(it) },
-                placeholder = stringResource(id = R.string.name),
+                placeholder = "${stringResource(id = R.string.name)}*",
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
             FormTextField(
@@ -107,19 +107,19 @@ fun AddPetForm(
             FormTextField(
                 text = breed,
                 textChange = { setBreed(it) },
-                placeholder = stringResource(id = R.string.breed),
+                placeholder = "${stringResource(id = R.string.breed)}*",
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
             FormTextField(
                 text = chipNumber,
                 textChange = { setChipNumber(it) },
-                placeholder = stringResource(id = R.string.chipNumber),
+                placeholder = "${stringResource(id = R.string.chipNumber)}*",
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
             FormTextField(
                 text = passport,
                 textChange = { setPassport(it) },
-                placeholder = stringResource(id = R.string.passportNumber),
+                placeholder = "${stringResource(id = R.string.passportNumber)}*",
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
             FormTextField(

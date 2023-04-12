@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.albrodiaz.gestvet.R
@@ -38,7 +39,7 @@ fun FormTextField(
     textChange: (String) -> Unit,
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
-    OutlinedTextField(
+    TextField(
         modifier = modifier
             .fillMaxWidth(0.9f)
             .padding(vertical = 6.dp),
@@ -46,6 +47,7 @@ fun FormTextField(
         placeholder = { Text(text = placeholder) },
         onValueChange = { textChange(it) },
         maxLines = maxLines,
+        shape = Shapes.medium,
         singleLine = singleLine,
         trailingIcon = trailingIcon,
         readOnly = readOnly,
@@ -53,8 +55,8 @@ fun FormTextField(
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.LightGray,
-            unfocusedIndicatorColor = Color.LightGray,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
             cursorColor = md_theme_light_primary,
             focusedLabelColor = md_theme_light_primary
         )
@@ -113,6 +115,7 @@ fun SmallTextField(
     value: String,
     valueChange: (String) -> Unit,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    fontSize: TextUnit = 13.sp,
     enabled: Boolean
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -124,7 +127,7 @@ fun SmallTextField(
         textStyle = TextStyle(
             color = textColor,
             fontFamily = Montserrat,
-            fontSize = 12.sp
+            fontSize = fontSize
         ),
         keyboardOptions = keyboardOptions,
         modifier = Modifier.fillMaxWidth(),
