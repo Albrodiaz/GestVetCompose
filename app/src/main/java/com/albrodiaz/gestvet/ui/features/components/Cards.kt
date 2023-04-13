@@ -7,13 +7,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.albrodiaz.gestvet.ui.theme.Shapes
-import com.albrodiaz.gestvet.ui.theme.md_theme_dark_surface
-import com.albrodiaz.gestvet.ui.theme.md_theme_light_surface
+import com.albrodiaz.gestvet.ui.theme.*
 
 @Composable
 fun DetailCard(content: @Composable ()-> Unit) {
-    val containerColor = if (isSystemInDarkTheme()) md_theme_dark_surface else md_theme_light_surface
+    val containerColor = if (isSystemInDarkTheme()) md_theme_dark_surface else md_theme_light_inverseOnSurface
     Card(
         modifier = Modifier.padding(12.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
