@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.albrodiaz.gestvet.core.extensions.dateToMillis
+import com.albrodiaz.gestvet.core.extensions.hourToMillis
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.data.network.PetService.Companion.PETS_TAG
 import com.albrodiaz.gestvet.domain.pets.*
@@ -13,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,6 +25,7 @@ class DetailPetViewModel @Inject constructor(
     private val deletePetUseCase: DeletePetUseCase,
     private val addConsultationUseCase: AddConsultationUseCase,
     private val getConsultationsUseCase: GetConsultationsUseCase,
+    private val deleteConsultationUseCase: DeleteConsultationUseCase,
     state: SavedStateHandle
 ) : ViewModel() {
 
@@ -63,6 +67,12 @@ class DetailPetViewModel @Inject constructor(
     val consultationDate: StateFlow<String> get() = _consultationDate
     fun setConsultDate(date: String) {
         _consultationDate.value = date
+    }
+
+    private val _consultationHour = MutableStateFlow("")
+    val consultationHour: StateFlow<String> get() = _consultationHour
+    fun setConsultationHour(hour: String) {
+        _consultationHour.value = hour
     }
 
     private val _consultationDetail = MutableStateFlow("")
@@ -167,7 +177,10 @@ class DetailPetViewModel @Inject constructor(
     }
 
     fun addConsultation() {
+        val consultationId =
+            consultationDate.value.dateToMillis() + consultationHour.value.hourToMillis()
         val consultation = ConsultationModel(
+            id = consultationId,
             petId = petId.value,
             date = consultationDate.value,
             description = consultationDetail.value
@@ -178,6 +191,12 @@ class DetailPetViewModel @Inject constructor(
             } catch (error: Throwable) {
                 Log.e(PETS_TAG, "Error al guardar la consulta: ${error.message}")
             }
+        }
+    }
+
+    fun deleteConsultation(id: Long) {
+        viewModelScope.launch {
+            deleteConsultationUseCase.invoke(id)
         }
     }
 }

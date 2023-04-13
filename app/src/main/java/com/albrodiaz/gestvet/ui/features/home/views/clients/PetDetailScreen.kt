@@ -1,17 +1,20 @@
 package com.albrodiaz.gestvet.ui.features.home.views.clients
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -24,6 +27,7 @@ import com.albrodiaz.gestvet.ui.features.home.models.ConsultationModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.DetailPetViewModel
 import com.albrodiaz.gestvet.ui.theme.Shapes
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PetDetailScreen(
     detailPetViewModel: DetailPetViewModel = hiltViewModel(),
@@ -88,9 +92,14 @@ fun PetDetailScreen(
                 var expanded by remember { mutableStateOf(false) }
                 ConsultationItem(
                     consultation = it,
-                    modifier = Modifier.clickable { expanded = !expanded },
+                    visible = expanded,
+                    modifier = Modifier
+                        .clickable { expanded = !expanded }
+                        .animateItemPlacement(),
                     index = consultations.reversed().indexOf(it) + 1
-                )
+                ) {
+                    detailPetViewModel.deleteConsultation(it.id ?: -1)
+                }
                 AnimatedVisibility(visible = expanded) {
                     Box(
                         modifier = Modifier
@@ -115,8 +124,10 @@ fun PetDetailScreen(
 @Composable
 fun ConsultationItem(
     modifier: Modifier,
+    visible: Boolean,
     consultation: ConsultationModel,
-    index: Int
+    index: Int,
+    onDeleteItem: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -124,7 +135,19 @@ fun ConsultationItem(
             .fillMaxHeight(.2f)
             .padding(12.dp)
     ) {
-        Text(text = "${consultation.date}")
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = "${consultation.date}")
+            AnimatedVisibility(visible = visible) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = stringResource(id = R.string.delete),
+                    modifier = modifier.clickable { onDeleteItem() })
+            }
+        }
         Text(
             text = "${stringResource(id = R.string.consultation)}: $index",
             modifier = modifier.padding(vertical = 6.dp)
@@ -252,11 +275,16 @@ fun ConsultationDialog(
 
     val show by detailPetViewModel.showConsultationDialog.collectAsState()
     val date by detailPetViewModel.consultationDate.collectAsState()
+    val hour by detailPetViewModel.consultationHour.collectAsState()
     val details by detailPetViewModel.consultationDetail.collectAsState()
 
     if (show) {
         AlertDialog(onDismissRequest = onDismiss) {
-            Surface(shape = Shapes.large, shadowElevation = 4.dp, modifier = Modifier.wrapContentSize()) {
+            Surface(
+                shape = Shapes.large,
+                shadowElevation = 4.dp,
+                modifier = Modifier.wrapContentSize()
+            ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(12.dp)
@@ -281,6 +309,18 @@ fun ConsultationDialog(
                         }
                     )
                     FormTextField(
+                        text = hour,
+                        textChange = { detailPetViewModel.setConsultationHour(it) },
+                        placeholder = stringResource(id = R.string.hour),
+                        modifier = Modifier.fillMaxWidth(),
+                        trailingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_clock_24),
+                                contentDescription = stringResource(id = R.string.date)
+                            )
+                        }
+                    )
+                    FormTextField(
                         text = details,
                         textChange = { detailPetViewModel.setConsultDetail(it) },
                         singleLine = false,
@@ -294,7 +334,7 @@ fun ConsultationDialog(
                         detailPetViewModel.addConsultation()
                         detailPetViewModel.setConsultDetail("")
                         onDismiss()
-                    }, enabled = date.isValidDate() && details.length > 5) {
+                    }, enabled = date.isValidDate() && details.length > 5 && hour.length == 5) {
                         Text(text = stringResource(id = R.string.save))
                     }
                 }

@@ -101,5 +101,10 @@ class PetService @Inject constructor(firebaseClient: FirebaseClient) {
             .set(consultation).await()
     }
 
+    suspend fun deleteConsultation(id:Long) {
+        consultationRef.document("$id")
+            .delete().await()
+    }
+
 
 }
