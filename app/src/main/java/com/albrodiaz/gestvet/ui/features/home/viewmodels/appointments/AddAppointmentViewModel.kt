@@ -135,7 +135,7 @@ class AddAppointmentViewModel @Inject constructor(
                 dateList.contains(dateText.value.dateToMillis() + hourText.value.hourToMillis())
 
             viewModelScope.launch {
-                if (isDateUnavailable && appointmentId.value == 0L) {
+                if (isDateUnavailable) {
                     dateUnavailable()
                 } else {
                     addAppointmentUseCase.invoke(appointment)
