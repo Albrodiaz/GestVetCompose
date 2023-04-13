@@ -13,12 +13,14 @@ class PetService @Inject constructor(firebaseClient: FirebaseClient) {
 
 
     private val currentUser = firebaseClient.auth.currentUser?.email
+
     companion object {
         const val PETS_TAG = "PetsService"
     }
 
     private val petReference = firebaseClient.dataBase.collection("$currentUser/management/pets")
-    private val consultationRef = firebaseClient.dataBase.collection("$currentUser/management/consultations")
+    private val consultationRef =
+        firebaseClient.dataBase.collection("$currentUser/management/consultations")
 
     fun pets() = callbackFlow {
         val data = petReference.addSnapshotListener { value, error ->
@@ -61,15 +63,16 @@ class PetService @Inject constructor(firebaseClient: FirebaseClient) {
     }
 
     fun getConsultByPet(petId: Long) = callbackFlow {
-        val data = consultationRef.whereEqualTo("petId", petId).orderBy("id", Query.Direction.DESCENDING)
-            .addSnapshotListener { value, error ->
-                error?.let {
-                    Log.e(PETS_TAG, "Error al obtener las conusultas: ${it.message}")
+        val data =
+            consultationRef.whereEqualTo("petId", petId).orderBy("id", Query.Direction.DESCENDING)
+                .addSnapshotListener { value, error ->
+                    error?.let {
+                        Log.e(PETS_TAG, "Error al obtener las conusultas: ${it.message}")
+                    }
+                    value?.let {
+                        trySend(it)
+                    }
                 }
-                value?.let {
-                    trySend(it)
-                }
-            }
         awaitClose { data.remove() }
     }
 
@@ -81,6 +84,16 @@ class PetService @Inject constructor(firebaseClient: FirebaseClient) {
     suspend fun deletePet(id: Long) {
         petReference.document("$id")
             .delete().await()
+        consultationRef.whereEqualTo("petId", id).addSnapshotListener { value, error ->
+            error?.let {
+                Log.e(PETS_TAG, "Error al recuperar las consultas: ${it.message}")
+            }
+            value?.let { values ->
+                values.forEach {
+                    consultationRef.document(it.id).delete()
+                }
+            }
+        }
     }
 
     suspend fun addConsultation(consultation: ConsultationModel) {
