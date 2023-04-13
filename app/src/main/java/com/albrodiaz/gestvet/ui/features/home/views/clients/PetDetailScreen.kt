@@ -256,7 +256,7 @@ fun ConsultationDialog(
 
     if (show) {
         AlertDialog(onDismissRequest = onDismiss) {
-            Card(shape = Shapes.large, modifier = Modifier.wrapContentSize()) {
+            Surface(shape = Shapes.large, shadowElevation = 4.dp, modifier = Modifier.wrapContentSize()) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(12.dp)
