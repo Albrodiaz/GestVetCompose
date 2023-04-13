@@ -292,6 +292,7 @@ fun ConsultationDialog(
                     )
                     TextButton(onClick = {
                         detailPetViewModel.addConsultation()
+                        detailPetViewModel.setConsultDetail("")
                         onDismiss()
                     }, enabled = date.isValidDate() && details.length > 5) {
                         Text(text = stringResource(id = R.string.save))
