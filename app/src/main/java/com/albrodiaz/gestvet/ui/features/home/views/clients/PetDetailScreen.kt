@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
@@ -53,7 +55,10 @@ fun PetDetailScreen(
         detailPetViewModel.setConsultationDialog(false)
     }
 
-    Column(Modifier.fillMaxSize()) {
+    Column(
+        Modifier
+            .fillMaxSize()
+    ) {
         DetailsTopBar(
             title = stringResource(id = R.string.pet),
             editEnabled = isEditActive,
@@ -67,55 +72,61 @@ fun PetDetailScreen(
             },
             onNavigateBack = { onNavigateBack() }
         )
-        DetailCard {
-            PetDetailSection(detailPetViewModel, enabled = isEditActive)
-        }
-        Row(
+        Column(
             Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(
-                text = stringResource(id = R.string.consultations),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-            TextButton(onClick = { detailPetViewModel.setConsultationDialog(true) }) {
-                Text(text = stringResource(id = R.string.add))
+            DetailCard {
+                PetDetailSection(detailPetViewModel, enabled = isEditActive)
             }
-        }
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(id = R.string.consultations),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                TextButton(onClick = { detailPetViewModel.setConsultationDialog(true) }) {
+                    Text(text = stringResource(id = R.string.add))
+                }
+            }
 
-        LazyColumn {
-            items(consultations, key = { it.id ?: -1 }) {
-                var expanded by remember { mutableStateOf(false) }
-                ConsultationItem(
-                    consultation = it,
-                    visible = expanded,
-                    modifier = Modifier
-                        .clickable { expanded = !expanded }
-                        .animateItemPlacement(),
-                    index = consultations.reversed().indexOf(it) + 1
-                ) {
-                    detailPetViewModel.deleteConsultation(it.id ?: -1)
-                }
-                AnimatedVisibility(visible = expanded) {
-                    Box(
+            LazyColumn(Modifier.height(300.dp)) {
+                items(consultations, key = { it.id ?: -1 }) {
+                    var expanded by remember { mutableStateOf(false) }
+                    ConsultationItem(
+                        consultation = it,
+                        visible = expanded,
                         modifier = Modifier
-                            .wrapContentSize()
-                            .padding(horizontal = 12.dp)
-                            .padding(bottom = 12.dp)
+                            .clickable { expanded = !expanded }
+                            .animateItemPlacement(),
+                        index = consultations.reversed().indexOf(it) + 1
                     ) {
-                        SmallTextField(
-                            value = "${it.description}",
-                            valueChange = {},
-                            enabled = false,
-                            fontSize = 16.sp
-                        )
+                        detailPetViewModel.deleteConsultation(it.id ?: -1)
                     }
+                    AnimatedVisibility(visible = expanded) {
+                        Box(
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .padding(horizontal = 12.dp)
+                                .padding(bottom = 12.dp)
+                        ) {
+                            SmallTextField(
+                                value = "${it.description}",
+                                valueChange = {},
+                                enabled = false,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                    Divider(modifier = Modifier.padding(horizontal = 2.dp))
                 }
-                Divider(modifier = Modifier.padding(horizontal = 2.dp))
             }
         }
     }
@@ -337,6 +348,7 @@ fun ConsultationDialog(
                     }, enabled = date.isValidDate() && details.length > 5 && hour.length == 5) {
                         Text(text = stringResource(id = R.string.save))
                     }
+                    Text(text = stringResource(id = R.string.modifyConsultation), fontSize = 9.sp)
                 }
             }
         }

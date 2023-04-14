@@ -63,7 +63,6 @@ fun ClientDetailScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
         ClientHeader(
             onClose = { onNavigateUp() },
@@ -77,12 +76,18 @@ fun ClientDetailScreen(
             onDelete = { clientsDetailsViewModel.setShowDialog(true) },
             enabled = isEditActive
         )
-        DetailCard {
-            ClientSection(clientsDetailsViewModel = clientsDetailsViewModel)
-            SenioritySection(seniorityText = seniorityText)
-        }
-        PetSection(pets = pets, navigateToDetails = { navigateToDetails(it) }) {
-            onCreatePet(clientsDetailsViewModel.ownerId ?: 0L)
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            DetailCard {
+                ClientSection(clientsDetailsViewModel = clientsDetailsViewModel)
+                SenioritySection(seniorityText = seniorityText)
+            }
+            PetSection(pets = pets, navigateToDetails = { navigateToDetails(it) }) {
+                onCreatePet(clientsDetailsViewModel.ownerId ?: 0L)
+            }
         }
     }
 }
