@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isValidDate
+import com.albrodiaz.gestvet.core.extensions.showLeftZero
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.core.states.rememberCustomDatePickerState
 import com.albrodiaz.gestvet.ui.features.components.*
@@ -71,8 +72,8 @@ fun PetDetailScreen(
     DateTimeDialog(
         show = showTimePicker,
         onDismiss = { showTimePicker = false },
-        onConfirm = { 
-            detailPetViewModel.setConsultationHour("${timePickerState.hour}:${timePickerState.minute}")
+        onConfirm = {
+            detailPetViewModel.setConsultationHour("${timePickerState.hour}:${timePickerState.minute.showLeftZero()}")
             showTimePicker = false
         }
     ) {
