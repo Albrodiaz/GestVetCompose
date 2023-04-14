@@ -183,6 +183,7 @@ class DetailPetViewModel @Inject constructor(
             id = consultationId,
             petId = petId.value,
             date = consultationDate.value,
+            hour = consultationHour.value,
             description = consultationDetail.value
         )
         viewModelScope.launch {

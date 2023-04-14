@@ -24,12 +24,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isValidDate
+import com.albrodiaz.gestvet.core.extensions.toDate
+import com.albrodiaz.gestvet.core.states.rememberCustomDatePickerState
 import com.albrodiaz.gestvet.ui.features.components.*
 import com.albrodiaz.gestvet.ui.features.home.models.ConsultationModel
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.pets.DetailPetViewModel
 import com.albrodiaz.gestvet.ui.theme.Shapes
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PetDetailScreen(
     detailPetViewModel: DetailPetViewModel = hiltViewModel(),
@@ -39,6 +41,10 @@ fun PetDetailScreen(
     val isEditActive by detailPetViewModel.editEnabled.collectAsState()
     val showConfirmDialog by detailPetViewModel.showDialog.collectAsState()
     val consultations by detailPetViewModel.consultations.collectAsState()
+    val datePickerState = rememberCustomDatePickerState()
+    val timePickerState = rememberTimePickerState()
+    var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
 
     ConfirmDeleteDialog(
         title = stringResource(id = R.string.confirmDelete),
@@ -51,7 +57,33 @@ fun PetDetailScreen(
         }
     )
 
-    ConsultationDialog(detailPetViewModel) {
+    DateTimeDialog(
+        show = showDatePicker,
+        onDismiss = { showDatePicker = false },
+        onConfirm = {
+            detailPetViewModel.setConsultDate(datePickerState.selectedDateMillis!!.toDate())
+            showDatePicker = false
+        }
+    ) {
+        AddDatePicker(datePickerState = datePickerState)
+    }
+
+    DateTimeDialog(
+        show = showTimePicker,
+        onDismiss = { showTimePicker = false },
+        onConfirm = { 
+            detailPetViewModel.setConsultationHour("${timePickerState.hour}:${timePickerState.minute}")
+            showTimePicker = false
+        }
+    ) {
+        AddTimePicker(state = timePickerState)
+    }
+
+    ConsultationDialog(
+        detailPetViewModel = detailPetViewModel,
+        showDatePicker = { showDatePicker = true },
+        showTimePicker = { showTimePicker = true }
+    ) {
         detailPetViewModel.setConsultationDialog(false)
     }
 
@@ -97,7 +129,7 @@ fun PetDetailScreen(
                 }
             }
 
-            LazyColumn(Modifier.height(300.dp)) {
+            LazyColumn(modifier = Modifier.height(300.dp)) {
                 items(consultations, key = { it.id ?: -1 }) {
                     var expanded by remember { mutableStateOf(false) }
                     ConsultationItem(
@@ -144,24 +176,18 @@ fun ConsultationItem(
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight(.2f)
-            .padding(12.dp)
     ) {
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = "${consultation.date}")
-            AnimatedVisibility(visible = visible) {
-                Icon(
-                    imageVector = Icons.Filled.Delete,
-                    contentDescription = stringResource(id = R.string.delete),
-                    modifier = modifier.clickable { onDeleteItem() })
+        ListItem(
+            headlineContent = { Text(text = "${consultation.date}, ${consultation.hour}") },
+            overlineContent = { Text(text = "${stringResource(id = R.string.consultation)}: $index") },
+            trailingContent = {
+                AnimatedVisibility(visible = visible) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = stringResource(id = R.string.delete),
+                        modifier = modifier.clickable { onDeleteItem() })
+                }
             }
-        }
-        Text(
-            text = "${stringResource(id = R.string.consultation)}: $index",
-            modifier = modifier.padding(vertical = 6.dp)
         )
     }
 }
@@ -281,6 +307,8 @@ private fun PetDetailText(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun ConsultationDialog(
     detailPetViewModel: DetailPetViewModel,
+    showDatePicker: () -> Unit,
+    showTimePicker: () -> Unit,
     onDismiss: () -> Unit
 ) {
 
@@ -309,26 +337,31 @@ fun ConsultationDialog(
                     FormTextField(
                         text = date,
                         textChange = { detailPetViewModel.setConsultDate(it) },
+                        readOnly = true,
                         placeholder = stringResource(id = R.string.date),
                         modifier = Modifier.fillMaxWidth(),
-                        isError = !date.isValidDate() && date.isNotEmpty(),
                         trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.DateRange,
-                                contentDescription = stringResource(id = R.string.date)
-                            )
+                            IconButton(onClick = { showDatePicker() }) {
+                                Icon(
+                                    imageVector = Icons.Filled.DateRange,
+                                    contentDescription = stringResource(id = R.string.date)
+                                )
+                            }
                         }
                     )
                     FormTextField(
                         text = hour,
                         textChange = { detailPetViewModel.setConsultationHour(it) },
+                        readOnly = true,
                         placeholder = stringResource(id = R.string.hour),
                         modifier = Modifier.fillMaxWidth(),
                         trailingIcon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_clock_24),
-                                contentDescription = stringResource(id = R.string.date)
-                            )
+                            IconButton(onClick = { showTimePicker() }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_clock_24),
+                                    contentDescription = stringResource(id = R.string.date)
+                                )
+                            }
                         }
                     )
                     FormTextField(
@@ -345,7 +378,7 @@ fun ConsultationDialog(
                         detailPetViewModel.addConsultation()
                         detailPetViewModel.setConsultDetail("")
                         onDismiss()
-                    }, enabled = date.isValidDate() && details.length > 5 && hour.length == 5) {
+                    }, enabled = date.isValidDate() && details.length > 5 && hour.isNotEmpty()) {
                         Text(text = stringResource(id = R.string.save))
                     }
                     Text(text = stringResource(id = R.string.modifyConsultation), fontSize = 9.sp)
