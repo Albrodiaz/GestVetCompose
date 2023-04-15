@@ -16,7 +16,9 @@ class AppointmentsService @Inject constructor(firebase: FirebaseClient) {
     }
 
     private val appointmentReference = firebase.dataBase.collection("$currentUser/management/appointments")
-    fun appointments() = appointmentReference.orderBy("dateInMillis").getFlow()
+    fun appointments() = appointmentReference.whereGreaterThan("dateInMillis", System.currentTimeMillis()).orderBy("dateInMillis").getFlow()
+
+    fun getAllAppointments() = appointmentReference.orderBy("dateInMillis").getFlow()
 
     fun getAppointmentById(id: Long) = appointmentReference
         .whereEqualTo("id", id).getDocumentFlow()

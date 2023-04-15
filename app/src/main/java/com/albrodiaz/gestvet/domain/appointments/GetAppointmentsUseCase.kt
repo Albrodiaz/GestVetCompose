@@ -7,4 +7,6 @@ import javax.inject.Inject
 
 class GetAppointmentsUseCase @Inject constructor(private val appointmentsService: AppointmentsService) {
     operator fun invoke(): Flow<QuerySnapshot> = appointmentsService.appointments()
+
+    fun getAllAppointments() = appointmentsService.getAllAppointments()
 }

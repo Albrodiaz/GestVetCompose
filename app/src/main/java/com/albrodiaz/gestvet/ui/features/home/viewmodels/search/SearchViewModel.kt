@@ -26,7 +26,7 @@ class SearchViewModel @Inject constructor(
         _userText.value = text
     }
 
-    val appointments = getAppointmentsUseCase.invoke().map { it.toObjects(AppointmentModel::class.java) }
+    val appointments = getAppointmentsUseCase.getAllAppointments().map { it.toObjects(AppointmentModel::class.java) }
     val clients = getClientsUseCase.invoke().map { it.toObjects(ClientsModel::class.java) }
     val pets = getPetsUseCase.invoke().map { it.toObjects(PetModel::class.java) }
 }
