@@ -35,6 +35,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.extensions.isScrolled
+import com.albrodiaz.gestvet.core.extensions.showLeftZero
+import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.ui.features.components.AnimatedAddFab
 import com.albrodiaz.gestvet.ui.features.components.ConfirmDeleteDialog
 import com.albrodiaz.gestvet.ui.features.components.EmptyContent
@@ -179,7 +181,7 @@ private fun ItemContent(appointment: AppointmentModel, modifier: Modifier) {
     ConstraintLayout(modifier.fillMaxSize()) {
         val (date, hour, divider, owner, pet, subject) = createRefs()
         DateTextField(
-            text = "${appointment.date}",
+            text = appointment.apptDate!!.time.toDate(),
             modifier = Modifier
                 .padding(horizontal = 8.dp)
                 .padding(top = 16.dp, bottom = 8.dp)
@@ -190,7 +192,7 @@ private fun ItemContent(appointment: AppointmentModel, modifier: Modifier) {
                 }
         )
         DateTextField(
-            text = "${appointment.hour}",
+            text = "${appointment.apptDate.hours}:${appointment.apptDate.minutes.showLeftZero()}",
             modifier = Modifier
                 .padding(horizontal = 8.dp)
                 .constrainAs(hour) {

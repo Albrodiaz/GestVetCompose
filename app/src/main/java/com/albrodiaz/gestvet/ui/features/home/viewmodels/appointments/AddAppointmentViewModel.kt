@@ -3,6 +3,8 @@ package com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments
 import androidx.lifecycle.*
 import com.albrodiaz.gestvet.core.extensions.dateToMillis
 import com.albrodiaz.gestvet.core.extensions.hourToMillis
+import com.albrodiaz.gestvet.core.extensions.showLeftZero
+import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.domain.appointments.AddAppointmentUseCase
 import com.albrodiaz.gestvet.domain.appointments.GetAppointmentByIdUseCase
 import com.albrodiaz.gestvet.domain.appointments.GetAppointmentsUseCase
@@ -11,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +26,7 @@ class AddAppointmentViewModel @Inject constructor(
 
     private val appointmentId = state.getStateFlow("id", 0L)
 
-    private val dateList = mutableListOf<Long>()
+    private val dateList = mutableListOf<Date>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val selectedAppt: Flow<AppointmentModel> =
@@ -36,7 +39,7 @@ class AddAppointmentViewModel @Inject constructor(
         viewModelScope.launch {
             getAppointmentsUseCase.invoke().collect { appointments ->
                 appointments.toObjects(AppointmentModel::class.java).map {
-                    dateList.add(it.dateInMillis)
+                    dateList.add(it.apptDate!!)
                 }
             }
         }
@@ -95,8 +98,8 @@ class AddAppointmentViewModel @Inject constructor(
             selectedAppt.collect {
                 setOwner(it.owner ?: "")
                 setPet(it.pet ?: "")
-                setDate(it.date ?: "")
-                setHour(it.hour ?: "")
+                setDate(it.apptDate!!.time.toDate())
+                setHour("${it.apptDate.hours}:${it.apptDate.minutes.showLeftZero()}")
                 setSubject(it.subject ?: "")
                 setDetails(it.details ?: "")
             }
@@ -124,15 +127,13 @@ class AddAppointmentViewModel @Inject constructor(
             val appointment = AppointmentModel(
                 owner = _ownerText.value,
                 pet = _petText.value,
-                date = _dateText.value,
-                hour = _hourText.value,
-                dateInMillis = _dateText.value.dateToMillis() + _hourText.value.hourToMillis(),
+                apptDate = Date(_dateText.value.dateToMillis() + _hourText.value.hourToMillis()),
                 subject = _subjectText.value,
                 details = _detailsText.value,
                 id = if (appointmentId.value == 0L) System.currentTimeMillis() else appointmentId.value
             )
             val isDateUnavailable =
-                dateList.contains(dateText.value.dateToMillis() + hourText.value.hourToMillis())
+                dateList.contains(Date(dateText.value.dateToMillis() + hourText.value.hourToMillis()))
 
             viewModelScope.launch {
                 if (isDateUnavailable) {

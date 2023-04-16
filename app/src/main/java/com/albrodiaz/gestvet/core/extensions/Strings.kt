@@ -13,7 +13,7 @@ fun String.dateToMillis(): Long {
 fun String.hourToMillis(): Long {
     val formatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)
     val date = formatter.parse(this)
-    return date!!.time
+    return date!!.time + (1000 * 60 * 60)
 }
 
 fun String.isValidDate(): Boolean {

@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.ui.features.components.ElevatedTextField
 import com.albrodiaz.gestvet.ui.features.components.EmptySearch
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
@@ -80,7 +81,7 @@ private fun ItemSearchScreen(
             SearchItem(
                 headLineText = item.owner,
                 supportingText = item.pet,
-                trailingText = item.date,
+                trailingText = item.apptDate!!.time.toDate(),
                 leadingIcon = Icons.Filled.DateRange,
                 navigateDetails = { navigateApptDetails(item.id ?: -1) })
         }

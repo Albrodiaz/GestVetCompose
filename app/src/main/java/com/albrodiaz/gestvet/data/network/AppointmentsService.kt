@@ -5,6 +5,7 @@ import com.albrodiaz.gestvet.core.extensions.getDocumentFlow
 import com.albrodiaz.gestvet.core.extensions.getFlow
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
 import kotlinx.coroutines.tasks.await
+import java.util.Date
 import javax.inject.Inject
 
 class AppointmentsService @Inject constructor(firebase: FirebaseClient) {
@@ -16,9 +17,9 @@ class AppointmentsService @Inject constructor(firebase: FirebaseClient) {
     }
 
     private val appointmentReference = firebase.dataBase.collection("$currentUser/management/appointments")
-    fun appointments() = appointmentReference.whereGreaterThan("dateInMillis", System.currentTimeMillis()).orderBy("dateInMillis").getFlow()
+    fun appointments() = appointmentReference.whereGreaterThan("apptDate", Date()).orderBy("apptDate").getFlow()
 
-    fun getAllAppointments() = appointmentReference.orderBy("dateInMillis").getFlow()
+    fun getAllAppointments() = appointmentReference.orderBy("apptDate").getFlow()
 
     fun getAppointmentById(id: Long) = appointmentReference
         .whereEqualTo("id", id).getDocumentFlow()
