@@ -93,6 +93,9 @@ bin/
 gen/
 out/
 
+#DS
+*.DS_Store
+
 # Gradle files
 .gradle
 
