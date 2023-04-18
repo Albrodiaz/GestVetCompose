@@ -77,18 +77,20 @@ fun LoginInputScreen(
                 valueChange = { loginViewModel.setUserInput(it) })
             UserPassword(value = password, valueChange = { loginViewModel.setUserPassword(it) })
             LoginButton(enabled = enabled, text = stringResource(id = R.string.login)) {
-                loginViewModel.login(
-                    showError = {
-                        showMessage(errorText)
-                        keyboardController?.hide()
-                    },
-                    openHome = {
-                        if (connected) navigateHome() else showMessage("Sin conexión")
-                    }
-                )
+                if (connected) {
+                    loginViewModel.login(
+                        showError = {
+                            showMessage(errorText)
+                            keyboardController?.hide()
+                        },
+                        openHome = { navigateHome() }
+                    )
+                } else {
+                    showMessage("Sin conexión")
+                }
             }
             CreateAccountRow(showDialog = { loginViewModel.setShowDialog(true) }) {
-               if (connected) navigateRegister() else showMessage("Sin conexión")
+                navigateRegister()
             }
         }
     }
@@ -125,11 +127,14 @@ private fun ResetPassDialog(
                             unfocusedIndicatorColor = Color.Transparent
                         )
                     )
-                    TextButton(shape = Shapes.medium, enabled = resetEmail.isValidEmail(), onClick = {
-                        loginViewModel.recoverPassword(resetEmail) {
-                            resetMessage(it)
-                        }
-                    }) {
+                    TextButton(
+                        shape = Shapes.medium,
+                        enabled = resetEmail.isValidEmail(),
+                        onClick = {
+                            loginViewModel.recoverPassword(resetEmail) {
+                                resetMessage(it)
+                            }
+                        }) {
                         Text(text = stringResource(id = R.string.send))
                     }
                 }
