@@ -1,5 +1,7 @@
 package com.albrodiaz.gestvet.ui.features.login.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -18,6 +20,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.core.ConnectionState
+import com.albrodiaz.gestvet.core.connectivityState
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
 import com.albrodiaz.gestvet.ui.features.components.LoadingScreen
 import com.albrodiaz.gestvet.ui.features.components.LoginButton
@@ -25,6 +29,7 @@ import com.albrodiaz.gestvet.ui.features.components.UserPassword
 import com.albrodiaz.gestvet.ui.features.components.UserTextField
 import com.albrodiaz.gestvet.ui.features.login.viewmodel.RegisterViewModel
 
+@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(
@@ -45,6 +50,8 @@ fun RegisterScreen(
         val successText = stringResource(id = R.string.createSuccess)
         val failureText = stringResource(id = R.string.createFailure)
         val verifiedAccountText = stringResource(id = R.string.verifiedAccount)
+        val connectivityState by connectivityState()
+        val connected = connectivityState == ConnectionState.Available
 
         if (showVerify) {
             Column(
@@ -96,15 +103,19 @@ fun RegisterScreen(
                     text = stringResource(id = R.string.createAccount),
                     enabled = btnEnabled
                 ) {
-                    keyboardManager?.hide()
-                    createUser(
-                        onSuccess = { showResult(successText) },
-                        failure = { showResult(failureText) },
-                        completed = { 
-                            showResult(verifiedAccountText)
-                            navigateBack() 
-                        }
-                    )
+                    if (connected) {
+                        keyboardManager?.hide()
+                        createUser(
+                            onSuccess = { showResult(successText) },
+                            failure = { showResult(failureText) },
+                            completed = {
+                                showResult(verifiedAccountText)
+                                navigateBack()
+                            }
+                        )
+                    } else {
+                        showResult("Sin conexión")
+                    }
                 }
             }
         }

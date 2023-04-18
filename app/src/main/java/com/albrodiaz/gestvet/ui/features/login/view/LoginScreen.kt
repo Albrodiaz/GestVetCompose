@@ -1,5 +1,7 @@
 package com.albrodiaz.gestvet.ui.features.login.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
+import com.albrodiaz.gestvet.core.ConnectionState
+import com.albrodiaz.gestvet.core.connectivityState
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
 import com.albrodiaz.gestvet.ui.features.components.LoginButton
 import com.albrodiaz.gestvet.ui.features.components.LoginDog
@@ -30,6 +34,7 @@ import com.albrodiaz.gestvet.ui.features.login.viewmodel.LoginViewModel
 import com.albrodiaz.gestvet.ui.theme.Shapes
 import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 
+@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginInputScreen(
@@ -44,6 +49,8 @@ fun LoginInputScreen(
     val errorText = stringResource(id = R.string.errorLogin)
     val keyboardController = LocalSoftwareKeyboardController.current
     val isUserLogged by loginViewModel.isUserLogged.collectAsState()
+    val connectivityState by connectivityState()
+    val connected = connectivityState == ConnectionState.Available
 
     ResetPassDialog(loginViewModel = loginViewModel) {
         showMessage(it)
@@ -75,10 +82,14 @@ fun LoginInputScreen(
                         showMessage(errorText)
                         keyboardController?.hide()
                     },
-                    openHome = { navigateHome() }
+                    openHome = {
+                        if (connected) navigateHome() else showMessage("Sin conexión")
+                    }
                 )
             }
-            CreateAccountRow(showDialog = { loginViewModel.setShowDialog(true) }) { navigateRegister() }
+            CreateAccountRow(showDialog = { loginViewModel.setShowDialog(true) }) {
+               if (connected) navigateRegister() else showMessage("Sin conexión")
+            }
         }
     }
 }
