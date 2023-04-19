@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -24,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.ConnectionState
-import com.albrodiaz.gestvet.core.connectivityState
+import com.albrodiaz.gestvet.core.NetworkConnectivity
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
 import com.albrodiaz.gestvet.ui.features.components.LoginButton
 import com.albrodiaz.gestvet.ui.features.components.LoginDog
@@ -49,8 +50,9 @@ fun LoginInputScreen(
     val errorText = stringResource(id = R.string.errorLogin)
     val keyboardController = LocalSoftwareKeyboardController.current
     val isUserLogged by loginViewModel.isUserLogged.collectAsState()
-    val connectivityState by connectivityState()
-    val connected = connectivityState == ConnectionState.Available
+    val connectivityState = NetworkConnectivity(LocalContext.current)
+    val connectionState by connectivityState.getConnectivity().collectAsState(initial = ConnectionState.Unavailable)
+    val connected = connectionState == ConnectionState.Available
 
     ResetPassDialog(loginViewModel = loginViewModel) {
         showMessage(it)
@@ -77,11 +79,11 @@ fun LoginInputScreen(
                 valueChange = { loginViewModel.setUserInput(it) })
             UserPassword(value = password, valueChange = { loginViewModel.setUserPassword(it) })
             LoginButton(enabled = enabled, text = stringResource(id = R.string.login)) {
+                keyboardController?.hide()
                 if (connected) {
                     loginViewModel.login(
                         showError = {
                             showMessage(errorText)
-                            keyboardController?.hide()
                         },
                         openHome = { navigateHome() }
                     )

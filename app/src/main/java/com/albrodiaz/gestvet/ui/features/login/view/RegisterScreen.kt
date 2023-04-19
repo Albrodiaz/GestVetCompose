@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -21,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.albrodiaz.gestvet.R
 import com.albrodiaz.gestvet.core.ConnectionState
-import com.albrodiaz.gestvet.core.connectivityState
+import com.albrodiaz.gestvet.core.NetworkConnectivity
 import com.albrodiaz.gestvet.core.extensions.isValidEmail
 import com.albrodiaz.gestvet.ui.features.components.LoadingScreen
 import com.albrodiaz.gestvet.ui.features.components.LoginButton
@@ -50,8 +51,10 @@ fun RegisterScreen(
         val successText = stringResource(id = R.string.createSuccess)
         val failureText = stringResource(id = R.string.createFailure)
         val verifiedAccountText = stringResource(id = R.string.verifiedAccount)
-        val connectivityState by connectivityState()
-        val connected = connectivityState == ConnectionState.Available
+        val connectivityState = NetworkConnectivity(LocalContext.current)
+        val connectionState by connectivityState.getConnectivity()
+            .collectAsState(initial = ConnectionState.Unavailable)
+        val connected = connectionState == ConnectionState.Available
 
         if (showVerify) {
             Column(
@@ -103,8 +106,8 @@ fun RegisterScreen(
                     text = stringResource(id = R.string.createAccount),
                     enabled = btnEnabled
                 ) {
+                    keyboardManager?.hide()
                     if (connected) {
-                        keyboardManager?.hide()
                         createUser(
                             onSuccess = { showResult(successText) },
                             failure = { showResult(failureText) },
