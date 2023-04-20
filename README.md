@@ -24,7 +24,7 @@ Application to manage appointments, customers, pets and consultations.
 </table><br>
 <table>
 <h3>Clients & Pets Screen</h3>
-  <h4>In these two screen, as you can imagine, we can create, check, edit and remove clients, pets, details and consultations</h4>
+  <h4>In these two screens, as you can imagine, we can create, check, edit and remove clients, pets, details and consultations</h4>
   <h4>At the time, the only way to edit a consultation is creating new with the same date and hour.</h4><br>
 <tr>
 <th><img height="450px" src="https://github.com/Albrodiaz/GestVetCompose/blob/master/app/src/main/res/drawable/clients_screen.png"</th>
@@ -42,7 +42,7 @@ Application to manage appointments, customers, pets and consultations.
 </table><br>
 <table>
 <h3>Settings Screen</h3>
-  <h4>This is the last screen. It allow us to recover our password, log out and delete account</h4>
+  <h4>This is the last screen. It allows us to recover our password, log out and delete account</h4>
 <tr>
 <th><img height="450px" src="https://github.com/Albrodiaz/GestVetCompose/blob/master/app/src/main/res/drawable/settings_screen.png"</th>
 </tr>
