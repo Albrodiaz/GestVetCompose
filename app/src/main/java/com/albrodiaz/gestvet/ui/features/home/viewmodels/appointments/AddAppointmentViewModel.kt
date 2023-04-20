@@ -37,9 +37,12 @@ class AddAppointmentViewModel @Inject constructor(
     init {
         setData()
         viewModelScope.launch {
-            getAppointmentsUseCase.invoke().collect { appointments ->
-                appointments.toObjects(AppointmentModel::class.java).map {
-                    dateList.add(it.apptDate!!)
+            selectedAppt.collect { selected ->
+                getAppointmentsUseCase.invoke().collect { appointments ->
+                    appointments.toObjects(AppointmentModel::class.java).map {
+                        dateList.add(it.apptDate!!)
+                        dateList.remove(selected.apptDate)
+                    }
                 }
             }
         }
