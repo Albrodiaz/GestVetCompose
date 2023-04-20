@@ -74,7 +74,7 @@ class AddPetViewModel @Inject constructor(
         return@combine name.length > 2 && breed.length > 3
     }
     private val validDocuments = chipNumber.combine(passport) { chip, passport ->
-        return@combine chip.length < 10 && passport.isNotEmpty()
+        return@combine chip.isNotEmpty() && passport.isNotEmpty()
     }
 
     val buttonEnabled = validData.combine(validDocuments) { data, documents ->

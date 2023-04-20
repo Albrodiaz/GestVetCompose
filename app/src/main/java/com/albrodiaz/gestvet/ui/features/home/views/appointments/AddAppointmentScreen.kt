@@ -1,5 +1,6 @@
 package com.albrodiaz.gestvet.ui.features.home.views.appointments
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,6 +29,9 @@ import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.core.states.rememberCustomDatePickerState
 import com.albrodiaz.gestvet.ui.features.components.*
 import com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments.AddAppointmentViewModel
+import com.albrodiaz.gestvet.ui.theme.Shapes
+import com.albrodiaz.gestvet.ui.theme.md_theme_light_error
+import com.albrodiaz.gestvet.ui.theme.md_theme_light_primary
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +43,7 @@ fun AddAppointmentScreen(
 ) {
 
     val isButtonEnabled by addAppointmentViewModel.isButtonEnabled.collectAsState(false)
+    val deleteButtonEnabled by addAppointmentViewModel.deleteButtonEnabled.collectAsState(initial = false)
     val showDatePicker by addAppointmentViewModel.showDatePicker.collectAsState()
     val showTimePicker by addAppointmentViewModel.showTimePicker.collectAsState()
     val ownerText by addAppointmentViewModel.ownerText.collectAsState()
@@ -78,7 +84,7 @@ fun AddAppointmentScreen(
     }
 
     ConstraintLayout(Modifier.fillMaxSize()) {
-        val (topBar, owner, pet, date, hour, subject, detail, saveButton) = createRefs()
+        val (topBar, owner, pet, date, hour, subject, detail, saveButton, deleteButton) = createRefs()
         val keyboardController = LocalSoftwareKeyboardController.current
         val title =
             if (appointmentId == 0L) stringResource(id = R.string.addTitle) else stringResource(
@@ -204,7 +210,7 @@ fun AddAppointmentScreen(
             ),
             keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
         )
-        Button(
+        OutlinedButton(
             onClick = {
                 keyboardController?.hide()
                 addAppointmentViewModel.saveAppointment(
@@ -216,15 +222,38 @@ fun AddAppointmentScreen(
                     onError = { showMessage(saveError) }
                 )
             },
+            border = BorderStroke(1.dp, if (isButtonEnabled) md_theme_light_primary else Color.Gray),
             enabled = isButtonEnabled,
+            shape = Shapes.medium,
             modifier = Modifier
                 .padding(vertical = 24.dp)
                 .constrainAs(saveButton) {
                     top.linkTo(detail.bottom)
                     start.linkTo(parent.start)
-                    end.linkTo(parent.end)
+                    end.linkTo(deleteButton.start)
                 }) {
             Text(text = stringResource(id = R.string.save))
+        }
+        OutlinedButton(
+            onClick = {
+                addAppointmentViewModel.deleteAppointment()
+                onNavigate()
+            },
+            modifier = Modifier.constrainAs(deleteButton) {
+                start.linkTo(saveButton.end)
+                top.linkTo(saveButton.top)
+                bottom.linkTo(saveButton.bottom)
+                end.linkTo(parent.end)
+            },
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = md_theme_light_error,
+                disabledContentColor = Color.Gray,
+            ),
+            enabled = deleteButtonEnabled,
+            border = BorderStroke(1.dp, if (deleteButtonEnabled) md_theme_light_error else Color.Gray),
+            shape = Shapes.medium
+        ) {
+            Text(text = stringResource(id = R.string.delete))
         }
     }
 }

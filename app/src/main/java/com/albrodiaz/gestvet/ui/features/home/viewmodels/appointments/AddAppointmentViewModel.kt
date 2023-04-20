@@ -6,6 +6,7 @@ import com.albrodiaz.gestvet.core.extensions.hourToMillis
 import com.albrodiaz.gestvet.core.extensions.showLeftZero
 import com.albrodiaz.gestvet.core.extensions.toDate
 import com.albrodiaz.gestvet.domain.appointments.AddAppointmentUseCase
+import com.albrodiaz.gestvet.domain.appointments.DeleteAppointmentUseCase
 import com.albrodiaz.gestvet.domain.appointments.GetAppointmentByIdUseCase
 import com.albrodiaz.gestvet.domain.appointments.GetAppointmentsUseCase
 import com.albrodiaz.gestvet.ui.features.home.models.AppointmentModel
@@ -21,6 +22,7 @@ class AddAppointmentViewModel @Inject constructor(
     private val addAppointmentUseCase: AddAppointmentUseCase,
     private val getAppointmentsUseCase: GetAppointmentsUseCase,
     private val getAppointmentByIdUseCase: GetAppointmentByIdUseCase,
+    private val deleteAppointmentUseCase: DeleteAppointmentUseCase,
     state: SavedStateHandle
 ) : ViewModel() {
 
@@ -131,6 +133,10 @@ class AddAppointmentViewModel @Inject constructor(
         return@combine data && subject.isNotEmpty()
     }
 
+    val deleteButtonEnabled = flow {
+        emit(appointmentId.value != 0L)
+    }
+
     fun saveAppointment(dateUnavailable: () -> Unit, onError: () -> Unit, success: () -> Unit) {
         try {
             val appointment = AppointmentModel(
@@ -154,6 +160,12 @@ class AddAppointmentViewModel @Inject constructor(
             }
         } catch (e: Throwable) {
             onError()
+        }
+    }
+
+    fun deleteAppointment() {
+        viewModelScope.launch {
+            deleteAppointmentUseCase.invoke(appointmentId.value)
         }
     }
 }

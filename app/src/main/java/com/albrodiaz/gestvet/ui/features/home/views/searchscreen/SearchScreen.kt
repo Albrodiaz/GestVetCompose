@@ -54,7 +54,6 @@ fun SearchScreen(
             LazyColumn(
                 Modifier
                     .fillMaxSize()
-                    .padding(bottom = 60.dp)
             ) {
                 items(filteredList) { item ->
                     ItemSearchScreen(
