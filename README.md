@@ -14,4 +14,7 @@ Application to manage appointments, customers, pets and consultations.
 
 <h2>Features</h2>
 <h3>Appointments Screen</h3>
-![Appointments](https://github.com/Albrodiaz/GestVetCompose/blob/master/app/src/main/res/drawable/appointment_screen.png)
+<h3>Clients Screen</h3>
+<h3>Pets Screen</h3>
+<h3>Search Screen</h3>
+<h3>Settings Screen</h3>
