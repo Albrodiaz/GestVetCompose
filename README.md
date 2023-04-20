@@ -26,7 +26,6 @@ Application to manage appointments, customers, pets and consultations.
 <tr>
 <th><img height="450px" src="https://github.com/Albrodiaz/GestVetCompose/blob/master/app/src/main/res/drawable/clients_screen.png"</th>
 <th><img height="450px" src="https://github.com/Albrodiaz/GestVetCompose/blob/master/app/src/main/res/drawable/client_details.png"/></th>
-<th><img height="450px" src="https://github.com/Albrodiaz/GestVetCompose/blob/master/app/src/main/res/drawable/pet_details.png"</th>
 <th><img src="https://github.com/Albrodiaz/GestVetCompose/blob/master/app/src/main/res/drawable/add_consultation.gif"</th>
 </tr>
 </table><br>
@@ -34,6 +33,12 @@ Application to manage appointments, customers, pets and consultations.
 <h3>Search Screen</h3>
 <tr>
 <th><img height="450px" src="https://github.com/Albrodiaz/GestVetCompose/blob/master/app/src/main/res/drawable/search_screen.png"</th>
-<th><img src=""/></th>
+<th><img src="https://github.com/Albrodiaz/GestVetCompose/blob/master/app/src/main/res/drawable/search_screen_img.gif"</th>
+</tr>
+</table><br>
+<table>
+<h3>Settings Screen</h3>
+<tr>
+<th><img height="450px" src="https://github.com/Albrodiaz/GestVetCompose/blob/master/app/src/main/res/drawable/settings_screen.png"</th>
 </tr>
 </table><br>
