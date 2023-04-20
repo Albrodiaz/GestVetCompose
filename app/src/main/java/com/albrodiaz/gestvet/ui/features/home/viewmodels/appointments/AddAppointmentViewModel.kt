@@ -1,6 +1,5 @@
 package com.albrodiaz.gestvet.ui.features.home.viewmodels.appointments
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.albrodiaz.gestvet.core.extensions.dateToMillis
 import com.albrodiaz.gestvet.core.extensions.hourToMillis
@@ -41,7 +40,6 @@ class AddAppointmentViewModel @Inject constructor(
         viewModelScope.launch {
             selectedAppt.collect {
                 dateList.remove(it.apptDate)
-                Log.i("alberto", dateList.toString())
             }
         }
     }
@@ -51,7 +49,6 @@ class AddAppointmentViewModel @Inject constructor(
             getAppointmentsUseCase.invoke().collect { appointments ->
                 appointments.toObjects(AppointmentModel::class.java).map {
                     dateList.add(it.apptDate!!)
-                    Log.i("alberto", dateList.toString())
                 }
             }
         }
